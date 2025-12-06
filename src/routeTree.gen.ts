@@ -13,7 +13,6 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
-import { Route as AuthDeconnexionRouteImport } from './routes/auth/deconnexion'
 import { Route as AuthConnexionRouteImport } from './routes/auth/connexion'
 import { Route as AdminParametresRouteImport } from './routes/admin/parametres'
 import { Route as PublicProduitsRouteImport } from './routes/_public/produits'
@@ -21,6 +20,7 @@ import { Route as PublicContactRouteImport } from './routes/_public/contact'
 import { Route as AdminPromotionsIndexRouteImport } from './routes/admin/promotions/index'
 import { Route as AdminProduitsIndexRouteImport } from './routes/admin/produits/index'
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin/categories/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AdminPromotionsNewRouteImport } from './routes/admin/promotions/new'
 import { Route as AdminProduitsNewRouteImport } from './routes/admin/produits/new'
 import { Route as AdminCategoriesNewRouteImport } from './routes/admin/categories/new'
@@ -46,11 +46,6 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
-} as any)
-const AuthDeconnexionRoute = AuthDeconnexionRouteImport.update({
-  id: '/auth/deconnexion',
-  path: '/auth/deconnexion',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthConnexionRoute = AuthConnexionRouteImport.update({
   id: '/auth/connexion',
@@ -86,6 +81,11 @@ const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
   id: '/categories/',
   path: '/categories/',
   getParentRoute: () => AdminRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminPromotionsNewRoute = AdminPromotionsNewRouteImport.update({
   id: '/promotions/new',
@@ -124,12 +124,12 @@ export interface FileRoutesByFullPath {
   '/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/auth/connexion': typeof AuthConnexionRoute
-  '/auth/deconnexion': typeof AuthDeconnexionRoute
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
   '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
   '/admin/promotions': typeof AdminPromotionsIndexRoute
@@ -142,12 +142,12 @@ export interface FileRoutesByTo {
   '/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/auth/connexion': typeof AuthConnexionRoute
-  '/auth/deconnexion': typeof AuthDeconnexionRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
   '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
   '/admin/promotions': typeof AdminPromotionsIndexRoute
@@ -163,12 +163,12 @@ export interface FileRoutesById {
   '/_public/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/auth/connexion': typeof AuthConnexionRoute
-  '/auth/deconnexion': typeof AuthDeconnexionRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
   '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
   '/admin/produits/': typeof AdminProduitsIndexRoute
   '/admin/promotions/': typeof AdminPromotionsIndexRoute
@@ -184,12 +184,12 @@ export interface FileRouteTypes {
     | '/produits'
     | '/admin/parametres'
     | '/auth/connexion'
-    | '/auth/deconnexion'
     | '/'
     | '/admin/'
     | '/admin/categories/new'
     | '/admin/produits/new'
     | '/admin/promotions/new'
+    | '/api/auth/$'
     | '/admin/categories'
     | '/admin/produits'
     | '/admin/promotions'
@@ -202,12 +202,12 @@ export interface FileRouteTypes {
     | '/produits'
     | '/admin/parametres'
     | '/auth/connexion'
-    | '/auth/deconnexion'
     | '/'
     | '/admin'
     | '/admin/categories/new'
     | '/admin/produits/new'
     | '/admin/promotions/new'
+    | '/api/auth/$'
     | '/admin/categories'
     | '/admin/produits'
     | '/admin/promotions'
@@ -222,12 +222,12 @@ export interface FileRouteTypes {
     | '/_public/produits'
     | '/admin/parametres'
     | '/auth/connexion'
-    | '/auth/deconnexion'
     | '/_public/'
     | '/admin/'
     | '/admin/categories/new'
     | '/admin/produits/new'
     | '/admin/promotions/new'
+    | '/api/auth/$'
     | '/admin/categories/'
     | '/admin/produits/'
     | '/admin/promotions/'
@@ -240,7 +240,7 @@ export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   AuthConnexionRoute: typeof AuthConnexionRoute
-  AuthDeconnexionRoute: typeof AuthDeconnexionRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -272,13 +272,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
-    }
-    '/auth/deconnexion': {
-      id: '/auth/deconnexion'
-      path: '/auth/deconnexion'
-      fullPath: '/auth/deconnexion'
-      preLoaderRoute: typeof AuthDeconnexionRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/auth/connexion': {
       id: '/auth/connexion'
@@ -328,6 +321,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/categories'
       preLoaderRoute: typeof AdminCategoriesIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/promotions/new': {
       id: '/admin/promotions/new'
@@ -423,7 +423,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   AuthConnexionRoute: AuthConnexionRoute,
-  AuthDeconnexionRoute: AuthDeconnexionRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
