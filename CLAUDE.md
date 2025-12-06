@@ -138,3 +138,73 @@ Si vous devez vraiment utiliser une valeur arbitraire (cas rare), documenter pou
 // Valeur spécifique du design system non couverte par Tailwind
 <div className="h-[73px]"> {/* Hauteur exacte du header dans la maquette */}
 ```
+
+---
+
+### Classes Canoniques vs Arbitraires - Guide Complet
+
+**Quand UTILISER des classes canoniques** :
+
+1. **Z-index** : `z-1`, `z-2`, `z-10`, `z-20`, `z-50` ✅
+   - ❌ `z-[1]`, `z-[2]`
+
+2. **Positionnement négatif** : `-top-4`, `-right-8`, `-bottom-20`, `-left-30` ✅
+   - ❌ `top-[-16px]`, `bottom-[-80px]`, `left-[-120px]`
+
+3. **Tailles** : `size-3.5`, `h-0.5`, `w-12` ✅
+   - ❌ `h-[14px] w-[14px]`, `h-[2px]`
+   - ✅ Exceptions : grandes tailles décoratives comme `h-[450px]`
+
+4. **Transformations** : `-translate-y-3`, `scale-105`, `rotate-3` ✅
+   - ❌ `translate-y-[-12px]`
+
+5. **Filtres** : `blur-xl`, `blur-2xl`, `hue-rotate-10`, `saturate-150` ✅
+   - ❌ `blur-[40px]` (utiliser `blur-2xl`)
+   - ❌ `hue-rotate-[10deg]` (utiliser `hue-rotate-10`)
+
+6. **Durées** : `duration-300`, `duration-400`, `duration-500` ✅
+   - ❌ `duration-400ms` (syntaxe invalide)
+   - ❌ `duration-[400ms]` (utiliser `duration-400`)
+
+7. **Couleurs** : Toujours utiliser les variables du thème
+   - ✅ `text-text-body`, `bg-surface-card`, `border-border-subtle`
+   - ❌ `text-[oklch(...)]`
+
+**Quand GARDER des valeurs arbitraires** :
+
+1. **Tailles uniques du design** : `h-[73px]`, `w-[450px]`
+2. **Border-radius complexes** : `rounded-[40%_60%_70%_30%/...]`
+3. **Gradients** : `bg-[radial-gradient(...)]`
+4. **Animations custom** : `animate-[slideInUp_0.7s_ease-out]`
+5. **Valeurs entre deux canoniques** : `stroke-[1.8]`, `leading-[1.6]`
+6. **Ombres spécifiques** : `shadow-[0_4px_20px_rgba(...)]`
+7. **Positionnement extrême** : `right-[-150px]` (150px n'a pas de canonical)
+
+**Syntaxe Importante** :
+
+- ✅ Classes canoniques : `blur-2xl`, `duration-400`, `h-0.5`
+- ❌ Arbitraires inutiles : `blur-[40px]`, `duration-[400ms]`, `h-[2px]`
+- ❌ Syntaxe invalide : `blur-40px`, `duration-400ms` (manque les brackets ET il existe des canonical)
+
+**Exemples de conversions courantes** :
+
+| Arbitraire (avant) | Canonical (après) | Note |
+|--------------------|-------------------|------|
+| `z-[1]` | `z-1` | Z-index 1-50 disponibles |
+| `top-[-16px]` | `-top-4` | 4px = 1 unit |
+| `bottom-[-80px]` | `-bottom-20` | 80px = 20 units |
+| `h-[2px]` | `h-0.5` | 2px = 0.5 unit |
+| `h-[14px]` | `h-3.5` | 14px = 3.5 units |
+| `translate-y-[-12px]` | `-translate-y-3` | 12px = 3 units |
+| `hue-rotate-[10deg]` | `hue-rotate-10` | Rotation disponible |
+| `blur-[40px]` | `blur-2xl` | 40px = blur-2xl |
+| `blur-40px` | `blur-2xl` | Fixer syntaxe + utiliser canonical |
+| `duration-[400ms]` | `duration-400` | 400ms disponible |
+| `duration-400ms` | `duration-400` | Fixer syntaxe invalide |
+
+**Avant chaque commit** :
+
+```bash
+npm run lint           # Vérifie les erreurs
+npm run lint -- --fix  # Corrige automatiquement
+```

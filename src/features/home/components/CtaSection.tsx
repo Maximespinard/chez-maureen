@@ -13,7 +13,7 @@ export function CtaSection() {
       />
 
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="relative z-[1] mx-auto max-w-3xl text-center">
+        <div className="relative z-1 mx-auto max-w-3xl text-center">
           <h2 className="mb-4 font-[Crimson_Pro,Georgia,serif] text-4xl font-bold text-white md:text-5xl">
             Une question sur nos produits ?
           </h2>

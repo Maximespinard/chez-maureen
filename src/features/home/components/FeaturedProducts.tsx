@@ -51,7 +51,7 @@ export function FeaturedProducts() {
             <h2 className="text-text-dark mb-4 font-[Crimson_Pro,Georgia,serif] text-4xl font-bold md:text-5xl">
               Produits vedettes
             </h2>
-            <p className="mx-auto max-w-[600px] text-lg font-medium text-[oklch(38%_0.03_42)]">
+            <p className="max-w-600px text-text-muted-dark mx-auto text-lg font-medium">
               Découvrez nos coups de cœur du moment
             </p>
           </div>

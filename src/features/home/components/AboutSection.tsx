@@ -12,7 +12,7 @@ export function AboutSection() {
       />
 
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="relative z-[1] grid grid-cols-1 items-start gap-10 md:grid-cols-2">
+        <div className="relative z-1 grid grid-cols-1 items-start gap-10 md:grid-cols-2">
           {/* Image Column */}
           <div className="relative overflow-hidden">
             <img
@@ -33,22 +33,22 @@ export function AboutSection() {
             <h2 className="text-text-dark mb-4 font-[Crimson_Pro,Georgia,serif] text-4xl font-bold md:text-5xl">
               Chez Maureen
             </h2>
-            <p className="mb-6 text-lg font-normal tracking-[-0.01em] text-[oklch(58%_0.015_42)] italic">
+            <p className="text-text-subtle mb-6 text-lg font-normal tracking-[-0.01em] italic">
               Des fruits et légumes authentiques et de saison
             </p>
 
-            <p className="mb-4 text-base leading-[1.75] font-normal text-[oklch(56%_0.018_42)]">
+            <p className="text-text-body mb-4 text-base leading-[1.75] font-normal">
               Chez Maureen, nous nous engageons à proposer des fruits et légumes
               frais, savoureux et de saison, sélectionnés avec soin chaque jour.
             </p>
 
-            <p className="mb-4 text-base leading-[1.75] font-normal text-[oklch(56%_0.018_42)]">
+            <p className="text-text-body mb-4 text-base leading-[1.75] font-normal">
               Nous privilégions les producteurs locaux dès que possible, afin de
               soutenir l'agriculture de notre région et garantir une qualité
               authentique.
             </p>
 
-            <p className="mb-4 text-base leading-[1.75] font-normal text-[oklch(56%_0.018_42)]">
+            <p className="text-text-body mb-4 text-base leading-[1.75] font-normal">
               Parce que consommer local, c'est soutenir nos agriculteurs et
               savourer des produits exceptionnels qui ont du goût.
             </p>
@@ -62,7 +62,7 @@ export function AboutSection() {
                 <div className="text-primeur-green font-[Crimson_Pro,Georgia,serif] text-[clamp(1.75rem,1.5rem+1vw,2.25rem)] leading-none font-bold tracking-[-0.02em]">
                   20+
                 </div>
-                <div className="text-sm leading-[1.4] font-normal text-[oklch(56%_0.015_42)]">
+                <div className="text-text-body text-sm leading-[1.4] font-normal">
                   Ans d'expérience
                 </div>
               </div>
@@ -74,7 +74,7 @@ export function AboutSection() {
                 <div className="text-primeur-green font-[Crimson_Pro,Georgia,serif] text-[clamp(1.75rem,1.5rem+1vw,2.25rem)] leading-none font-bold tracking-[-0.02em]">
                   30+
                 </div>
-                <div className="text-sm leading-[1.4] font-normal text-[oklch(56%_0.015_42)]">
+                <div className="text-text-body text-sm leading-[1.4] font-normal">
                   Producteurs locaux
                 </div>
               </div>
@@ -86,7 +86,7 @@ export function AboutSection() {
                 <div className="text-primeur-green font-[Crimson_Pro,Georgia,serif] text-[clamp(1.75rem,1.5rem+1vw,2.25rem)] leading-none font-bold tracking-[-0.02em]">
                   100%
                 </div>
-                <div className="text-sm leading-[1.4] font-normal text-[oklch(56%_0.015_42)]">
+                <div className="text-text-body text-sm leading-[1.4] font-normal">
                   Fraîcheur garantie
                 </div>
               </div>

@@ -8,10 +8,10 @@ export function HeroSection() {
       style={{ backgroundImage: 'url(/images/hero-bg.png)' }}
     >
       {/* Overlay */}
-      <div className="backdrop-blur-0 absolute inset-0 z-[1] bg-linear-to-b from-[rgba(28,28,28,0.45)] via-[rgba(28,28,28,0.55)] to-[rgba(28,28,28,0.65)]" />
+      <div className="backdrop-blur-0 absolute inset-0 z-1 bg-linear-to-b from-[rgba(28,28,28,0.45)] via-[rgba(28,28,28,0.55)] to-[rgba(28,28,28,0.65)]" />
 
       {/* Container */}
-      <div className="relative z-[2] mx-auto flex w-full max-w-[900px] flex-col items-center justify-center gap-16">
+      <div className="relative z-2 mx-auto flex w-full max-w-[900px] flex-col items-center justify-center gap-16">
         {/* Content */}
         <div className="mt-10 flex flex-col items-center gap-10 text-center">
           {/* Micro Label */}
@@ -45,7 +45,7 @@ export function HeroSection() {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 z-[3] flex -translate-x-1/2 animate-[bounceDown_2.5s_cubic-bezier(0.68,-0.55,0.265,1.55)_infinite] items-center justify-center text-white">
+      <div className="absolute bottom-10 left-1/2 z-3 flex -translate-x-1/2 animate-[bounceDown_2.5s_cubic-bezier(0.68,-0.55,0.265,1.55)_infinite] items-center justify-center text-white">
         <ChevronDown className="h-7 w-7 stroke-[2.5] text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]" />
       </div>
     </section>
