@@ -1,5 +1,6 @@
 import {
   HeadContent,
+  Link,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
@@ -40,6 +41,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
+  notFoundComponent: NotFound,
   shellComponent: RootDocument,
 })
 
@@ -67,5 +69,27 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function NotFound() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center px-6">
+      <div className="max-w-md text-center">
+        <h1 className="text-9xl font-bold text-cyan-400 mb-4">404</h1>
+        <h2 className="text-3xl font-semibold text-white mb-4">
+          Page non trouvée
+        </h2>
+        <p className="text-gray-300 mb-8">
+          Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
+        </p>
+        <Link
+          to="/"
+          className="inline-block bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+        >
+          Retour à l'accueil
+        </Link>
+      </div>
+    </div>
   )
 }
