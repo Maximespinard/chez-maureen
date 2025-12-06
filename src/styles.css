@@ -66,6 +66,18 @@ code {
   --primeur-beige: oklch(0.9 0.02 72);
   --primeur-cream: oklch(0.97 0.01 72);
   --primeur-warm-white: oklch(0.99 0.005 72);
+
+  /* Text Colors */
+  --text-dark: oklch(0.28 0.02 42);
+  --text-medium: oklch(0.48 0.03 42);
+  --text-light: oklch(0.65 0.02 42);
+
+  /* Badge Colors */
+  --badge-new: oklch(0.58 0.12 232);
+  --badge-promo: oklch(0.62 0.18 22);
+  --badge-local: oklch(0.48 0.15 152);
+  --badge-season: oklch(0.62 0.15 75);
+  --badge-bio: oklch(0.52 0.16 152);
 }
 
 .dark {
@@ -153,6 +165,18 @@ code {
   --color-primeur-beige: var(--primeur-beige);
   --color-primeur-cream: var(--primeur-cream);
   --color-primeur-warm-white: var(--primeur-warm-white);
+
+  /* Text Colors for Tailwind */
+  --color-text-dark: var(--text-dark);
+  --color-text-medium: var(--text-medium);
+  --color-text-light: var(--text-light);
+
+  /* Badge Colors for Tailwind */
+  --color-badge-new: var(--badge-new);
+  --color-badge-promo: var(--badge-promo);
+  --color-badge-local: var(--badge-local);
+  --color-badge-season: var(--badge-season);
+  --color-badge-bio: var(--badge-bio);
 }
 
 @layer base {
@@ -161,5 +185,62 @@ code {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseScale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
