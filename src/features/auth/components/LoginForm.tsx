@@ -80,7 +80,7 @@ export function LoginForm() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="chezmaureen66"
+                  placeholder="Entrez votre nom d'utilisateur"
                   className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full rounded-xl border bg-white py-3 pr-4 pl-11 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
                 />
               </div>
