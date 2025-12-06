@@ -1,8 +1,10 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,7 +19,7 @@ export function Navbar() {
     <nav
       className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-primeur-warm-white/92 border-text-dark/8 sticky top-0 mx-6 mt-4 rounded-3xl border-b px-8 py-3 shadow-lg backdrop-blur-xl'
+          ? 'border-text-dark/8 bg-primeur-warm-white/92 border-b px-6 py-3 shadow-lg backdrop-blur-xl'
           : 'border-none bg-transparent px-6 py-4 shadow-none backdrop-blur-none'
       }`}
     >
@@ -26,7 +28,7 @@ export function Navbar() {
         <Link
           to="/"
           className={`flex items-center gap-3 transition-colors duration-500 ${
-            scrolled ? 'text-primeur-green' : 'text-white'
+            scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
           }`}
         >
           <img
@@ -46,11 +48,13 @@ export function Navbar() {
               className={`relative text-sm font-semibold transition-colors duration-300 ${
                 scrolled
                   ? 'text-text-medium hover:text-primeur-green'
-                  : 'text-white/95 hover:text-white'
+                  : isHomePage
+                    ? 'text-white/95 hover:text-white'
+                    : 'text-text-medium hover:text-primeur-green'
               }`}
               activeProps={{
                 className: `after:absolute after:bottom-[-6px] after:left-0 after:right-0 after:h-[2px] after:bg-current after:rounded-full ${
-                  scrolled ? 'text-primeur-green' : 'text-white'
+                  scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
                 }`,
               }}
             >
@@ -63,11 +67,13 @@ export function Navbar() {
               className={`relative text-sm font-semibold transition-colors duration-300 ${
                 scrolled
                   ? 'text-text-medium hover:text-primeur-green'
-                  : 'text-white/95 hover:text-white'
+                  : isHomePage
+                    ? 'text-white/95 hover:text-white'
+                    : 'text-text-medium hover:text-primeur-green'
               }`}
               activeProps={{
                 className: `after:absolute after:bottom-[-6px] after:left-0 after:right-0 after:h-[2px] after:bg-current after:rounded-full ${
-                  scrolled ? 'text-primeur-green' : 'text-white'
+                  scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
                 }`,
               }}
             >
@@ -80,11 +86,13 @@ export function Navbar() {
               className={`relative text-sm font-semibold transition-colors duration-300 ${
                 scrolled
                   ? 'text-text-medium hover:text-primeur-green'
-                  : 'text-white/95 hover:text-white'
+                  : isHomePage
+                    ? 'text-white/95 hover:text-white'
+                    : 'text-text-medium hover:text-primeur-green'
               }`}
               activeProps={{
                 className: `after:absolute after:bottom-[-6px] after:left-0 after:right-0 after:h-[2px] after:bg-current after:rounded-full ${
-                  scrolled ? 'text-primeur-green' : 'text-white'
+                  scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
                 }`,
               }}
             >
