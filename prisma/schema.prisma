@@ -6,3 +6,71 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// === TABLES MÉTIER ===
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  icon        String?
+  order       Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  price       Decimal   @db.Decimal(10, 2)
+  unit        String    @default("kg")
+  origin      String?
+  image       String?
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  badges      ProductBadge[]
+  isActive    Boolean   @default(true)
+  isFeatured  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+model Badge {
+  id       String         @id @default(cuid())
+  name     String
+  slug     String         @unique
+  color    String
+  products ProductBadge[]
+}
+
+model ProductBadge {
+  productId String
+  badgeId   String
+  value     String?
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([productId, badgeId])
+}
+
+model StoreSettings {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

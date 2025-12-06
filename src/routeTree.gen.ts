@@ -9,50 +9,421 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as PublicRouteImport } from './routes/_public'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as AuthLogoutRouteImport } from './routes/auth/logout'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as PublicProductsRouteImport } from './routes/_public/products'
+import { Route as PublicContactRouteImport } from './routes/_public/contact'
+import { Route as AdminPromotionsIndexRouteImport } from './routes/admin/promotions/index'
+import { Route as AdminProductsIndexRouteImport } from './routes/admin/products/index'
+import { Route as AdminCategoriesIndexRouteImport } from './routes/admin/categories/index'
+import { Route as AdminPromotionsNewRouteImport } from './routes/admin/promotions/new'
+import { Route as AdminProductsNewRouteImport } from './routes/admin/products/new'
+import { Route as AdminCategoriesNewRouteImport } from './routes/admin/categories/new'
+import { Route as AdminPromotionsIdEditRouteImport } from './routes/admin/promotions/$id.edit'
+import { Route as AdminProductsIdEditRouteImport } from './routes/admin/products/$id.edit'
+import { Route as AdminCategoriesIdEditRouteImport } from './routes/admin/categories/$id.edit'
 
-const IndexRoute = IndexRouteImport.update({
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicRoute,
+} as any)
+const AuthLogoutRoute = AuthLogoutRouteImport.update({
+  id: '/auth/logout',
+  path: '/auth/logout',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const PublicProductsRoute = PublicProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicContactRoute = PublicContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => PublicRoute,
+} as any)
+const AdminPromotionsIndexRoute = AdminPromotionsIndexRouteImport.update({
+  id: '/promotions/',
+  path: '/promotions/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsIndexRoute = AdminProductsIndexRouteImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPromotionsNewRoute = AdminPromotionsNewRouteImport.update({
+  id: '/promotions/new',
+  path: '/promotions/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsNewRoute = AdminProductsNewRouteImport.update({
+  id: '/products/new',
+  path: '/products/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesNewRoute = AdminCategoriesNewRouteImport.update({
+  id: '/categories/new',
+  path: '/categories/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPromotionsIdEditRoute = AdminPromotionsIdEditRouteImport.update({
+  id: '/promotions/$id/edit',
+  path: '/promotions/$id/edit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsIdEditRoute = AdminProductsIdEditRouteImport.update({
+  id: '/products/$id/edit',
+  path: '/products/$id/edit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesIdEditRoute = AdminCategoriesIdEditRouteImport.update({
+  id: '/categories/$id/edit',
+  path: '/categories/$id/edit',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/contact': typeof PublicContactRoute
+  '/products': typeof PublicProductsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/logout': typeof AuthLogoutRoute
+  '/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/categories/new': typeof AdminCategoriesNewRoute
+  '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/products': typeof AdminProductsIndexRoute
+  '/admin/promotions': typeof AdminPromotionsIndexRoute
+  '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
+  '/admin/products/$id/edit': typeof AdminProductsIdEditRoute
+  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/contact': typeof PublicContactRoute
+  '/products': typeof PublicProductsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/logout': typeof AuthLogoutRoute
+  '/': typeof PublicIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/categories/new': typeof AdminCategoriesNewRoute
+  '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/products': typeof AdminProductsIndexRoute
+  '/admin/promotions': typeof AdminPromotionsIndexRoute
+  '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
+  '/admin/products/$id/edit': typeof AdminProductsIdEditRoute
+  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_public': typeof PublicRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/_public/contact': typeof PublicContactRoute
+  '/_public/products': typeof PublicProductsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/logout': typeof AuthLogoutRoute
+  '/_public/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/categories/new': typeof AdminCategoriesNewRoute
+  '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/admin/categories/': typeof AdminCategoriesIndexRoute
+  '/admin/products/': typeof AdminProductsIndexRoute
+  '/admin/promotions/': typeof AdminPromotionsIndexRoute
+  '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
+  '/admin/products/$id/edit': typeof AdminProductsIdEditRoute
+  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/admin'
+    | '/contact'
+    | '/products'
+    | '/admin/settings'
+    | '/auth/login'
+    | '/auth/logout'
+    | '/'
+    | '/admin/'
+    | '/admin/categories/new'
+    | '/admin/products/new'
+    | '/admin/promotions/new'
+    | '/admin/categories'
+    | '/admin/products'
+    | '/admin/promotions'
+    | '/admin/categories/$id/edit'
+    | '/admin/products/$id/edit'
+    | '/admin/promotions/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/contact'
+    | '/products'
+    | '/admin/settings'
+    | '/auth/login'
+    | '/auth/logout'
+    | '/'
+    | '/admin'
+    | '/admin/categories/new'
+    | '/admin/products/new'
+    | '/admin/promotions/new'
+    | '/admin/categories'
+    | '/admin/products'
+    | '/admin/promotions'
+    | '/admin/categories/$id/edit'
+    | '/admin/products/$id/edit'
+    | '/admin/promotions/$id/edit'
+  id:
+    | '__root__'
+    | '/_public'
+    | '/admin'
+    | '/_public/contact'
+    | '/_public/products'
+    | '/admin/settings'
+    | '/auth/login'
+    | '/auth/logout'
+    | '/_public/'
+    | '/admin/'
+    | '/admin/categories/new'
+    | '/admin/products/new'
+    | '/admin/promotions/new'
+    | '/admin/categories/'
+    | '/admin/products/'
+    | '/admin/promotions/'
+    | '/admin/categories/$id/edit'
+    | '/admin/products/$id/edit'
+    | '/admin/promotions/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  PublicRoute: typeof PublicRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthLogoutRoute: typeof AuthLogoutRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/auth/logout': {
+      id: '/auth/logout'
+      path: '/auth/logout'
+      fullPath: '/auth/logout'
+      preLoaderRoute: typeof AuthLogoutRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_public/products': {
+      id: '/_public/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof PublicProductsRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/contact': {
+      id: '/_public/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof PublicContactRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/admin/promotions/': {
+      id: '/admin/promotions/'
+      path: '/promotions'
+      fullPath: '/admin/promotions'
+      preLoaderRoute: typeof AdminPromotionsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products/': {
+      id: '/admin/products/'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories/': {
+      id: '/admin/categories/'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/promotions/new': {
+      id: '/admin/promotions/new'
+      path: '/promotions/new'
+      fullPath: '/admin/promotions/new'
+      preLoaderRoute: typeof AdminPromotionsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products/new': {
+      id: '/admin/products/new'
+      path: '/products/new'
+      fullPath: '/admin/products/new'
+      preLoaderRoute: typeof AdminProductsNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories/new': {
+      id: '/admin/categories/new'
+      path: '/categories/new'
+      fullPath: '/admin/categories/new'
+      preLoaderRoute: typeof AdminCategoriesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/promotions/$id/edit': {
+      id: '/admin/promotions/$id/edit'
+      path: '/promotions/$id/edit'
+      fullPath: '/admin/promotions/$id/edit'
+      preLoaderRoute: typeof AdminPromotionsIdEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products/$id/edit': {
+      id: '/admin/products/$id/edit'
+      path: '/products/$id/edit'
+      fullPath: '/admin/products/$id/edit'
+      preLoaderRoute: typeof AdminProductsIdEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories/$id/edit': {
+      id: '/admin/categories/$id/edit'
+      path: '/categories/$id/edit'
+      fullPath: '/admin/categories/$id/edit'
+      preLoaderRoute: typeof AdminCategoriesIdEditRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
+interface PublicRouteChildren {
+  PublicContactRoute: typeof PublicContactRoute
+  PublicProductsRoute: typeof PublicProductsRoute
+  PublicIndexRoute: typeof PublicIndexRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicContactRoute: PublicContactRoute,
+  PublicProductsRoute: PublicProductsRoute,
+  PublicIndexRoute: PublicIndexRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
+interface AdminRouteChildren {
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminCategoriesNewRoute: typeof AdminCategoriesNewRoute
+  AdminProductsNewRoute: typeof AdminProductsNewRoute
+  AdminPromotionsNewRoute: typeof AdminPromotionsNewRoute
+  AdminCategoriesIndexRoute: typeof AdminCategoriesIndexRoute
+  AdminProductsIndexRoute: typeof AdminProductsIndexRoute
+  AdminPromotionsIndexRoute: typeof AdminPromotionsIndexRoute
+  AdminCategoriesIdEditRoute: typeof AdminCategoriesIdEditRoute
+  AdminProductsIdEditRoute: typeof AdminProductsIdEditRoute
+  AdminPromotionsIdEditRoute: typeof AdminPromotionsIdEditRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminCategoriesNewRoute: AdminCategoriesNewRoute,
+  AdminProductsNewRoute: AdminProductsNewRoute,
+  AdminPromotionsNewRoute: AdminPromotionsNewRoute,
+  AdminCategoriesIndexRoute: AdminCategoriesIndexRoute,
+  AdminProductsIndexRoute: AdminProductsIndexRoute,
+  AdminPromotionsIndexRoute: AdminPromotionsIndexRoute,
+  AdminCategoriesIdEditRoute: AdminCategoriesIdEditRoute,
+  AdminProductsIdEditRoute: AdminProductsIdEditRoute,
+  AdminPromotionsIdEditRoute: AdminPromotionsIdEditRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  PublicRoute: PublicRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthLogoutRoute: AuthLogoutRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/_public/')({
+  component: Home,
+})
 
 function Home() {
   return (
@@ -29,7 +31,7 @@ function Home() {
         <p className="text-gray-400 text-sm mt-8">
           Edit{' '}
           <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
-            /src/routes/index.tsx
+            /src/routes/_public/index.tsx
           </code>{' '}
           to get started
         </p>
