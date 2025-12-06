@@ -208,3 +208,52 @@ Si vous devez vraiment utiliser une valeur arbitraire (cas rare), documenter pou
 npm run lint           # Vérifie les erreurs
 npm run lint -- --fix  # Corrige automatiquement
 ```
+
+---
+
+### Ordre des classes Tailwind (IMPORTANT)
+
+Le projet utilise `prettier-plugin-tailwindcss` pour ordonner automatiquement les classes.
+
+**Règle OBLIGATOIRE avant chaque commit :**
+
+```bash
+npm run lint -- --fix  # Auto-fix l'ordre des classes + autres erreurs ESLint
+```
+
+**Ordre appliqué automatiquement par le plugin :**
+
+1. **Layout** (display, position, float, clear, isolation, object-fit, overflow, overscroll, z-index)
+2. **Flexbox & Grid** (flex, flex-direction, grid, gap, justify, align, place, order)
+3. **Spacing** (margin, padding)
+4. **Sizing** (width, height, min-*, max-*)
+5. **Typography** (font-family, font-size, font-weight, line-height, letter-spacing, text-align, text-color, text-decoration, text-transform, whitespace, word-break)
+6. **Backgrounds** (background-color, background-image, background-size, background-position, background-repeat, background-attachment, background-clip)
+7. **Borders** (border-width, border-style, border-color, border-radius, border-collapse, border-spacing)
+8. **Effects** (box-shadow, opacity, mix-blend-mode, filter, backdrop-filter)
+9. **Transitions & Animation** (transition-property, transition-duration, transition-timing-function, transition-delay, animation)
+10. **Transforms** (transform, transform-origin, scale, rotate, translate, skew)
+11. **Interactivity** (appearance, cursor, caret-color, pointer-events, resize, scroll-behavior, user-select)
+12. **SVG** (fill, stroke)
+13. **Accessibility** (screen readers)
+14. **Pseudo-classes** (hover, focus, active, visited, etc.)
+15. **Pseudo-elements** (before, after, placeholder, etc.)
+16. **Media queries** (responsive variants)
+
+**Exemple de bon ordre (appliqué automatiquement) :**
+
+```tsx
+// ✅ BON (après npm run lint -- --fix)
+<div className="relative z-1 mx-auto flex max-w-7xl items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+
+// ❌ MAUVAIS (avant auto-fix)
+<div className="hover:shadow-lg p-6 transition-all mx-auto border-gray-200 duration-300 relative flex bg-white max-w-7xl gap-4 items-center z-1 rounded-xl shadow-md border hover:-translate-y-1">
+```
+
+**Si ESLint détecte des erreurs d'ordre :**
+- Ne PAS réordonner manuellement
+- Lancer `npm run lint -- --fix` qui le fait automatiquement
+- Vérifier que les changements sont corrects
+- Commit
+
+**Note :** L'ordre exact n'est pas à mémoriser, le plugin le gère. L'important est de toujours lancer `--fix` avant commit.
