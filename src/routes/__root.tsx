@@ -30,13 +30,26 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Chez Maureen - Fruits & Légumes Frais',
       },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.googleapis.com',
+      },
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap',
       },
     ],
   }),
@@ -47,7 +60,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>
