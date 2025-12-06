@@ -15,13 +15,13 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'sticky top-0 bg-primeur-warm-white/92 backdrop-blur-xl border-b border-text-dark/8 shadow-lg mx-6 mt-4 rounded-[28px] px-8 py-3'
-          : 'bg-transparent backdrop-blur-none border-none shadow-none px-6 py-4'
+          ? 'bg-primeur-warm-white/92 border-text-dark/8 sticky top-0 mx-6 mt-4 rounded-3xl border-b px-8 py-3 shadow-lg backdrop-blur-xl'
+          : 'border-none bg-transparent px-6 py-4 shadow-none backdrop-blur-none'
       }`}
     >
-      <div className="max-w-[1280px] mx-auto flex items-center justify-between">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
         {/* Logo */}
         <Link
           to="/"
@@ -32,18 +32,18 @@ export function Navbar() {
           <img
             src="/logo.png"
             alt="Chez Maureen"
-            className={`w-[50px] h-[50px] rounded-full object-cover transition-shadow duration-500 ${
+            className={`h-[50px] w-[50px] rounded-full object-cover transition-shadow duration-500 ${
               scrolled ? 'shadow-md' : 'shadow-sm'
             }`}
           />
         </Link>
 
         {/* Centered Navigation Links */}
-        <ul className="absolute left-1/2 -translate-x-1/2 flex gap-14 list-none">
+        <ul className="absolute left-1/2 flex -translate-x-1/2 list-none gap-14">
           <li>
             <Link
               to="/"
-              className={`text-sm font-semibold transition-colors duration-300 relative ${
+              className={`relative text-sm font-semibold transition-colors duration-300 ${
                 scrolled
                   ? 'text-text-medium hover:text-primeur-green'
                   : 'text-white/95 hover:text-white'
@@ -60,7 +60,7 @@ export function Navbar() {
           <li>
             <Link
               to="/produits"
-              className={`text-sm font-semibold transition-colors duration-300 relative ${
+              className={`relative text-sm font-semibold transition-colors duration-300 ${
                 scrolled
                   ? 'text-text-medium hover:text-primeur-green'
                   : 'text-white/95 hover:text-white'
@@ -77,7 +77,7 @@ export function Navbar() {
           <li>
             <Link
               to="/contact"
-              className={`text-sm font-semibold transition-colors duration-300 relative ${
+              className={`relative text-sm font-semibold transition-colors duration-300 ${
                 scrolled
                   ? 'text-text-medium hover:text-primeur-green'
                   : 'text-white/95 hover:text-white'

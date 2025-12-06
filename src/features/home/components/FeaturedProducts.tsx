@@ -32,36 +32,36 @@ const featuredProducts = [
 
 export function FeaturedProducts() {
   return (
-    <div className="bg-gradient-to-b from-[oklch(96%_0.015_152/0.5)] to-primeur-warm-white py-20 relative">
+    <div className="to-primeur-warm-white relative bg-linear-to-b from-[oklch(96%_0.015_152/0.5)] py-20">
       {/* Texture grain overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grainFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grainFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      <section className="p-0 bg-transparent">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-8">
+      <section className="bg-transparent p-0">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
           {/* Section Header */}
-          <div className="text-center mb-8">
-            <span className="inline-block px-4 py-2 bg-primeur-green-pale text-primeur-green text-sm font-semibold rounded-full mb-3 uppercase tracking-wide">
+          <div className="mb-8 text-center">
+            <span className="bg-primeur-green-pale text-primeur-green mb-3 inline-block rounded-full px-4 py-2 text-sm font-semibold tracking-wide uppercase">
               Nouveautés
             </span>
-            <h2 className="text-4xl md:text-5xl mb-4 text-text-dark font-[Crimson_Pro,Georgia,serif] font-bold">
+            <h2 className="text-text-dark mb-4 font-[Crimson_Pro,Georgia,serif] text-4xl font-bold md:text-5xl">
               Produits vedettes
             </h2>
-            <p className="text-lg text-[oklch(38%_0.03_42)] font-medium max-w-[600px] mx-auto">
+            <p className="mx-auto max-w-[600px] text-lg font-medium text-[oklch(38%_0.03_42)]">
               Découvrez nos coups de cœur du moment
             </p>
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8 lg:grid-cols-3">
             {featuredProducts.map((product, index) => (
               <div
                 key={product.name}
-                className="animate-[fadeInUp_0.6s_ease-out_backwards] group"
+                className="group animate-[fadeInUp_0.6s_ease-out_backwards]"
                 style={{ animationDelay: `${(index + 1) * 0.1}s` }}
               >
                 <ProductCard {...product} />

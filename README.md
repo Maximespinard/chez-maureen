@@ -55,26 +55,26 @@ Ouvre [http://localhost:3000](http://localhost:3000) dans ton navigateur.
 
 ## Scripts Disponibles
 
-| Commande | Description |
-|----------|-------------|
-| `npm run dev` | Lance le serveur de développement |
-| `npm run build` | Build pour la production |
-| `npm run serve` | Prévisualise le build |
-| `npm test` | Lance les tests Vitest |
-| `npm run lint` | Vérifie le code avec ESLint |
-| `npm run format` | Formate le code avec Prettier |
-| `npm run check` | Lint + Format automatique |
-| `npm run deploy` | Déploie sur Cloudflare Workers |
+| Commande         | Description                       |
+| ---------------- | --------------------------------- |
+| `npm run dev`    | Lance le serveur de développement |
+| `npm run build`  | Build pour la production          |
+| `npm run serve`  | Prévisualise le build             |
+| `npm test`       | Lance les tests Vitest            |
+| `npm run lint`   | Vérifie le code avec ESLint       |
+| `npm run format` | Formate le code avec Prettier     |
+| `npm run check`  | Lint + Format automatique         |
+| `npm run deploy` | Déploie sur Cloudflare Workers    |
 
 ### Commandes Database
 
-| Commande | Description |
-|----------|-------------|
-| `npm run db:generate` | Génère le client Prisma |
-| `npm run db:push` | Synchronise le schéma avec la DB |
-| `npm run db:migrate` | Crée une nouvelle migration |
-| `npm run db:studio` | Ouvre Prisma Studio |
-| `npm run db:seed` | Remplit la DB avec données de test |
+| Commande              | Description                        |
+| --------------------- | ---------------------------------- |
+| `npm run db:generate` | Génère le client Prisma            |
+| `npm run db:push`     | Synchronise le schéma avec la DB   |
+| `npm run db:migrate`  | Crée une nouvelle migration        |
+| `npm run db:studio`   | Ouvre Prisma Studio                |
+| `npm run db:seed`     | Remplit la DB avec données de test |
 
 ## Stack Technique
 

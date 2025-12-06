@@ -90,3 +90,51 @@ DATABASE_URL="postgresql://..."
 ## Workflow Git
 
 Créer une branche par feature, commit avec message descriptif selon la branche en cours.
+
+---
+
+## Règles de Code - Tailwind CSS
+
+### Classes Tailwind Canoniques (OBLIGATOIRE)
+
+**Toujours utiliser les classes canoniques Tailwind** :
+
+- ✅ `max-w-7xl` → ❌ `max-w-[1280px]`
+- ✅ `bg-linear-to-b` → ❌ `bg-gradient-to-b`
+- ✅ `p-4` → ❌ `p-[16px]`
+- ✅ `h-screen` → ❌ `h-[100vh]`
+
+**Avant d'écrire du code** :
+
+1. Vérifier si une classe standard existe avant d'utiliser des valeurs arbitraires `[]`
+2. Consulter la doc Tailwind : https://tailwindcss.com/docs
+3. Utiliser l'IntelliSense VSCode pour suggestions
+
+**Validation** :
+
+- Linter ESLint configuré pour bloquer les classes non-canoniques
+- Exécuter `npm run lint` avant chaque commit
+- Auto-fix disponible : `npm run check` (prettier + eslint --fix)
+
+**Fonctions utilitaires** :
+
+- Toujours utiliser `cn()` de `src/lib/utils.ts` pour merger les classes
+- Supporte `class-variance-authority` (cva) pour variants de composants
+
+**Exemples de migration** :
+
+```tsx
+// ❌ Avant
+<div className="max-w-[1280px] bg-gradient-to-b from-primeur-green">
+
+// ✅ Après
+<div className="max-w-7xl bg-linear-to-b from-primeur-green">
+```
+
+**Gestion des classes custom** :
+Si vous devez vraiment utiliser une valeur arbitraire (cas rare), documenter pourquoi :
+
+```tsx
+// Valeur spécifique du design system non couverte par Tailwind
+<div className="h-[73px]"> {/* Hauteur exacte du header dans la maquette */}
+```
