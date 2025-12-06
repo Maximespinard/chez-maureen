@@ -1,3 +1,4 @@
+/* Fake changes for testing cloudflare */
 @import 'tailwindcss';
 
 @import 'tw-animate-css';
@@ -58,11 +59,11 @@ code {
   --primeur-green-hover: oklch(0.44 0.16 152);
   --primeur-green-light: oklch(0.58 0.12 152);
   --primeur-green-pale: oklch(0.92 0.04 152);
-  --primeur-terracotta: oklch(0.62 0.10 42);
+  --primeur-terracotta: oklch(0.62 0.1 42);
   --primeur-terracotta-hover: oklch(0.57 0.11 42);
   --primeur-walnut: oklch(0.42 0.03 42);
   --primeur-honey: oklch(0.72 0.08 62);
-  --primeur-beige: oklch(0.90 0.02 72);
+  --primeur-beige: oklch(0.9 0.02 72);
   --primeur-cream: oklch(0.97 0.01 72);
   --primeur-warm-white: oklch(0.99 0.005 72);
 }
