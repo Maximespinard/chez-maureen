@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useSettings, useSettingsMutation } from '@/features/settings/hooks/useSettings'
 import { formatZodError } from '@/lib/errors'
+import { DAYS } from '@/lib/hours'
 import {
   BusinessInfoSchema,
   ContactInfoSchema,
@@ -17,16 +18,6 @@ import {
   SocialLinksSchema,
   StoreSettingsUpdateSchema,
 } from '@/schemas/settings.schema'
-
-const DAYS = [
-  { key: 'monday', label: 'Lundi' },
-  { key: 'tuesday', label: 'Mardi' },
-  { key: 'wednesday', label: 'Mercredi' },
-  { key: 'thursday', label: 'Jeudi' },
-  { key: 'friday', label: 'Vendredi' },
-  { key: 'saturday', label: 'Samedi' },
-  { key: 'sunday', label: 'Dimanche' },
-] as const
 
 export function SettingsForm() {
   const { data: settings, isLoading } = useSettings()

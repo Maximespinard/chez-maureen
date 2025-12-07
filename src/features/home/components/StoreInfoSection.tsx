@@ -1,7 +1,8 @@
 import { Clock, MapPin, Navigation, Phone } from 'lucide-react'
 
-import type { DayHours } from '@/schemas/settings.schema'
 import { useSettings } from '@/features/settings/hooks/useSettings'
+import { getCompactedHours } from '@/lib/hours'
+import { cn } from '@/lib/utils'
 
 export function StoreInfoSection() {
   const { data: settings, isLoading } = useSettings()
@@ -20,12 +21,7 @@ export function StoreInfoSection() {
 
   const fullAddress = `${settings.location.address}, ${settings.location.postalCode} ${settings.location.city}, ${settings.location.country}`
   const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(fullAddress)}`
-
-  const formatHours = (day: DayHours) => {
-    if (day.isClosed) return 'Fermé'
-    return `${day.openTime} – ${day.closeTime}`
-  }
-
+  const compactedHours = getCompactedHours(settings.hours)
   const phoneLink = settings.contact.phone.replace(/\s/g, '')
 
   return (
@@ -133,48 +129,30 @@ export function StoreInfoSection() {
 
               {/* Hours Grid */}
               <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-3">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Lundi</span>
-                  <span className={`text-sm font-medium ${settings.hours.monday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.monday)}
-                  </span>
-                </div>
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-3">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Mardi</span>
-                  <span className={`text-sm font-medium ${settings.hours.tuesday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.tuesday)}
-                  </span>
-                </div>
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-3">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Mercredi</span>
-                  <span className={`text-sm font-medium ${settings.hours.wednesday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.wednesday)}
-                  </span>
-                </div>
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-3">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Jeudi</span>
-                  <span className={`text-sm font-medium ${settings.hours.thursday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.thursday)}
-                  </span>
-                </div>
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-3">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Vendredi</span>
-                  <span className={`text-sm font-medium ${settings.hours.friday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.friday)}
-                  </span>
-                </div>
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-3">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Samedi</span>
-                  <span className={`text-sm font-medium ${settings.hours.saturday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.saturday)}
-                  </span>
-                </div>
-                <div className="grid grid-cols-[auto_1fr] items-center gap-4 py-3 pb-0">
-                  <span className="text-sm font-bold whitespace-nowrap text-white">Dimanche</span>
-                  <span className={`text-sm font-medium ${settings.hours.sunday.isClosed ? 'italic opacity-70' : 'text-text-hours font-bold'} text-white`}>
-                    {formatHours(settings.hours.sunday)}
-                  </span>
-                </div>
+                {compactedHours.map(({ label, hours, isClosed }, index) => {
+                  const isLast = index === compactedHours.length - 1
+
+                  return (
+                    <div
+                      key={label}
+                      className={cn(
+                        'grid grid-cols-[auto_1fr] items-center gap-4 py-3',
+                        !isLast && 'border-b border-white/15',
+                        isLast && 'pb-0',
+                      )}
+                    >
+                      <span className="text-sm font-bold whitespace-nowrap text-white">{label}</span>
+                      <span
+                        className={cn(
+                          'text-sm font-medium text-white',
+                          isClosed ? 'italic opacity-70' : 'text-text-hours font-bold',
+                        )}
+                      >
+                        {hours}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
 
               {/* Note */}
