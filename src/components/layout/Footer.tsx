@@ -1,7 +1,24 @@
 import { Link } from '@tanstack/react-router'
 import { Facebook, Instagram, MessageCircle, Sprout } from 'lucide-react'
 
+import { useSettings } from '@/features/settings/hooks/useSettings'
+
 export function Footer() {
+  const { data: settings } = useSettings()
+
+  // Use default values if settings not loaded yet
+  const storeName = settings?.business.storeName || 'Chez Maureen'
+  const tagline = settings?.business.tagline || 'Fruits & légumes frais du marché'
+  const description =
+    settings?.business.description ||
+    'Du champ à vos paniers. Nous privilégions les producteurs locaux pour vous garantir des fruits et légumes frais, savoureux et authentiques.'
+
+  const whatsappUrl = settings?.contact.whatsapp
+    ? `https://wa.me/${settings.contact.whatsapp}`
+    : null
+  const facebookUrl = settings?.social.facebook || null
+  const instagramUrl = settings?.social.instagram || null
+
   return (
     <footer className="relative overflow-hidden bg-linear-to-br from-[oklch(28%_0.02_152)] to-[oklch(32%_0.03_142)] py-16 text-[oklch(88%_0.01_72)]">
       {/* Decorative background */}
@@ -18,17 +35,13 @@ export function Footer() {
               </div>
               <div className="flex flex-col gap-1">
                 <h3 className="text-primeur-green-light m-0 font-[Crimson_Pro,Georgia,serif] text-lg font-bold tracking-[-0.5px]">
-                  Chez Maureen
+                  {storeName}
                 </h3>
-                <p className="m-0 text-xs text-[oklch(75%_0.02_42)]">
-                  Fruits & légumes frais du marché
-                </p>
+                <p className="m-0 text-xs text-[oklch(75%_0.02_42)]">{tagline}</p>
               </div>
             </div>
             <p className="text-sm leading-[1.6] text-[oklch(78%_0.015_72)] opacity-90">
-              Du champ à vos paniers. Nous privilégions les producteurs locaux
-              pour vous garantir des fruits et légumes frais, savoureux et
-              authentiques.
+              {description}
             </p>
           </div>
 
@@ -71,27 +84,39 @@ export function Footer() {
               Nous suivre
             </h4>
             <div className="flex gap-3">
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="text-primeur-green-light hover:bg-primeur-green flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(40%_0.03_152)] no-underline transition-all duration-200 hover:-translate-y-1 hover:text-white"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="text-primeur-green-light hover:bg-primeur-green flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(40%_0.03_152)] no-underline transition-all duration-200 hover:-translate-y-1 hover:text-white"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="https://wa.me/33468816411"
-                aria-label="WhatsApp"
-                className="text-primeur-green-light hover:bg-primeur-green flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(40%_0.03_152)] no-underline transition-all duration-200 hover:-translate-y-1 hover:text-white"
-              >
-                <MessageCircle className="h-5 w-5" />
-              </a>
+              {facebookUrl && (
+                <a
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="text-primeur-green-light hover:bg-primeur-green flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(40%_0.03_152)] no-underline transition-all duration-200 hover:-translate-y-1 hover:text-white"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              {instagramUrl && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="text-primeur-green-light hover:bg-primeur-green flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(40%_0.03_152)] no-underline transition-all duration-200 hover:-translate-y-1 hover:text-white"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              {whatsappUrl && (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="text-primeur-green-light hover:bg-primeur-green flex h-10 w-10 items-center justify-center rounded-xl bg-[oklch(40%_0.03_152)] no-underline transition-all duration-200 hover:-translate-y-1 hover:text-white"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -102,7 +127,7 @@ export function Footer() {
         {/* Footer Bottom */}
         <div className="relative z-[1] flex flex-col flex-wrap items-center justify-between gap-6 sm:flex-row">
           <p className="m-0 text-xs text-[oklch(65%_0.02_72)]">
-            © {new Date().getFullYear()} Chez Maureen. Tous droits réservés.
+            © {new Date().getFullYear()} {storeName}. Tous droits réservés.
           </p>
           <div className="flex flex-wrap gap-4">
             <a

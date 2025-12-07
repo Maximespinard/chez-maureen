@@ -1,6 +1,26 @@
 import { Clock, Mail, MapPin, Phone } from 'lucide-react'
 
+import type { DayHours } from '@/schemas/settings.schema'
+import { useSettings } from '@/features/settings/hooks/useSettings'
+
 export function StoreInfo() {
+  const { data: settings, isLoading } = useSettings()
+
+  if (isLoading || !settings) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-text-body">Chargement...</div>
+      </div>
+    )
+  }
+
+  const formatHours = (day: DayHours) => {
+    if (day.isClosed) return 'Fermé'
+    return `${day.openTime} – ${day.closeTime}`
+  }
+
+  const phoneLink = settings.contact.phone.replace(/\s/g, '')
+
   return (
     <div className="flex flex-col gap-6">
       {/* Combined Info Card */}
@@ -16,9 +36,9 @@ export function StoreInfo() {
                 Adresse
               </h3>
               <p className="text-text-medium text-sm leading-relaxed">
-                Rue du Marché 12
+                {settings.location.address}
                 <br />
-                1000 Ville, Suisse
+                {settings.location.postalCode} {settings.location.city}, {settings.location.country}
               </p>
             </div>
           </div>
@@ -27,43 +47,47 @@ export function StoreInfo() {
           <div className="border-t border-[oklch(92%_0.01_72)]" />
 
           {/* Phone */}
-          <div className="flex items-start gap-4">
-            <div className="from-primeur-green flex size-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br to-[oklch(62%_0.08_152)] text-white shadow-sm">
-              <Phone className="size-5 stroke-[1.5]" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-text-dark mb-2 text-sm font-bold tracking-wide uppercase">
-                Téléphone
-              </h3>
-              <a
-                href="tel:+33468816411"
-                className="text-primeur-green after:bg-primeur-green relative inline-block text-sm font-semibold no-underline transition-all duration-200 after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-300 hover:after:w-full"
-              >
-                04 68 81 64 11
-              </a>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-[oklch(92%_0.01_72)]" />
+          {settings.contact.phone && (
+            <>
+              <div className="flex items-start gap-4">
+                <div className="from-primeur-green flex size-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br to-[oklch(62%_0.08_152)] text-white shadow-sm">
+                  <Phone className="size-5 stroke-[1.5]" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-text-dark mb-2 text-sm font-bold tracking-wide uppercase">
+                    Téléphone
+                  </h3>
+                  <a
+                    href={`tel:+${phoneLink}`}
+                    className="text-primeur-green after:bg-primeur-green relative inline-block text-sm font-semibold no-underline transition-all duration-200 after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-300 hover:after:w-full"
+                  >
+                    {settings.contact.phone}
+                  </a>
+                </div>
+              </div>
+              <div className="border-t border-[oklch(92%_0.01_72)]" />
+            </>
+          )}
 
           {/* Email */}
-          <div className="flex items-start gap-4">
-            <div className="from-primeur-green flex size-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br to-[oklch(62%_0.08_152)] text-white shadow-sm">
-              <Mail className="size-5 stroke-[1.5]" />
+          {settings.contact.email && (
+            <div className="flex items-start gap-4">
+              <div className="from-primeur-green flex size-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br to-[oklch(62%_0.08_152)] text-white shadow-sm">
+                <Mail className="size-5 stroke-[1.5]" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-text-dark mb-2 text-sm font-bold tracking-wide uppercase">
+                  Email
+                </h3>
+                <a
+                  href={`mailto:${settings.contact.email}`}
+                  className="text-primeur-green after:bg-primeur-green relative inline-block text-sm font-medium no-underline transition-all duration-200 after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  {settings.contact.email}
+                </a>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-text-dark mb-2 text-sm font-bold tracking-wide uppercase">
-                Email
-              </h3>
-              <a
-                href="mailto:maureenfruitsetlegumes@gmail.com"
-                className="text-primeur-green after:bg-primeur-green relative inline-block text-sm font-medium no-underline transition-all duration-200 after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-300 hover:after:w-full"
-              >
-                maureenfruitsetlegumes@gmail.com
-              </a>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -88,24 +112,56 @@ export function StoreInfo() {
               <span className="text-sm font-bold whitespace-nowrap text-white">
                 Lundi
               </span>
-              <span className="text-sm font-medium text-white italic opacity-70">
-                Fermé
+              <span className={`text-sm font-medium ${settings.hours.monday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.monday)}
               </span>
             </div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-2.5">
               <span className="text-sm font-bold whitespace-nowrap text-white">
-                Mardi – Samedi
+                Mardi
               </span>
-              <span className="text-sm font-bold text-white">
-                08:00 – 19:00
+              <span className={`text-sm font-medium ${settings.hours.tuesday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.tuesday)}
+              </span>
+            </div>
+            <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-2.5">
+              <span className="text-sm font-bold whitespace-nowrap text-white">
+                Mercredi
+              </span>
+              <span className={`text-sm font-medium ${settings.hours.wednesday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.wednesday)}
+              </span>
+            </div>
+            <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-2.5">
+              <span className="text-sm font-bold whitespace-nowrap text-white">
+                Jeudi
+              </span>
+              <span className={`text-sm font-medium ${settings.hours.thursday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.thursday)}
+              </span>
+            </div>
+            <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-2.5">
+              <span className="text-sm font-bold whitespace-nowrap text-white">
+                Vendredi
+              </span>
+              <span className={`text-sm font-medium ${settings.hours.friday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.friday)}
+              </span>
+            </div>
+            <div className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/15 py-2.5">
+              <span className="text-sm font-bold whitespace-nowrap text-white">
+                Samedi
+              </span>
+              <span className={`text-sm font-medium ${settings.hours.saturday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.saturday)}
               </span>
             </div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-4 py-2.5">
               <span className="text-sm font-bold whitespace-nowrap text-white">
                 Dimanche
               </span>
-              <span className="text-sm font-bold text-white">
-                08:00 – 12:00
+              <span className={`text-sm font-medium ${settings.hours.sunday.isClosed ? 'italic opacity-70' : 'font-bold'} text-white`}>
+                {formatHours(settings.hours.sunday)}
               </span>
             </div>
           </div>
