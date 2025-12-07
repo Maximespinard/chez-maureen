@@ -104,7 +104,9 @@ export function StoreInfo() {
               <span className="text-sm font-bold whitespace-nowrap text-white">
                 Dimanche
               </span>
-              <span className="text-sm font-bold text-white">08:00 – 12:00</span>
+              <span className="text-sm font-bold text-white">
+                08:00 – 12:00
+              </span>
             </div>
           </div>
         </div>

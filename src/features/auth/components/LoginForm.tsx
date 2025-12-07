@@ -118,7 +118,11 @@ export function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  aria-label={
+                    showPassword
+                      ? 'Masquer le mot de passe'
+                      : 'Afficher le mot de passe'
+                  }
                   className="text-text-light hover:text-text-body absolute top-1/2 right-3 -translate-y-1/2 transition-colors duration-200 focus:outline-none"
                 >
                   {showPassword ? (

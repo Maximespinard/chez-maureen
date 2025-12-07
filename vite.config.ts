@@ -11,7 +11,9 @@ const config = defineConfig(({ mode }) => ({
   plugins: [
     devtools(),
     // Plugin Cloudflare uniquement en production
-    ...(mode === 'production' ? [cloudflare({ viteEnvironment: { name: 'ssr' } })] : []),
+    ...(mode === 'production'
+      ? [cloudflare({ viteEnvironment: { name: 'ssr' } })]
+      : []),
     neon,
     // this is the plugin that enables path aliases
     viteTsConfigPaths({

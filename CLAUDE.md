@@ -188,19 +188,19 @@ Si vous devez vraiment utiliser une valeur arbitraire (cas rare), documenter pou
 
 **Exemples de conversions courantes** :
 
-| Arbitraire (avant) | Canonical (après) | Note |
-|--------------------|-------------------|------|
-| `z-[1]` | `z-1` | Z-index 1-50 disponibles |
-| `top-[-16px]` | `-top-4` | 4px = 1 unit |
-| `bottom-[-80px]` | `-bottom-20` | 80px = 20 units |
-| `h-[2px]` | `h-0.5` | 2px = 0.5 unit |
-| `h-[14px]` | `h-3.5` | 14px = 3.5 units |
-| `translate-y-[-12px]` | `-translate-y-3` | 12px = 3 units |
-| `hue-rotate-[10deg]` | `hue-rotate-10` | Rotation disponible |
-| `blur-[40px]` | `blur-2xl` | 40px = blur-2xl |
-| `blur-40px` | `blur-2xl` | Fixer syntaxe + utiliser canonical |
-| `duration-[400ms]` | `duration-400` | 400ms disponible |
-| `duration-400ms` | `duration-400` | Fixer syntaxe invalide |
+| Arbitraire (avant)    | Canonical (après) | Note                               |
+| --------------------- | ----------------- | ---------------------------------- |
+| `z-[1]`               | `z-1`             | Z-index 1-50 disponibles           |
+| `top-[-16px]`         | `-top-4`          | 4px = 1 unit                       |
+| `bottom-[-80px]`      | `-bottom-20`      | 80px = 20 units                    |
+| `h-[2px]`             | `h-0.5`           | 2px = 0.5 unit                     |
+| `h-[14px]`            | `h-3.5`           | 14px = 3.5 units                   |
+| `translate-y-[-12px]` | `-translate-y-3`  | 12px = 3 units                     |
+| `hue-rotate-[10deg]`  | `hue-rotate-10`   | Rotation disponible                |
+| `blur-[40px]`         | `blur-2xl`        | 40px = blur-2xl                    |
+| `blur-40px`           | `blur-2xl`        | Fixer syntaxe + utiliser canonical |
+| `duration-[400ms]`    | `duration-400`    | 400ms disponible                   |
+| `duration-400ms`      | `duration-400`    | Fixer syntaxe invalide             |
 
 **Avant chaque commit** :
 
@@ -226,7 +226,7 @@ npm run lint -- --fix  # Auto-fix l'ordre des classes + autres erreurs ESLint
 1. **Layout** (display, position, float, clear, isolation, object-fit, overflow, overscroll, z-index)
 2. **Flexbox & Grid** (flex, flex-direction, grid, gap, justify, align, place, order)
 3. **Spacing** (margin, padding)
-4. **Sizing** (width, height, min-*, max-*)
+4. **Sizing** (width, height, min-_, max-_)
 5. **Typography** (font-family, font-size, font-weight, line-height, letter-spacing, text-align, text-color, text-decoration, text-transform, whitespace, word-break)
 6. **Backgrounds** (background-color, background-image, background-size, background-position, background-repeat, background-attachment, background-clip)
 7. **Borders** (border-width, border-style, border-color, border-radius, border-collapse, border-spacing)
@@ -251,9 +251,184 @@ npm run lint -- --fix  # Auto-fix l'ordre des classes + autres erreurs ESLint
 ```
 
 **Si ESLint détecte des erreurs d'ordre :**
+
 - Ne PAS réordonner manuellement
 - Lancer `npm run lint -- --fix` qui le fait automatiquement
 - Vérifier que les changements sont corrects
 - Commit
 
 **Note :** L'ordre exact n'est pas à mémoriser, le plugin le gère. L'important est de toujours lancer `--fix` avant commit.
+
+---
+
+## Architecture TanStack Start - Séparation Client/Serveur
+
+### ❌ ANTI-PATTERN : Import direct des services côté client
+
+**NE JAMAIS faire ceci:**
+
+```typescript
+// ❌ MAUVAIS : Dans un hook React Query client-side
+import { categoryService } from '@/server/services/category.service'
+
+export function useCategories() {
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoryService.getAll(), // ❌ Service serveur appelé côté client
+  })
+}
+```
+
+**Problème:** Le service importe Prisma qui utilise `@neondatabase/serverless` Pool, impossible à initialiser dans le navigateur.
+
+**Erreur résultante:** `TypeError: Class extends value undefined is not a constructor or null`
+
+### ✅ PATTERN CORRECT : Server Functions
+
+**1. Créer une server function dans `src/server/functions/`:**
+
+```typescript
+// src/server/functions/categories.ts
+import { createServerFn } from '@tanstack/react-start'
+import { categoryService } from '@/server/services/category.service'
+import { CategoryCreateSchema } from '@/schemas/category.schema'
+
+// GET - Lecture
+export const getAllCategories = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    return await categoryService.getAll()
+  })
+
+// POST - Mutation avec validation
+export const createCategory = createServerFn({ method: 'POST' })
+  .inputValidator(CategoryCreateSchema)
+  .handler(async ({ data }) => {
+    return await categoryService.create(data)
+  })
+```
+
+**2. Utiliser la server function côté client:**
+
+```typescript
+// src/features/categories/hooks/useCategories.ts
+import { useQuery } from '@tanstack/react-query'
+import { useServerFn } from '@tanstack/react-start'
+import { getAllCategories } from '@/server/functions/categories'
+
+export function useCategories() {
+  const getAllCategoriesFn = useServerFn(getAllCategories)
+
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategoriesFn(), // ✅ Appel RPC vers le serveur
+  })
+}
+```
+
+### Règles de séparation
+
+**Code serveur uniquement (ne JAMAIS importer côté client):**
+- Services (`src/server/services/*.service.ts`)
+- Client Prisma (`src/db.ts`)
+- Variables d'environnement sensibles
+- Packages Node.js (`fs`, `path`, `crypto`, etc.)
+
+**Code client (peut utiliser les server functions):**
+- Hooks React Query (`src/features/*/hooks/*.ts`)
+- Composants React (`src/components/`, `src/features/*/components/`)
+- Stores Zustand (`src/stores/`)
+
+**Pont client/serveur:**
+- Server Functions (`src/server/functions/*.ts`) créées avec `createServerFn`
+- Utilisées côté client avec `useServerFn`
+
+### Pattern Server Functions complet
+
+```typescript
+// Server function avec validation, types, et gestion d'erreurs
+export const updateCategory = createServerFn({ method: 'POST' })
+  .inputValidator(CategoryUpdateSchema) // Validation Zod
+  .handler(async ({ data }) => {
+    try {
+      return await categoryService.update(data)
+    } catch (error) {
+      throw new Error(`Erreur lors de la mise à jour: ${error.message}`)
+    }
+  })
+
+// Utilisation dans un hook mutation
+export function useCategoryMutations() {
+  const queryClient = useQueryClient()
+  const updateCategoryFn = useServerFn(updateCategory)
+
+  const update = useMutation({
+    mutationFn: (data: CategoryUpdate) => updateCategoryFn(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: ['categories', variables.id] })
+    },
+  })
+
+  return { update }
+}
+```
+
+---
+
+## Icônes Lucide - Pattern d'Accès Runtime
+
+### ❌ ANTI-PATTERN : Bracket notation sur namespace
+
+**NE JAMAIS faire ceci:**
+
+```typescript
+// ❌ MAUVAIS
+import * as LucideIcons from 'lucide-react'
+
+const IconComponent = LucideIcons[iconName] // undefined au runtime
+```
+
+**Problème:** Les imports nommés ES modules ne sont pas accessibles via bracket notation au runtime.
+
+**Erreur résultante:** `Error: <path> attribute d: Expected moveto path command ('M' or 'm'), "undefined"`
+
+### ✅ PATTERN CORRECT : Map statique d'imports
+
+**1. Créer un utilitaire partagé:**
+
+```typescript
+// src/lib/icon-map.ts
+import {
+  Apple,
+  Banana,
+  Carrot,
+  // ... tous les icônes nécessaires
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import type { CategoryIcon } from '@/schemas/category.schema'
+
+export const ICON_MAP: Record<CategoryIcon, LucideIcon> = {
+  Apple,
+  Banana,
+  Carrot,
+  // ... mapping complet
+}
+```
+
+**2. Utiliser le map dans les composants:**
+
+```typescript
+// ✅ BON
+import { ICON_MAP } from '@/lib/icon-map'
+
+const IconComponent = category.icon ? ICON_MAP[category.icon as CategoryIcon] : null
+
+return IconComponent && <IconComponent className="size-5" />
+```
+
+### Avantages du pattern ICON_MAP
+
+- ✅ Type-safe (TypeScript valide les clés)
+- ✅ Tree-shaking (seuls les icônes utilisés sont bundlés)
+- ✅ Centralisé (un seul endroit pour gérer les icônes)
+- ✅ Runtime-safe (pas d'accès dynamique dangereux)

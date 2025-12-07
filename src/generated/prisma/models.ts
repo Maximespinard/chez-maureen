@@ -10,6 +10,7 @@
  */
 export type * from './models/Category.ts'
 export type * from './models/Product.ts'
+export type * from './models/ProductCategory.ts'
 export type * from './models/Badge.ts'
 export type * from './models/ProductBadge.ts'
 export type * from './models/StoreSettings.ts'

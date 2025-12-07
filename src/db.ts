@@ -35,7 +35,6 @@ export async function getClient() {
     // Get a client from the pool
     const client = await pool.connect()
     return client
-
   } catch (error) {
     console.error('Failed to get database client:', error)
     return undefined

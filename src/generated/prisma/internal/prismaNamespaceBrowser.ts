@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Category: 'Category',
   Product: 'Product',
+  ProductCategory: 'ProductCategory',
   Badge: 'Badge',
   ProductBadge: 'ProductBadge',
   StoreSettings: 'StoreSettings',
@@ -101,7 +102,6 @@ export const ProductScalarFieldEnum = {
   unit: 'unit',
   origin: 'origin',
   image: 'image',
-  categoryId: 'categoryId',
   isActive: 'isActive',
   isFeatured: 'isFeatured',
   createdAt: 'createdAt',
@@ -109,6 +109,14 @@ export const ProductScalarFieldEnum = {
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const ProductCategoryScalarFieldEnum = {
+  productId: 'productId',
+  categoryId: 'categoryId'
+} as const
+
+export type ProductCategoryScalarFieldEnum = (typeof ProductCategoryScalarFieldEnum)[keyof typeof ProductCategoryScalarFieldEnum]
 
 
 export const BadgeScalarFieldEnum = {

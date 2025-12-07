@@ -28,7 +28,11 @@ export function Navbar() {
         <Link
           to="/"
           className={`flex items-center gap-3 transition-colors duration-500 ${
-            scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
+            scrolled
+              ? 'text-primeur-green'
+              : isHomePage
+                ? 'text-white'
+                : 'text-primeur-green'
           }`}
         >
           <img
@@ -54,7 +58,11 @@ export function Navbar() {
               }`}
               activeProps={{
                 className: `after:absolute after:bottom-[-6px] after:left-0 after:right-0 after:h-[2px] after:bg-current after:rounded-full ${
-                  scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
+                  scrolled
+                    ? 'text-primeur-green'
+                    : isHomePage
+                      ? 'text-white'
+                      : 'text-primeur-green'
                 }`,
               }}
             >
@@ -73,7 +81,11 @@ export function Navbar() {
               }`}
               activeProps={{
                 className: `after:absolute after:bottom-[-6px] after:left-0 after:right-0 after:h-[2px] after:bg-current after:rounded-full ${
-                  scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
+                  scrolled
+                    ? 'text-primeur-green'
+                    : isHomePage
+                      ? 'text-white'
+                      : 'text-primeur-green'
                 }`,
               }}
             >
@@ -92,7 +104,11 @@ export function Navbar() {
               }`}
               activeProps={{
                 className: `after:absolute after:bottom-[-6px] after:left-0 after:right-0 after:h-[2px] after:bg-current after:rounded-full ${
-                  scrolled ? 'text-primeur-green' : isHomePage ? 'text-white' : 'text-primeur-green'
+                  scrolled
+                    ? 'text-primeur-green'
+                    : isHomePage
+                      ? 'text-white'
+                      : 'text-primeur-green'
                 }`,
               }}
             >
