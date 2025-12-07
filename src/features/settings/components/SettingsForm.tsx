@@ -7,7 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoadingButton } from '@/components/ui/loading-button'
 import { Textarea } from '@/components/ui/textarea'
-import { useSettings, useSettingsMutation } from '@/features/settings/hooks/useSettings'
+import {
+  useSettings,
+  useSettingsMutation,
+} from '@/features/settings/hooks/useSettings'
 import { formatZodError } from '@/lib/errors'
 import { DAYS } from '@/lib/hours'
 import {
@@ -29,7 +32,13 @@ export function SettingsForm() {
     defaultValues: settings || {
       business: { storeName: '', tagline: '', description: '' },
       contact: { phone: '', email: '', whatsapp: '' },
-      location: { address: '', city: '', postalCode: '', country: 'Suisse', mapsEmbedUrl: '' },
+      location: {
+        address: '',
+        city: '',
+        postalCode: '',
+        country: 'Suisse',
+        mapsEmbedUrl: '',
+      },
       hours: {
         monday: { isClosed: true },
         tuesday: { isClosed: false, openTime: '08:00', closeTime: '19:00' },
@@ -89,7 +98,9 @@ export function SettingsForm() {
 
       {/* Section: Business Info */}
       <div className="border-border-subtle rounded-lg border bg-white p-6 shadow-sm">
-        <h2 className="text-text-dark mb-6 text-lg font-semibold">Informations du commerce</h2>
+        <h2 className="text-text-dark mb-6 text-lg font-semibold">
+          Informations du commerce
+        </h2>
         <div className="space-y-4">
           <form.Field
             name="business.storeName"
@@ -158,7 +169,10 @@ export function SettingsForm() {
       <div className="border-border-subtle rounded-lg border bg-white p-6 shadow-sm">
         <h2 className="text-text-dark mb-6 text-lg font-semibold">Contact</h2>
         <div className="space-y-4">
-          <form.Field name="contact.phone" validators={{ onChange: ContactInfoSchema.shape.phone }}>
+          <form.Field
+            name="contact.phone"
+            validators={{ onChange: ContactInfoSchema.shape.phone }}
+          >
             {(field) => (
               <div>
                 <Label htmlFor={field.name}>Téléphone</Label>
@@ -176,7 +190,10 @@ export function SettingsForm() {
             )}
           </form.Field>
 
-          <form.Field name="contact.email" validators={{ onChange: ContactInfoSchema.shape.email }}>
+          <form.Field
+            name="contact.email"
+            validators={{ onChange: ContactInfoSchema.shape.email }}
+          >
             {(field) => (
               <div>
                 <Label htmlFor={field.name}>Email</Label>
@@ -264,7 +281,10 @@ export function SettingsForm() {
               )}
             </form.Field>
 
-            <form.Field name="location.city" validators={{ onChange: LocationSchema.shape.city }}>
+            <form.Field
+              name="location.city"
+              validators={{ onChange: LocationSchema.shape.city }}
+            >
               {(field) => (
                 <div>
                   <Label htmlFor={field.name}>Ville</Label>
@@ -308,7 +328,9 @@ export function SettingsForm() {
           >
             {(field) => (
               <div>
-                <Label htmlFor={field.name}>URL d'intégration Google Maps</Label>
+                <Label htmlFor={field.name}>
+                  URL d'intégration Google Maps
+                </Label>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -329,11 +351,18 @@ export function SettingsForm() {
 
       {/* Section: Hours */}
       <div className="border-border-subtle rounded-lg border bg-white p-6 shadow-sm">
-        <h2 className="text-text-dark mb-6 text-lg font-semibold">Horaires d'ouverture</h2>
+        <h2 className="text-text-dark mb-6 text-lg font-semibold">
+          Horaires d'ouverture
+        </h2>
         <div className="space-y-3">
           {DAYS.map(({ key, label }) => (
-            <div key={key} className="grid grid-cols-[120px_100px_1fr_1fr] items-center gap-4">
-              <span className="text-text-dark text-sm font-medium">{label}</span>
+            <div
+              key={key}
+              className="grid grid-cols-[120px_100px_1fr_1fr] items-center gap-4"
+            >
+              <span className="text-text-dark text-sm font-medium">
+                {label}
+              </span>
 
               <form.Field
                 name={`hours.${key}.isClosed` as const}
@@ -362,7 +391,9 @@ export function SettingsForm() {
                       type="time"
                       value={field.state.value || ''}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      disabled={form.getFieldValue(`hours.${key}.isClosed` as const)}
+                      disabled={form.getFieldValue(
+                        `hours.${key}.isClosed` as const,
+                      )}
                       placeholder="08:00"
                     />
                     <FieldErrors errors={field.state.meta.errors} />
@@ -380,7 +411,9 @@ export function SettingsForm() {
                       type="time"
                       value={field.state.value || ''}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      disabled={form.getFieldValue(`hours.${key}.isClosed` as const)}
+                      disabled={form.getFieldValue(
+                        `hours.${key}.isClosed` as const,
+                      )}
                       placeholder="19:00"
                     />
                     <FieldErrors errors={field.state.meta.errors} />
@@ -394,7 +427,9 @@ export function SettingsForm() {
 
       {/* Section: Social Links */}
       <div className="border-border-subtle rounded-lg border bg-white p-6 shadow-sm">
-        <h2 className="text-text-dark mb-6 text-lg font-semibold">Réseaux sociaux</h2>
+        <h2 className="text-text-dark mb-6 text-lg font-semibold">
+          Réseaux sociaux
+        </h2>
         <div className="space-y-4">
           <form.Field
             name="social.facebook"
@@ -442,7 +477,11 @@ export function SettingsForm() {
 
       {/* Submit Button */}
       <div className="flex justify-end">
-        <LoadingButton type="submit" loading={update.isPending} className="min-w-[200px]">
+        <LoadingButton
+          type="submit"
+          loading={update.isPending}
+          className="min-w-[200px]"
+        >
           Enregistrer les modifications
         </LoadingButton>
       </div>

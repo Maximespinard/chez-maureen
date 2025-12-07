@@ -1,10 +1,9 @@
-import type {StoreSettingsUpdate, StoreSettingsValue} from '@/schemas/settings.schema';
-import { prisma } from '@/db'
-import {
-  DEFAULT_STORE_SETTINGS
-  
-  
+import type {
+  StoreSettingsUpdate,
+  StoreSettingsValue,
 } from '@/schemas/settings.schema'
+import { prisma } from '@/db'
+import { DEFAULT_STORE_SETTINGS } from '@/schemas/settings.schema'
 
 const SETTINGS_KEY = 'store'
 

@@ -36,7 +36,9 @@ function EditBadgePage() {
         <h1 className="text-text-dark font-[Crimson_Pro,Georgia,serif] text-2xl font-bold">
           Modifier {badge.name}
         </h1>
-        <p className="text-text-body text-sm">Modifiez les informations du badge</p>
+        <p className="text-text-body text-sm">
+          Modifiez les informations du badge
+        </p>
       </div>
 
       <div className="border-border-subtle rounded-2xl border bg-white p-6">

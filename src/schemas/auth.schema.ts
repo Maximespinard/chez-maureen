@@ -7,9 +7,7 @@ export const LoginSchema = z.object({
   username: z
     .string()
     .min(3, VALIDATION.string.minLength("nom d'utilisateur", 3)),
-  password: z
-    .string()
-    .min(8, VALIDATION.string.minLength('mot de passe', 8)),
+  password: z.string().min(8, VALIDATION.string.minLength('mot de passe', 8)),
 })
 
 // Schéma pour login avec email (optionnel, pour futur usage)

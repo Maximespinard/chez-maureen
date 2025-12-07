@@ -13,7 +13,14 @@ interface SortableRowProps {
 }
 
 export function SortableRow({ category, onDelete, onEdit }: SortableRowProps) {
-  const { attributes, isDragging, listeners, setNodeRef, transform, transition } = useSortable({
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({
     id: category.id,
   })
 

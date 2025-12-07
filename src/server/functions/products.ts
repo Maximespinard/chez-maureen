@@ -8,9 +8,11 @@ import {
 import { productService } from '@/server/services/product.service'
 
 // GET all products
-export const getAllProducts = createServerFn({ method: 'GET' }).handler(async () => {
-  return await productService.getAll()
-})
+export const getAllProducts = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await productService.getAll()
+  },
+)
 
 // GET single product by ID
 export const getProductById = createServerFn({ method: 'GET' })
@@ -49,5 +51,34 @@ export const updateProductCategories = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    return await productService.updateCategories(data.productId, data.categoryIds)
+    return await productService.updateCategories(
+      data.productId,
+      data.categoryIds,
+    )
+  })
+
+// GET featured products
+export const getFeaturedProducts = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await productService.getFeatured()
+  },
+)
+
+// POST toggle product active status
+export const toggleProductActive = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ id: z.string().cuid() }))
+  .handler(async ({ data }) => {
+    return await productService.toggleActive(data.id)
+  })
+
+// POST update product badges
+export const updateProductBadges = createServerFn({ method: 'POST' })
+  .inputValidator(
+    z.object({
+      badgeIds: z.array(z.string().cuid()),
+      productId: z.string().cuid(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    return await productService.updateBadges(data.productId, data.badgeIds)
   })

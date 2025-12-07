@@ -10,9 +10,11 @@ import {
 import { categoryService } from '@/server/services/category.service'
 
 // GET all categories
-export const getAllCategories = createServerFn({ method: 'GET' }).handler(async () => {
-  return await categoryService.getAll()
-})
+export const getAllCategories = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await categoryService.getAll()
+  },
+)
 
 // GET single category by ID
 export const getCategoryById = createServerFn({ method: 'GET' })
@@ -77,5 +79,8 @@ export const removeProductsFromCategory = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    return await categoryService.removeProducts(data.categoryId, data.productIds)
+    return await categoryService.removeProducts(
+      data.categoryId,
+      data.productIds,
+    )
   })

@@ -13,10 +13,16 @@ interface SortableRowProps {
 }
 
 export function SortableRow({ badge, onDelete, onEdit }: SortableRowProps) {
-  const { attributes, isDragging, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: badge.id,
-    })
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({
+    id: badge.id,
+  })
 
   const style = {
     opacity: isDragging ? 0.5 : 1,

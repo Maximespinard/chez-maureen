@@ -294,10 +294,11 @@ import { categoryService } from '@/server/services/category.service'
 import { CategoryCreateSchema } from '@/schemas/category.schema'
 
 // GET - Lecture
-export const getAllCategories = createServerFn({ method: 'GET' })
-  .handler(async () => {
+export const getAllCategories = createServerFn({ method: 'GET' }).handler(
+  async () => {
     return await categoryService.getAll()
-  })
+  },
+)
 
 // POST - Mutation avec validation
 export const createCategory = createServerFn({ method: 'POST' })
@@ -328,17 +329,20 @@ export function useCategories() {
 ### Règles de séparation
 
 **Code serveur uniquement (ne JAMAIS importer côté client):**
+
 - Services (`src/server/services/*.service.ts`)
 - Client Prisma (`src/db.ts`)
 - Variables d'environnement sensibles
 - Packages Node.js (`fs`, `path`, `crypto`, etc.)
 
 **Code client (peut utiliser les server functions):**
+
 - Hooks React Query (`src/features/*/hooks/*.ts`)
 - Composants React (`src/components/`, `src/features/*/components/`)
 - Stores Zustand (`src/stores/`)
 
 **Pont client/serveur:**
+
 - Server Functions (`src/server/functions/*.ts`) créées avec `createServerFn`
 - Utilisées côté client avec `useServerFn`
 
@@ -385,11 +389,10 @@ export function useCategoryMutations() {
 
 ```tsx
 import { FieldErrors } from '@/components/ui/field-errors'
-
-<form.Field
+;<form.Field
   name="fieldName"
   validators={{
-    onChange: SomeSchema.shape.fieldName,  // ⚠️ onChange uniquement (pas onBlur)
+    onChange: SomeSchema.shape.fieldName, // ⚠️ onChange uniquement (pas onBlur)
   }}
 >
   {(field) => (
@@ -424,6 +427,7 @@ const [error, setError] = useState<string | null>(null)
 ### Règles de validation
 
 1. **Validators** : Utiliser `onChange` uniquement (PAS `onBlur`) pour éviter les doublons
+
    ```tsx
    validators={{
      onChange: CategoryCreateSchema.shape.name,  // ✅
@@ -470,13 +474,15 @@ export function MyForm() {
   })
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <FormError message={error} />
 
-      <form.Field
-        name="name"
-        validators={{ onChange: MySchema.shape.name }}
-      >
+      <form.Field name="name" validators={{ onChange: MySchema.shape.name }}>
         {(field) => (
           <div>
             <Label htmlFor={field.name}>Nom</Label>

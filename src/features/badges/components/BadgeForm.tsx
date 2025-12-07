@@ -122,7 +122,8 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
               onChange={(e) => field.handleChange(e.target.value)}
             />
             <p className="text-text-body mt-1 text-xs">
-              Identifiant unique. Lettres minuscules, chiffres et tirets uniquement.
+              Identifiant unique. Lettres minuscules, chiffres et tirets
+              uniquement.
             </p>
             <FieldErrors errors={field.state.meta.errors} />
           </div>
@@ -153,7 +154,9 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
         )}
       </form.Field>
 
-      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
+      >
         {([canSubmit, isSubmitting]) => (
           <div className="flex gap-3">
             <Button
@@ -164,7 +167,12 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
             >
               Annuler
             </Button>
-            <LoadingButton className="flex-1" disabled={!canSubmit} loading={isSubmitting} type="submit">
+            <LoadingButton
+              className="flex-1"
+              disabled={!canSubmit}
+              loading={isSubmitting}
+              type="submit"
+            >
               {isEditMode ? 'Mettre à jour' : 'Créer'}
             </LoadingButton>
           </div>

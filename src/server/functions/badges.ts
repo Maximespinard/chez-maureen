@@ -10,9 +10,11 @@ import {
 import { badgeService } from '@/server/services/badge.service'
 
 // GET all badges
-export const getAllBadges = createServerFn({ method: 'GET' }).handler(async () => {
-  return await badgeService.getAll()
-})
+export const getAllBadges = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await badgeService.getAll()
+  },
+)
 
 // GET single badge by ID
 export const getBadgeById = createServerFn({ method: 'GET' })

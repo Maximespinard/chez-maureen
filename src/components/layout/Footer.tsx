@@ -8,7 +8,8 @@ export function Footer() {
 
   // Use default values if settings not loaded yet
   const storeName = settings?.business.storeName || 'Chez Maureen'
-  const tagline = settings?.business.tagline || 'Fruits & légumes frais du marché'
+  const tagline =
+    settings?.business.tagline || 'Fruits & légumes frais du marché'
   const description =
     settings?.business.description ||
     'Du champ à vos paniers. Nous privilégions les producteurs locaux pour vous garantir des fruits et légumes frais, savoureux et authentiques.'
@@ -26,18 +27,20 @@ export function Footer() {
 
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         {/* Grid */}
-        <div className="relative z-[1] mb-12 grid grid-cols-1 gap-12 md:mb-10 md:grid-cols-[2fr_1fr_1fr] md:gap-10">
+        <div className="relative z-1 mb-12 grid grid-cols-1 gap-12 md:mb-10 md:grid-cols-[2fr_1fr_1fr] md:gap-10">
           {/* Brand Section */}
           <div className="flex flex-col gap-4">
             <div className="mb-3 flex items-start gap-3">
-              <div className="from-primeur-green flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-linear-to-br to-[oklch(60%_0.09_152)] text-white">
+              <div className="from-primeur-green flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br to-[oklch(60%_0.09_152)] text-white">
                 <Sprout className="h-6 w-6" />
               </div>
               <div className="flex flex-col gap-1">
                 <h3 className="text-primeur-green-light m-0 font-[Crimson_Pro,Georgia,serif] text-lg font-bold tracking-[-0.5px]">
                   {storeName}
                 </h3>
-                <p className="m-0 text-xs text-[oklch(75%_0.02_42)]">{tagline}</p>
+                <p className="m-0 text-xs text-[oklch(75%_0.02_42)]">
+                  {tagline}
+                </p>
               </div>
             </div>
             <p className="text-sm leading-[1.6] text-[oklch(78%_0.015_72)] opacity-90">
@@ -125,7 +128,7 @@ export function Footer() {
         <div className="mb-8 h-px bg-linear-to-r from-transparent via-[oklch(50%_0.03_152/0.3)] to-transparent" />
 
         {/* Footer Bottom */}
-        <div className="relative z-[1] flex flex-col flex-wrap items-center justify-between gap-6 sm:flex-row">
+        <div className="relative z-1 flex flex-col flex-wrap items-center justify-between gap-6 sm:flex-row">
           <p className="m-0 text-xs text-[oklch(65%_0.02_72)]">
             © {new Date().getFullYear()} {storeName}. Tous droits réservés.
           </p>

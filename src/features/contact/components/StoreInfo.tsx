@@ -35,7 +35,8 @@ export function StoreInfo() {
               <p className="text-text-medium text-sm leading-relaxed">
                 {settings.location.address}
                 <br />
-                {settings.location.postalCode} {settings.location.city}, {settings.location.country}
+                {settings.location.postalCode} {settings.location.city},{' '}
+                {settings.location.country}
               </p>
             </div>
           </div>
@@ -116,8 +117,15 @@ export function StoreInfo() {
                     !isLast && 'border-b border-white/15',
                   )}
                 >
-                  <span className="text-sm font-bold whitespace-nowrap text-white">{label}</span>
-                  <span className={cn('text-sm font-medium text-white', isClosed ? 'italic opacity-70' : 'font-bold')}>
+                  <span className="text-sm font-bold whitespace-nowrap text-white">
+                    {label}
+                  </span>
+                  <span
+                    className={cn(
+                      'text-sm font-medium text-white',
+                      isClosed ? 'italic opacity-70' : 'font-bold',
+                    )}
+                  >
                     {hours}
                   </span>
                 </div>

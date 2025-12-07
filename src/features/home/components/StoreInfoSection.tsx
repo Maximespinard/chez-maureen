@@ -64,7 +64,8 @@ export function StoreInfoSection() {
                   <p className="text-text-medium m-0 text-sm leading-[1.6]">
                     {settings.location.address}
                     <br />
-                    {settings.location.postalCode} {settings.location.city}, {settings.location.country}
+                    {settings.location.postalCode} {settings.location.city},{' '}
+                    {settings.location.country}
                   </p>
                 </div>
               </div>
@@ -141,11 +142,15 @@ export function StoreInfoSection() {
                         isLast && 'pb-0',
                       )}
                     >
-                      <span className="text-sm font-bold whitespace-nowrap text-white">{label}</span>
+                      <span className="text-sm font-bold whitespace-nowrap text-white">
+                        {label}
+                      </span>
                       <span
                         className={cn(
                           'text-sm font-medium text-white',
-                          isClosed ? 'italic opacity-70' : 'text-text-hours font-bold',
+                          isClosed
+                            ? 'italic opacity-70'
+                            : 'text-text-hours font-bold',
                         )}
                       >
                         {hours}

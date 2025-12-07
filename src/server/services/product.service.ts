@@ -55,10 +55,10 @@ export class ProductService {
   }
 
   /**
-   * Create product with categories
+   * Create product with categories and badges
    */
   async create(data: ProductCreate) {
-    const { categoryIds, ...productData } = data
+    const { categoryIds, badgeIds = [], ...productData } = data
 
     const product = await prisma.product.create({
       data: {
@@ -68,11 +68,21 @@ export class ProductService {
             categoryId,
           })),
         },
+        badges: {
+          create: badgeIds.map((badgeId) => ({
+            badgeId,
+          })),
+        },
       },
       include: {
         categories: {
           include: {
             category: true,
+          },
+        },
+        badges: {
+          include: {
+            badge: true,
           },
         },
       },
@@ -82,26 +92,41 @@ export class ProductService {
   }
 
   /**
-   * Update product and categories
+   * Update product, categories, and badges
    */
   async update(data: ProductUpdate) {
-    const { id, categoryIds, ...productData } = data
+    const { id, categoryIds, badgeIds, ...productData } = data
 
-    // If categoryIds provided, update associations
-    if (categoryIds) {
+    // If categoryIds or badgeIds provided, update associations
+    if (categoryIds !== undefined || badgeIds !== undefined) {
       const product = await prisma.$transaction(async (tx) => {
-        // Delete existing associations
-        await tx.productCategory.deleteMany({
-          where: { productId: id },
-        })
+        // Update categories if provided
+        if (categoryIds !== undefined) {
+          await tx.productCategory.deleteMany({
+            where: { productId: id },
+          })
 
-        // Create new associations
-        await tx.productCategory.createMany({
-          data: categoryIds.map((categoryId) => ({
-            productId: id,
-            categoryId,
-          })),
-        })
+          await tx.productCategory.createMany({
+            data: categoryIds.map((categoryId) => ({
+              productId: id,
+              categoryId,
+            })),
+          })
+        }
+
+        // Update badges if provided
+        if (badgeIds !== undefined) {
+          await tx.productBadge.deleteMany({
+            where: { productId: id },
+          })
+
+          await tx.productBadge.createMany({
+            data: badgeIds.map((badgeId) => ({
+              productId: id,
+              badgeId,
+            })),
+          })
+        }
 
         // Update product
         return tx.product.update({
@@ -113,6 +138,11 @@ export class ProductService {
                 category: true,
               },
             },
+            badges: {
+              include: {
+                badge: true,
+              },
+            },
           },
         })
       })
@@ -120,10 +150,17 @@ export class ProductService {
       return { ...product, price: product.price.toNumber() }
     }
 
-    // No category update, just product fields
+    // No associations update, just product fields
     const product = await prisma.product.update({
       where: { id },
       data: productData,
+      include: {
+        badges: {
+          include: {
+            badge: true,
+          },
+        },
+      },
     })
 
     return { ...product, price: product.price.toNumber() }
@@ -164,6 +201,75 @@ export class ProductService {
               category: true,
             },
           },
+        },
+      })
+    })
+
+    return product ? { ...product, price: product.price.toNumber() } : null
+  }
+
+  /**
+   * Get featured products ordered by featuredOrder
+   */
+  async getFeatured() {
+    const products = await prisma.product.findMany({
+      where: { isFeatured: true, isActive: true },
+      include: {
+        categories: {
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
+        badges: {
+          include: {
+            badge: true,
+          },
+        },
+      },
+      orderBy: [{ featuredOrder: 'asc' }, { name: 'asc' }],
+    })
+
+    return products.map((p) => ({ ...p, price: p.price.toNumber() }))
+  }
+
+  /**
+   * Toggle isActive status
+   */
+  async toggleActive(id: string) {
+    const product = await prisma.product.findUnique({ where: { id } })
+    if (!product) {
+      throw new Error('Produit introuvable')
+    }
+
+    const updated = await prisma.product.update({
+      where: { id },
+      data: { isActive: !product.isActive },
+    })
+
+    return { ...updated, price: updated.price.toNumber() }
+  }
+
+  /**
+   * Update badges for a product
+   */
+  async updateBadges(productId: string, badgeIds: Array<string>) {
+    const product = await prisma.$transaction(async (tx) => {
+      await tx.productBadge.deleteMany({ where: { productId } })
+
+      await tx.productBadge.createMany({
+        data: badgeIds.map((badgeId) => ({ productId, badgeId })),
+      })
+
+      return tx.product.findUnique({
+        where: { id: productId },
+        include: {
+          badges: { include: { badge: true } },
         },
       })
     })

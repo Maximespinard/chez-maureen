@@ -22,22 +22,24 @@ model Category {
 }
 
 model Product {
-  id          String            @id @default(cuid())
-  name        String
-  slug        String            @unique
-  description String?
-  price       Decimal           @db.Decimal(10, 2)
-  unit        String            @default("kg")
-  origin      String?
-  image       String?
-  categories  ProductCategory[]
-  badges      ProductBadge[]
-  isActive    Boolean           @default(true)
-  isFeatured  Boolean           @default(false)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id            String            @id @default(cuid())
+  name          String
+  slug          String            @unique
+  description   String?
+  price         Decimal           @db.Decimal(10, 2)
+  unit          String            @default("kg")
+  origin        String?
+  image         String?
+  categories    ProductCategory[]
+  badges        ProductBadge[]
+  isActive      Boolean           @default(true)
+  isFeatured    Boolean           @default(false)
+  featuredOrder Int?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@index([isActive])
+  @@index([isFeatured, featuredOrder])
 }
 
 model ProductCategory {

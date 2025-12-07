@@ -78,8 +78,9 @@ export function useBadgeMutations() {
       await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
 
       // Snapshot previous state for rollback
-      const previousBadges =
-        queryClient.getQueryData<Array<BadgeWithCount>>([QUERY_KEY])
+      const previousBadges = queryClient.getQueryData<Array<BadgeWithCount>>([
+        QUERY_KEY,
+      ])
 
       // Optimistically update cache with new order
       queryClient.setQueryData(
@@ -88,9 +89,11 @@ export function useBadgeMutations() {
           if (!old) return old
           return [...old].sort((a, b) => {
             const orderA =
-              newData.badges.find((badge) => badge.id === a.id)?.order ?? a.order
+              newData.badges.find((badge) => badge.id === a.id)?.order ??
+              a.order
             const orderB =
-              newData.badges.find((badge) => badge.id === b.id)?.order ?? b.order
+              newData.badges.find((badge) => badge.id === b.id)?.order ??
+              b.order
             return orderA - orderB
           })
         },

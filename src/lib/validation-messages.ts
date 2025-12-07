@@ -11,8 +11,10 @@ export const COMMON_FIELDS = {
   },
   slug: {
     required: 'Le slug est requis',
-    maxLength: (max: number) => `Le slug ne peut pas dépasser ${max} caractères`,
-    invalid: 'Slug invalide (lettres minuscules, chiffres et tirets uniquement)',
+    maxLength: (max: number) =>
+      `Le slug ne peut pas dépasser ${max} caractères`,
+    invalid:
+      'Slug invalide (lettres minuscules, chiffres et tirets uniquement)',
   },
   description: {
     maxLength: (max: number) =>

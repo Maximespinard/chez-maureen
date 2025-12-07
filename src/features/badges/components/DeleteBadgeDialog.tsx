@@ -34,7 +34,8 @@ export function DeleteBadgeDialog({
         <DialogHeader>
           <DialogTitle>Supprimer le badge</DialogTitle>
           <DialogDescription>
-            Etes-vous sur de vouloir supprimer le badge &quot;{badge.name}&quot; ?
+            Etes-vous sur de vouloir supprimer le badge &quot;{badge.name}&quot;
+            ?
           </DialogDescription>
         </DialogHeader>
 
@@ -45,8 +46,8 @@ export function DeleteBadgeDialog({
               <p className="font-semibold">Attention</p>
               <p className="mt-1">
                 Ce badge est utilise par {productCount} produit
-                {productCount > 1 ? 's' : ''}. La suppression retirera le badge de tous
-                ces produits.
+                {productCount > 1 ? 's' : ''}. La suppression retirera le badge
+                de tous ces produits.
               </p>
             </div>
           </div>

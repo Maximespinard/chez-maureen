@@ -92,7 +92,12 @@ export function getCompactedHours(hours: Hours): Array<CompactedHoursGroup> {
     } else {
       // Close current group and start a new one
       groups.push(
-        createGroup(currentGroup.startIndex, currentGroup.endIndex, currentGroup.hours, currentGroup.isClosed),
+        createGroup(
+          currentGroup.startIndex,
+          currentGroup.endIndex,
+          currentGroup.hours,
+          currentGroup.isClosed,
+        ),
       )
       currentGroup = {
         startIndex: i,
@@ -106,7 +111,12 @@ export function getCompactedHours(hours: Hours): Array<CompactedHoursGroup> {
   // Close the last group
   if (currentGroup !== null) {
     groups.push(
-      createGroup(currentGroup.startIndex, currentGroup.endIndex, currentGroup.hours, currentGroup.isClosed),
+      createGroup(
+        currentGroup.startIndex,
+        currentGroup.endIndex,
+        currentGroup.hours,
+        currentGroup.isClosed,
+      ),
     )
   }
 
