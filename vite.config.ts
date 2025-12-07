@@ -7,10 +7,11 @@ import tailwindcss from '@tailwindcss/vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
 import neon from './neon-vite-plugin.ts'
 
-const config = defineConfig({
+const config = defineConfig(({ mode }) => ({
   plugins: [
     devtools(),
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    // Plugin Cloudflare uniquement en production
+    ...(mode === 'production' ? [cloudflare({ viteEnvironment: { name: 'ssr' } })] : []),
     neon,
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
@@ -20,6 +21,6 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
-})
+}))
 
 export default config
