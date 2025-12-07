@@ -9,7 +9,7 @@ export function useAuth() {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.navigate({ to: '/auth/connexion' })
+          router.navigate({ to: '/' })
         },
       },
     })

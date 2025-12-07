@@ -1,26 +1,26 @@
-import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
-import { getServerSession } from '@/lib/auth.server'
+import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { authMiddleware } from '@/lib/auth.middleware'
+import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/admin')({
-  beforeLoad: async () => {
-    const session = await getServerSession()
-
-    if (!session) {
-      throw redirect({ to: '/auth/connexion' })
-    }
-
-    return { session }
-  },
   component: AdminLayout,
+  server: {
+    middleware: [authMiddleware],
+  },
 })
 
 function AdminLayout() {
-  const { session } = Route.useRouteContext()
+  // Fetch session using authClient hook
+  const { data: session } = authClient.useSession()
 
   const handleLogout = async () => {
-    const { signOut } = await import('@/lib/auth-client')
-    await signOut()
-    window.location.href = '/auth/connexion'
+    await authClient.signOut()
+    window.location.href = '/connexion'
+  }
+
+  // Middleware ensures session exists, but add loading state for safety
+  if (!session) {
+    return <div>Loading...</div>
   }
 
   return (

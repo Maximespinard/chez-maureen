@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
+import { Route as ConnexionIndexRouteImport } from './routes/connexion/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
-import { Route as AuthConnexionRouteImport } from './routes/auth/connexion'
 import { Route as AdminParametresRouteImport } from './routes/admin/parametres'
 import { Route as PublicProduitsRouteImport } from './routes/_public/produits'
 import { Route as PublicContactRouteImport } from './routes/_public/contact'
@@ -37,6 +37,11 @@ const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConnexionIndexRoute = ConnexionIndexRouteImport.update({
+  id: '/connexion/',
+  path: '/connexion/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -46,11 +51,6 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
-} as any)
-const AuthConnexionRoute = AuthConnexionRouteImport.update({
-  id: '/auth/connexion',
-  path: '/auth/connexion',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminParametresRoute = AdminParametresRouteImport.update({
   id: '/parametres',
@@ -123,9 +123,9 @@ export interface FileRoutesByFullPath {
   '/contact': typeof PublicContactRoute
   '/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
-  '/auth/connexion': typeof AuthConnexionRoute
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/connexion': typeof ConnexionIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
   '/admin/promotions/new': typeof AdminPromotionsNewRoute
@@ -141,9 +141,9 @@ export interface FileRoutesByTo {
   '/contact': typeof PublicContactRoute
   '/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
-  '/auth/connexion': typeof AuthConnexionRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/connexion': typeof ConnexionIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
   '/admin/promotions/new': typeof AdminPromotionsNewRoute
@@ -162,9 +162,9 @@ export interface FileRoutesById {
   '/_public/contact': typeof PublicContactRoute
   '/_public/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
-  '/auth/connexion': typeof AuthConnexionRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/connexion/': typeof ConnexionIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
   '/admin/promotions/new': typeof AdminPromotionsNewRoute
@@ -183,9 +183,9 @@ export interface FileRouteTypes {
     | '/contact'
     | '/produits'
     | '/admin/parametres'
-    | '/auth/connexion'
     | '/'
     | '/admin/'
+    | '/connexion'
     | '/admin/categories/new'
     | '/admin/produits/new'
     | '/admin/promotions/new'
@@ -201,9 +201,9 @@ export interface FileRouteTypes {
     | '/contact'
     | '/produits'
     | '/admin/parametres'
-    | '/auth/connexion'
     | '/'
     | '/admin'
+    | '/connexion'
     | '/admin/categories/new'
     | '/admin/produits/new'
     | '/admin/promotions/new'
@@ -221,9 +221,9 @@ export interface FileRouteTypes {
     | '/_public/contact'
     | '/_public/produits'
     | '/admin/parametres'
-    | '/auth/connexion'
     | '/_public/'
     | '/admin/'
+    | '/connexion/'
     | '/admin/categories/new'
     | '/admin/produits/new'
     | '/admin/promotions/new'
@@ -239,7 +239,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
-  AuthConnexionRoute: typeof AuthConnexionRoute
+  ConnexionIndexRoute: typeof ConnexionIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -259,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/connexion/': {
+      id: '/connexion/'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -272,13 +279,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
-    }
-    '/auth/connexion': {
-      id: '/auth/connexion'
-      path: '/auth/connexion'
-      fullPath: '/auth/connexion'
-      preLoaderRoute: typeof AuthConnexionRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/admin/parametres': {
       id: '/admin/parametres'
@@ -422,7 +422,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
-  AuthConnexionRoute: AuthConnexionRoute,
+  ConnexionIndexRoute: ConnexionIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
