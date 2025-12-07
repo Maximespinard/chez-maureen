@@ -6,7 +6,7 @@ export class ProductService {
    * Get all products with categories
    */
   async getAll() {
-    return prisma.product.findMany({
+    const products = await prisma.product.findMany({
       include: {
         categories: {
           include: {
@@ -15,7 +15,6 @@ export class ProductService {
                 id: true,
                 name: true,
                 slug: true,
-                icon: true,
               },
             },
           },
@@ -28,13 +27,15 @@ export class ProductService {
       },
       orderBy: { createdAt: 'desc' },
     })
+
+    return products.map((p) => ({ ...p, price: p.price.toNumber() }))
   }
 
   /**
    * Get single product with full relations
    */
   async getById(id: string) {
-    return prisma.product.findUnique({
+    const product = await prisma.product.findUnique({
       where: { id },
       include: {
         categories: {
@@ -49,6 +50,8 @@ export class ProductService {
         },
       },
     })
+
+    return product ? { ...product, price: product.price.toNumber() } : null
   }
 
   /**
@@ -57,7 +60,7 @@ export class ProductService {
   async create(data: ProductCreate) {
     const { categoryIds, ...productData } = data
 
-    return prisma.product.create({
+    const product = await prisma.product.create({
       data: {
         ...productData,
         categories: {
@@ -74,6 +77,8 @@ export class ProductService {
         },
       },
     })
+
+    return { ...product, price: product.price.toNumber() }
   }
 
   /**
@@ -84,7 +89,7 @@ export class ProductService {
 
     // If categoryIds provided, update associations
     if (categoryIds) {
-      return prisma.$transaction(async (tx) => {
+      const product = await prisma.$transaction(async (tx) => {
         // Delete existing associations
         await tx.productCategory.deleteMany({
           where: { productId: id },
@@ -111,29 +116,35 @@ export class ProductService {
           },
         })
       })
+
+      return { ...product, price: product.price.toNumber() }
     }
 
     // No category update, just product fields
-    return prisma.product.update({
+    const product = await prisma.product.update({
       where: { id },
       data: productData,
     })
+
+    return { ...product, price: product.price.toNumber() }
   }
 
   /**
    * Delete product (cascade will remove ProductCategory)
    */
   async delete(id: string) {
-    return prisma.product.delete({
+    const product = await prisma.product.delete({
       where: { id },
     })
+
+    return { ...product, price: product.price.toNumber() }
   }
 
   /**
    * Update product categories only
    */
   async updateCategories(productId: string, categoryIds: Array<string>) {
-    return prisma.$transaction(async (tx) => {
+    const product = await prisma.$transaction(async (tx) => {
       await tx.productCategory.deleteMany({
         where: { productId },
       })
@@ -156,6 +167,8 @@ export class ProductService {
         },
       })
     })
+
+    return product ? { ...product, price: product.price.toNumber() } : null
   }
 }
 

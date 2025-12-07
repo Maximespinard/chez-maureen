@@ -1,6 +1,22 @@
 import { CheckCircle, Leaf, ShoppingBasket } from 'lucide-react'
 
+import { useSettings } from '@/features/settings/hooks/useSettings'
+
 export function AboutSection() {
+  const { data: settings, isLoading } = useSettings()
+
+  if (isLoading || !settings) {
+    return (
+      <section className="from-primeur-warm-white relative overflow-hidden bg-linear-to-b to-[oklch(99.5%_0.005_42)] py-24">
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-text-body">Chargement...</div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="from-primeur-warm-white relative overflow-hidden bg-linear-to-b to-[oklch(99.5%_0.005_42)] py-24">
       {/* Texture grain overlay */}
@@ -31,26 +47,14 @@ export function AboutSection() {
               Notre engagement
             </span>
             <h2 className="text-text-dark mb-4 font-[Crimson_Pro,Georgia,serif] text-4xl font-bold md:text-5xl">
-              Chez Maureen
+              {settings.business.storeName}
             </h2>
             <p className="text-text-subtle mb-6 text-lg font-normal tracking-[-0.01em] italic">
-              Des fruits et légumes authentiques et de saison
+              {settings.business.tagline}
             </p>
 
             <p className="text-text-body mb-4 text-base leading-[1.75] font-normal">
-              Chez Maureen, nous nous engageons à proposer des fruits et légumes
-              frais, savoureux et de saison, sélectionnés avec soin chaque jour.
-            </p>
-
-            <p className="text-text-body mb-4 text-base leading-[1.75] font-normal">
-              Nous privilégions les producteurs locaux dès que possible, afin de
-              soutenir l'agriculture de notre région et garantir une qualité
-              authentique.
-            </p>
-
-            <p className="text-text-body mb-4 text-base leading-[1.75] font-normal">
-              Parce que consommer local, c'est soutenir nos agriculteurs et
-              savourer des produits exceptionnels qui ont du goût.
+              {settings.business.description}
             </p>
 
             {/* Stats */}

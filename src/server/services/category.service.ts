@@ -20,7 +20,7 @@ export class CategoryService {
    * Get single category with products
    */
   async getById(id: string) {
-    return prisma.category.findUnique({
+    const category = await prisma.category.findUnique({
       where: { id },
       include: {
         products: {
@@ -42,6 +42,16 @@ export class CategoryService {
         },
       },
     })
+
+    if (!category) return null
+
+    return {
+      ...category,
+      products: category.products.map((pc) => ({
+        ...pc,
+        product: { ...pc.product, price: pc.product.price.toNumber() },
+      })),
+    }
   }
 
   /**
@@ -147,7 +157,7 @@ export class CategoryService {
    * Get available products NOT in this category
    */
   async getAvailableProducts(categoryId: string) {
-    return prisma.product.findMany({
+    const products = await prisma.product.findMany({
       where: {
         categories: {
           none: { categoryId },
@@ -163,6 +173,8 @@ export class CategoryService {
       },
       orderBy: { name: 'asc' },
     })
+
+    return products.map((p) => ({ ...p, price: p.price.toNumber() }))
   }
 }
 

@@ -1,17 +1,23 @@
 import { z } from 'zod'
 
+import { COMMON_FIELDS } from '@/lib/validation-messages'
+
 export const CategorySchema = z.object({
   id: z.string().cuid().optional(),
   name: z
     .string()
-    .min(1, 'Le nom est requis')
-    .max(100, 'Le nom ne peut pas dépasser 100 caractères'),
+    .min(1, COMMON_FIELDS.name.required)
+    .max(100, COMMON_FIELDS.name.maxLength(100)),
   slug: z
     .string()
-    .min(1, 'Le slug est requis')
-    .max(100, 'Le slug ne peut pas dépasser 100 caractères')
-    .regex(/^[a-z0-9-]+$/, 'Slug invalide'),
-  order: z.number().int().min(0).default(0),
+    .min(1, COMMON_FIELDS.slug.required)
+    .max(100, COMMON_FIELDS.slug.maxLength(100))
+    .regex(/^[a-z0-9-]+$/, COMMON_FIELDS.slug.invalid),
+  order: z
+    .number()
+    .int(COMMON_FIELDS.order.mustBeInteger)
+    .min(0, COMMON_FIELDS.order.mustBePositive)
+    .default(0),
 })
 
 export const CategoryCreateSchema = CategorySchema.omit({ id: true })
@@ -25,7 +31,10 @@ export const CategoryReorderSchema = z.object({
   categories: z.array(
     z.object({
       id: z.string().cuid(),
-      order: z.number().int().min(0),
+      order: z
+        .number()
+        .int(COMMON_FIELDS.order.mustBeInteger)
+        .min(0, COMMON_FIELDS.order.mustBePositive),
     }),
   ),
 })

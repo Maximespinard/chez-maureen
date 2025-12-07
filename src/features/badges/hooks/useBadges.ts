@@ -64,7 +64,11 @@ export function useBadgeMutations() {
 
   const reorder = useMutation({
     mutationFn: (data: BadgeReorder) => reorderBadgesFn({ data }),
-    onError: (_err, _newData, context) => {
+    onError: (
+      _err,
+      _newData,
+      context: { previousBadges?: Array<BadgeWithCount> } | undefined,
+    ) => {
       if (context?.previousBadges) {
         queryClient.setQueryData([QUERY_KEY], context.previousBadges)
       }
@@ -74,7 +78,8 @@ export function useBadgeMutations() {
       await queryClient.cancelQueries({ queryKey: [QUERY_KEY] })
 
       // Snapshot previous state for rollback
-      const previousBadges = queryClient.getQueryData([QUERY_KEY])
+      const previousBadges =
+        queryClient.getQueryData<Array<BadgeWithCount>>([QUERY_KEY])
 
       // Optimistically update cache with new order
       queryClient.setQueryData(

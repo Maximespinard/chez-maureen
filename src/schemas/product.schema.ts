@@ -1,21 +1,31 @@
 import { z } from 'zod'
 
+import {
+  BUSINESS_FIELDS,
+  COMMON_FIELDS,
+  VALIDATION,
+} from '@/lib/validation-messages'
+
 export const ProductSchema = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().min(1, 'Le nom est requis').max(200),
+  name: z
+    .string()
+    .min(1, COMMON_FIELDS.name.required)
+    .max(200, COMMON_FIELDS.name.maxLength(200)),
   slug: z
     .string()
-    .min(1)
-    .max(200)
-    .regex(/^[a-z0-9-]+$/, 'Slug invalide'),
-  description: z.string().max(1000).optional(),
-  price: z.number().positive('Le prix doit être positif'),
+    .min(1, COMMON_FIELDS.slug.required)
+    .max(200, COMMON_FIELDS.slug.maxLength(200))
+    .regex(/^[a-z0-9-]+$/, COMMON_FIELDS.slug.invalid),
+  description: z
+    .string()
+    .max(1000, COMMON_FIELDS.description.maxLength(1000))
+    .optional(),
+  price: z.number().positive(BUSINESS_FIELDS.price.positive),
   unit: z.string().default('kg'),
-  origin: z.string().max(100).optional(),
-  image: z.string().url('URL invalide').optional(),
-  categoryIds: z
-    .array(z.string().cuid())
-    .min(1, 'Au moins une catégorie requise'),
+  origin: z.string().max(100, VALIDATION.string.maxLength('origine', 100)).optional(),
+  image: z.string().url(COMMON_FIELDS.url.invalid).optional(),
+  categoryIds: z.array(z.string().cuid()).min(1, VALIDATION.array.minOne('catégorie')),
   isActive: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
 })

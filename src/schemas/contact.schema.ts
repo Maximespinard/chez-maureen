@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
+import { BUSINESS_FIELDS, COMMON_FIELDS } from '@/lib/validation-messages'
+
 export const ContactSchema = z.object({
   id: z.string().uuid().optional(),
-  name: z.string().min(1, 'Le nom est requis'),
-  email: z.string().email('Email invalide'),
+  name: z.string().min(1, COMMON_FIELDS.name.required),
+  email: z.string().email(COMMON_FIELDS.email.invalid),
   phone: z.string().optional(),
-  message: z
-    .string()
-    .min(10, 'Le message doit contenir au moins 10 caractères'),
+  message: z.string().min(10, BUSINESS_FIELDS.contact.messageMinLength),
   isRead: z.boolean().default(false),
 })
 

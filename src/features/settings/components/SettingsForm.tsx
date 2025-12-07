@@ -1,11 +1,11 @@
 import { useForm } from '@tanstack/react-form'
 import { useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
 import { FieldErrors } from '@/components/ui/field-errors'
 import { FormError } from '@/components/ui/form-error'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { LoadingButton } from '@/components/ui/loading-button'
 import { Textarea } from '@/components/ui/textarea'
 import { useSettings, useSettingsMutation } from '@/features/settings/hooks/useSettings'
 import { formatZodError } from '@/lib/errors'
@@ -48,6 +48,7 @@ export function SettingsForm() {
         const validatedData = StoreSettingsUpdateSchema.parse(value)
         await update.mutateAsync(validatedData)
         setSuccess(true)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         setTimeout(() => setSuccess(false), 3000)
       } catch (err) {
         setError(formatZodError(err))
@@ -441,9 +442,9 @@ export function SettingsForm() {
 
       {/* Submit Button */}
       <div className="flex justify-end">
-        <Button type="submit" disabled={update.isPending} className="min-w-[200px]">
-          {update.isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
-        </Button>
+        <LoadingButton type="submit" loading={update.isPending} className="min-w-[200px]">
+          Enregistrer les modifications
+        </LoadingButton>
       </div>
     </form>
   )

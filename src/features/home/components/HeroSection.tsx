@@ -1,7 +1,19 @@
 import { Link } from '@tanstack/react-router'
 import { ChevronDown } from 'lucide-react'
 
+import { useSettings } from '@/features/settings/hooks/useSettings'
+
 export function HeroSection() {
+  const { data: settings, isLoading } = useSettings()
+
+  if (isLoading || !settings) {
+    return (
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-[#2c2c2c] to-[#1a1a1a] px-6 py-20">
+        <div className="text-white">Chargement...</div>
+      </section>
+    )
+  }
+
   return (
     <section
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-[#2c2c2c] to-[#1a1a1a] bg-cover bg-fixed bg-center bg-no-repeat px-6 py-20"
@@ -25,13 +37,13 @@ export function HeroSection() {
           {/* Title */}
           <div>
             <h1 className="m-0 mb-4 animate-[slideInUp_0.7s_ease-out_0.1s_both] font-[Crimson_Pro,Georgia,serif] text-[clamp(2.6rem,6vw,4.5rem)] leading-[1.1] font-extrabold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
-              Chez Maureen fruits <br /> et légumes
+              {settings.business.storeName}
             </h1>
           </div>
 
           {/* Subtitle */}
           <p className="m-0 max-w-[600px] animate-[slideInUp_0.7s_ease-out_0.2s_both] text-lg leading-[1.7] font-normal text-white/92 drop-shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
-            Du champ à vos paniers, soutenez le local, consommez l'exceptionnel
+            {settings.business.tagline}
           </p>
 
           {/* CTA Button */}

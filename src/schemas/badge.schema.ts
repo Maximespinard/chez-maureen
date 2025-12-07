@@ -1,20 +1,24 @@
 import { z } from 'zod'
 
+import { COMMON_FIELDS, VALIDATION } from '@/lib/validation-messages'
+
 export const BadgeSchema = z.object({
   id: z.string().cuid().optional(),
   name: z
     .string()
-    .min(1, 'Le nom est requis')
-    .max(50, 'Le nom ne peut pas depasser 50 caracteres'),
+    .min(1, COMMON_FIELDS.name.required)
+    .max(50, COMMON_FIELDS.name.maxLength(50)),
   slug: z
     .string()
-    .min(1, 'Le slug est requis')
-    .max(50, 'Le slug ne peut pas depasser 50 caracteres')
-    .regex(/^[a-z0-9-]+$/, 'Slug invalide (lettres minuscules, chiffres et tirets uniquement)'),
-  color: z
-    .string()
-    .regex(/^#[0-9A-Fa-f]{6}$/, 'Couleur hex invalide (format: #RRGGBB)'),
-  order: z.number().int().min(0).default(0),
+    .min(1, COMMON_FIELDS.slug.required)
+    .max(50, COMMON_FIELDS.slug.maxLength(50))
+    .regex(/^[a-z0-9-]+$/, COMMON_FIELDS.slug.invalid),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, VALIDATION.custom.hexColor),
+  order: z
+    .number()
+    .int(COMMON_FIELDS.order.mustBeInteger)
+    .min(0, COMMON_FIELDS.order.mustBePositive)
+    .default(0),
 })
 
 export const BadgeCreateSchema = BadgeSchema.omit({ id: true })
@@ -27,7 +31,10 @@ export const BadgeReorderSchema = z.object({
   badges: z.array(
     z.object({
       id: z.string().cuid(),
-      order: z.number().int().min(0),
+      order: z
+        .number()
+        .int(COMMON_FIELDS.order.mustBeInteger)
+        .min(0, COMMON_FIELDS.order.mustBePositive),
     }),
   ),
 })

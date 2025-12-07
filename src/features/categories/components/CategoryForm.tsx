@@ -8,6 +8,7 @@ import { FieldErrors } from '@/components/ui/field-errors'
 import { FormError } from '@/components/ui/form-error'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { LoadingButton } from '@/components/ui/loading-button'
 import { useCategoryMutations } from '@/features/categories/hooks/useCategories'
 import { formatZodError } from '@/lib/errors'
 import {
@@ -55,6 +56,7 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
           await create.mutateAsync(validatedData)
         }
 
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         onSuccess?.()
       } catch (err) {
         setError(formatZodError(err))
@@ -142,19 +144,14 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
             >
               Annuler
             </Button>
-            <Button
+            <LoadingButton
               type="submit"
-              disabled={!canSubmit || isSubmitting}
+              disabled={!canSubmit}
+              loading={isSubmitting}
               className="flex-1"
             >
-              {isSubmitting
-                ? isEditMode
-                  ? 'Mise à jour...'
-                  : 'Création...'
-                : isEditMode
-                  ? 'Mettre à jour'
-                  : 'Créer'}
-            </Button>
+              {isEditMode ? 'Mettre à jour' : 'Créer'}
+            </LoadingButton>
           </div>
         )}
       </form.Subscribe>

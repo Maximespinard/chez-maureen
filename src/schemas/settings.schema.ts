@@ -1,39 +1,48 @@
 import { z } from 'zod'
 
+import {
+  BUSINESS_FIELDS,
+  COMMON_FIELDS,
+  VALIDATION,
+} from '@/lib/validation-messages'
+
 // === Day Hours Schema ===
 export const DayHoursSchema = z.object({
   isClosed: z.boolean(),
   openTime: z
     .string()
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Format horaire invalide (HH:MM)')
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, VALIDATION.custom.timeFormat)
     .optional(),
   closeTime: z
     .string()
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Format horaire invalide (HH:MM)')
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, VALIDATION.custom.timeFormat)
     .optional(),
 })
 
 // === Business Info Schema ===
 export const BusinessInfoSchema = z.object({
-  storeName: z.string().min(1, 'Le nom du commerce est requis').max(100),
-  tagline: z.string().max(200),
-  description: z.string().max(1000),
+  storeName: z
+    .string()
+    .min(1, BUSINESS_FIELDS.settings.storeNameRequired)
+    .max(100, BUSINESS_FIELDS.settings.storeNameMax),
+  tagline: z.string().max(200, BUSINESS_FIELDS.settings.taglineMax),
+  description: z.string().max(1000, BUSINESS_FIELDS.settings.descriptionMax),
 })
 
 // === Contact Schema ===
 export const ContactInfoSchema = z.object({
-  phone: z.string().max(20),
-  email: z.string().email('Email invalide').or(z.literal('')),
-  whatsapp: z.string().max(20),
+  phone: z.string().max(20, BUSINESS_FIELDS.contact.phoneMaxLength),
+  email: z.string().email(COMMON_FIELDS.email.invalid).or(z.literal('')),
+  whatsapp: z.string().max(20, BUSINESS_FIELDS.contact.whatsappMaxLength),
 })
 
 // === Location Schema ===
 export const LocationSchema = z.object({
-  address: z.string().max(200),
-  city: z.string().max(100),
-  postalCode: z.string().max(20),
-  country: z.string().max(100),
-  mapsEmbedUrl: z.string().url('URL invalide').or(z.literal('')),
+  address: z.string().max(200, BUSINESS_FIELDS.location.address),
+  city: z.string().max(100, BUSINESS_FIELDS.location.city),
+  postalCode: z.string().max(20, BUSINESS_FIELDS.location.postalCode),
+  country: z.string().max(100, BUSINESS_FIELDS.location.country),
+  mapsEmbedUrl: z.string().url(COMMON_FIELDS.url.invalid).or(z.literal('')),
 })
 
 // === Hours Schema ===
@@ -49,8 +58,8 @@ export const HoursSchema = z.object({
 
 // === Social Links Schema ===
 export const SocialLinksSchema = z.object({
-  facebook: z.string().url('URL invalide').or(z.literal('')),
-  instagram: z.string().url('URL invalide').or(z.literal('')),
+  facebook: z.string().url(COMMON_FIELDS.url.invalid).or(z.literal('')),
+  instagram: z.string().url(COMMON_FIELDS.url.invalid).or(z.literal('')),
 })
 
 // === Main Store Settings Schema (JSON value structure) ===

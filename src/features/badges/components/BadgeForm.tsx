@@ -9,6 +9,7 @@ import { FieldErrors } from '@/components/ui/field-errors'
 import { FormError } from '@/components/ui/form-error'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { LoadingButton } from '@/components/ui/loading-button'
 import { useBadgeMutations } from '@/features/badges/hooks/useBadges'
 import { formatZodError } from '@/lib/errors'
 import { BadgeCreateSchema, BadgeUpdateSchema } from '@/schemas/badge.schema'
@@ -54,6 +55,7 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
           await create.mutateAsync(validatedData)
         }
 
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         onSuccess?.()
       } catch (err) {
         setError(formatZodError(err))
@@ -162,15 +164,9 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
             >
               Annuler
             </Button>
-            <Button className="flex-1" disabled={!canSubmit || isSubmitting} type="submit">
-              {isSubmitting
-                ? isEditMode
-                  ? 'Mise a jour...'
-                  : 'Creation...'
-                : isEditMode
-                  ? 'Mettre a jour'
-                  : 'Creer'}
-            </Button>
+            <LoadingButton className="flex-1" disabled={!canSubmit} loading={isSubmitting} type="submit">
+              {isEditMode ? 'Mettre à jour' : 'Créer'}
+            </LoadingButton>
           </div>
         )}
       </form.Subscribe>
