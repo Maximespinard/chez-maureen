@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form'
 import { useRouter } from '@tanstack/react-router'
-import { Lock, User } from 'lucide-react'
+import { Eye, EyeOff, Lock, User } from 'lucide-react'
 import { useState } from 'react'
 import { authClient } from '@/lib/auth-client'
 import { LoginSchema } from '@/schemas/auth.schema'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 export function LoginForm() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   const form = useForm({
     defaultValues: {
@@ -84,11 +85,6 @@ export function LoginForm() {
                   className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full rounded-xl border bg-white py-3 pr-4 pl-11 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
                 />
               </div>
-              {field.state.meta.errors.length > 0 && (
-                <p className="mt-2 text-sm text-red-500">
-                  {String(field.state.meta.errors[0])}
-                </p>
-              )}
             </div>
           )}
         </form.Field>
@@ -112,19 +108,26 @@ export function LoginForm() {
                 <input
                   id={field.name}
                   name={field.name}
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="••••••••"
-                  className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full rounded-xl border bg-white py-3 pr-4 pl-11 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
+                  className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full rounded-xl border bg-white py-3 pr-11 pl-11 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  className="text-text-light hover:text-text-body absolute top-1/2 right-3 -translate-y-1/2 transition-colors duration-200 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-5" />
+                  ) : (
+                    <Eye className="size-5" />
+                  )}
+                </button>
               </div>
-              {field.state.meta.errors.length > 0 && (
-                <p className="mt-2 text-sm text-red-500">
-                  {String(field.state.meta.errors[0])}
-                </p>
-              )}
             </div>
           )}
         </form.Field>
