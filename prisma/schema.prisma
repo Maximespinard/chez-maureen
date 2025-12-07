@@ -13,7 +13,6 @@ model Category {
   id          String            @id @default(cuid())
   name        String
   slug        String            @unique
-  icon        String?
   order       Int               @default(0)
   products    ProductCategory[]
   createdAt   DateTime          @default(now())

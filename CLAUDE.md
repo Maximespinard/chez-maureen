@@ -375,6 +375,131 @@ export function useCategoryMutations() {
 
 ---
 
+## Formulaires - Pattern TanStack Form + Zod
+
+### Composants d'erreurs réutilisables
+
+**NE JAMAIS** écrire le JSX d'affichage des erreurs inline. Utiliser les composants dédiés.
+
+#### Erreurs au niveau des champs
+
+```tsx
+import { FieldErrors } from '@/components/ui/field-errors'
+
+<form.Field
+  name="fieldName"
+  validators={{
+    onChange: SomeSchema.shape.fieldName,  // ⚠️ onChange uniquement (pas onBlur)
+  }}
+>
+  {(field) => (
+    <div>
+      <Label htmlFor={field.name}>Label</Label>
+      <Input
+        id={field.name}
+        name={field.name}
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
+      <FieldErrors errors={field.state.meta.errors} />
+    </div>
+  )}
+</form.Field>
+```
+
+#### Erreurs au niveau du formulaire
+
+```tsx
+import { FormError } from '@/components/ui/form-error'
+
+const [error, setError] = useState<string | null>(null)
+
+<form onSubmit={...}>
+  <FormError message={error} />
+  {/* champs */}
+</form>
+```
+
+### Règles de validation
+
+1. **Validators** : Utiliser `onChange` uniquement (PAS `onBlur`) pour éviter les doublons
+   ```tsx
+   validators={{
+     onChange: CategoryCreateSchema.shape.name,  // ✅
+     onBlur: CategoryCreateSchema.shape.name,    // ❌ Cause des doublons
+   }}
+   ```
+
+2. **Schema Zod** : Utiliser les schémas définis dans `src/schemas/*.schema.ts`
+
+3. **Affichage des erreurs** : Toujours utiliser `<FieldErrors>` (jamais de JSX inline)
+
+4. **Helper utility** : Le composant utilise `getErrorMessage()` de `src/lib/errors.ts` pour extraire les messages des erreurs Standard Schema (Zod v4)
+
+### Pattern complet d'un formulaire
+
+```tsx
+import { useForm } from '@tanstack/react-form'
+import { useState } from 'react'
+
+import { Button } from '@/components/ui/button'
+import { FieldErrors } from '@/components/ui/field-errors'
+import { FormError } from '@/components/ui/form-error'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { formatZodError } from '@/lib/errors'
+import { MySchema } from '@/schemas/my.schema'
+
+export function MyForm() {
+  const [error, setError] = useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      name: '',
+    },
+    onSubmit: async ({ value }) => {
+      setError(null)
+      try {
+        const validatedData = MySchema.parse(value)
+        // Submit logic
+      } catch (err) {
+        setError(formatZodError(err))
+      }
+    },
+  })
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+      <FormError message={error} />
+
+      <form.Field
+        name="name"
+        validators={{ onChange: MySchema.shape.name }}
+      >
+        {(field) => (
+          <div>
+            <Label htmlFor={field.name}>Nom</Label>
+            <Input
+              id={field.name}
+              name={field.name}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+            <FieldErrors errors={field.state.meta.errors} />
+          </div>
+        )}
+      </form.Field>
+
+      <Button type="submit">Envoyer</Button>
+    </form>
+  )
+}
+```
+
+---
+
 ## Icônes Lucide - Pattern d'Accès Runtime
 
 ### ❌ ANTI-PATTERN : Bracket notation sur namespace

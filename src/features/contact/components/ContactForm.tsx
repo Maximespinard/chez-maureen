@@ -1,5 +1,7 @@
 import { Send } from 'lucide-react'
 import { useContactForm } from '../hooks/useContactForm'
+
+import { FieldErrors } from '@/components/ui/field-errors'
 import { ContactCreateSchema } from '@/schemas/contact.schema'
 
 export function ContactForm() {
@@ -50,11 +52,7 @@ export function ContactForm() {
                 placeholder="Votre nom"
                 className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full rounded-xl border bg-white px-4 py-3 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
               />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-badge-promo mt-2 text-sm">
-                  {String(field.state.meta.errors[0])}
-                </p>
-              )}
+              <FieldErrors errors={field.state.meta.errors} />
             </div>
           )}
         </form.Field>
@@ -84,11 +82,7 @@ export function ContactForm() {
                 placeholder="votre@email.com"
                 className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full rounded-xl border bg-white px-4 py-3 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
               />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-badge-promo mt-2 text-sm">
-                  {String(field.state.meta.errors[0])}
-                </p>
-              )}
+              <FieldErrors errors={field.state.meta.errors} />
             </div>
           )}
         </form.Field>
@@ -145,11 +139,7 @@ export function ContactForm() {
                 rows={6}
                 className="border-border-subtle focus:border-primeur-green focus:ring-primeur-green/20 w-full resize-none rounded-xl border bg-white px-4 py-3 text-sm transition-all duration-200 focus:ring-4 focus:outline-none"
               />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-badge-promo mt-2 text-sm">
-                  {String(field.state.meta.errors[0])}
-                </p>
-              )}
+              <FieldErrors errors={field.state.meta.errors} />
             </div>
           )}
         </form.Field>

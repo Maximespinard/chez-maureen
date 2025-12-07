@@ -1,13 +1,15 @@
 import { useForm } from '@tanstack/react-form'
 import { useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-
 import type { Category } from '@/schemas/category.schema'
+
 import { Button } from '@/components/ui/button'
+import { FieldErrors } from '@/components/ui/field-errors'
+import { FormError } from '@/components/ui/form-error'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { IconPicker } from '@/features/categories/components/IconPicker'
 import { useCategoryMutations } from '@/features/categories/hooks/useCategories'
+import { formatZodError } from '@/lib/errors'
 import {
   CategoryCreateSchema,
   CategoryUpdateSchema,
@@ -37,7 +39,6 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
     defaultValues: {
       name: category?.name ?? '',
       slug: category?.slug ?? '',
-      icon: category?.icon ?? '',
     },
     onSubmit: async ({ value }) => {
       setError(null)
@@ -56,7 +57,7 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
 
         onSuccess?.()
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue')
+        setError(formatZodError(err))
       }
     },
   })
@@ -70,13 +71,14 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
       }}
       className="space-y-6"
     >
-      {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-          {error}
-        </div>
-      )}
+      <FormError message={error} />
 
-      <form.Field name="name">
+      <form.Field
+        name="name"
+        validators={{
+          onChange: CategoryCreateSchema.shape.name,
+        }}
+      >
         {(field) => (
           <div>
             <Label htmlFor={field.name}>Nom de la catégorie</Label>
@@ -94,16 +96,17 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
               }}
               placeholder="Ex: Fruits"
             />
-            {field.state.meta.errors.length > 0 && (
-              <p className="text-badge-promo mt-1 text-xs">
-                {field.state.meta.errors.join(', ')}
-              </p>
-            )}
+            <FieldErrors errors={field.state.meta.errors} />
           </div>
         )}
       </form.Field>
 
-      <form.Field name="slug">
+      <form.Field
+        name="slug"
+        validators={{
+          onChange: CategoryCreateSchema.shape.slug,
+        }}
+      >
         {(field) => (
           <div>
             <Label htmlFor={field.name}>Slug</Label>
@@ -121,23 +124,7 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
               Utilisé dans l'URL. Lettres minuscules, chiffres et tirets
               uniquement.
             </p>
-            {field.state.meta.errors.length > 0 && (
-              <p className="text-badge-promo mt-1 text-xs">
-                {field.state.meta.errors.join(', ')}
-              </p>
-            )}
-          </div>
-        )}
-      </form.Field>
-
-      <form.Field name="icon">
-        {(field) => (
-          <div>
-            <Label htmlFor={field.name}>Icône (optionnel)</Label>
-            <IconPicker
-              value={field.state.value}
-              onChange={field.handleChange}
-            />
+            <FieldErrors errors={field.state.meta.errors} />
           </div>
         )}
       </form.Field>

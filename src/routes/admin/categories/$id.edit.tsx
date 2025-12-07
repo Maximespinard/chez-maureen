@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import type { CategoryIcon } from '@/schemas/category.schema'
 import { CategoryForm } from '@/features/categories/components/CategoryForm'
 import { useCategory } from '@/features/categories/hooks/useCategories'
 
@@ -49,7 +48,6 @@ function EditCategoryPage() {
             name: category.name,
             slug: category.slug,
             order: category.order,
-            icon: category.icon ? (category.icon as CategoryIcon) : undefined,
           }}
           onSuccess={() => navigate({ to: '/admin/categories' })}
         />

@@ -2,11 +2,9 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Pencil, Trash2 } from 'lucide-react'
 
+import type { CategoryWithCount } from '@/types/category'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { ICON_MAP } from '@/lib/icon-map'
-import type { CategoryIcon } from '@/schemas/category.schema'
-import type { CategoryWithCount } from '@/types/category'
 
 interface SortableRowProps {
   category: CategoryWithCount
@@ -25,8 +23,6 @@ export function SortableRow({ category, onDelete, onEdit }: SortableRowProps) {
     transition,
   }
 
-  const IconComponent = category.icon ? ICON_MAP[category.icon as CategoryIcon] : null
-
   return (
     <TableRow ref={setNodeRef} style={style}>
       <TableCell>
@@ -37,9 +33,6 @@ export function SortableRow({ category, onDelete, onEdit }: SortableRowProps) {
         >
           <GripVertical className="size-4" />
         </button>
-      </TableCell>
-      <TableCell>
-        {IconComponent && <IconComponent className="text-primeur-green size-5" />}
       </TableCell>
       <TableCell className="font-medium">{category.name}</TableCell>
       <TableCell className="text-text-body">{category.slug}</TableCell>

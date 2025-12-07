@@ -1,45 +1,16 @@
 import { z } from 'zod'
 
-// Valid Lucide icon names for categories
-const CATEGORY_ICONS = [
-  'Apple',
-  'Banana',
-  'Beef',
-  'Beer',
-  'Carrot',
-  'Cherry',
-  'Citrus',
-  'Coffee',
-  'Cookie',
-  'Egg',
-  'Fish',
-  'Flower',
-  'Grape',
-  'IceCream',
-  'Leaf',
-  'Milk',
-  'Package',
-  'Pizza',
-  'Salad',
-  'ShoppingBag',
-  'ShoppingCart',
-  'Sprout',
-  'Store',
-  'Wheat',
-  'Wine',
-] as const
-
-export type CategoryIcon = (typeof CATEGORY_ICONS)[number]
-
 export const CategorySchema = z.object({
   id: z.string().cuid().optional(),
-  name: z.string().min(1, 'Le nom est requis').max(100),
+  name: z
+    .string()
+    .min(1, 'Le nom est requis')
+    .max(100, 'Le nom ne peut pas dépasser 100 caractères'),
   slug: z
     .string()
-    .min(1)
-    .max(100)
+    .min(1, 'Le slug est requis')
+    .max(100, 'Le slug ne peut pas dépasser 100 caractères')
     .regex(/^[a-z0-9-]+$/, 'Slug invalide'),
-  icon: z.enum(CATEGORY_ICONS).optional(),
   order: z.number().int().min(0).default(0),
 })
 
@@ -70,6 +41,3 @@ export type CategoryCreate = z.infer<typeof CategoryCreateSchema>
 export type CategoryUpdate = z.infer<typeof CategoryUpdateSchema>
 export type CategoryReorder = z.infer<typeof CategoryReorderSchema>
 export type CategoryDelete = z.infer<typeof CategoryDeleteSchema>
-
-// Export icon list for UI
-export const CATEGORY_ICON_OPTIONS = CATEGORY_ICONS

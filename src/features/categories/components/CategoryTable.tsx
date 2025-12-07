@@ -95,7 +95,6 @@ export function CategoryTable() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10" />
-                <TableHead className="w-12">Icône</TableHead>
                 <TableHead>Nom</TableHead>
                 <TableHead>Slug</TableHead>
                 <TableHead className="w-24 text-center">Produits</TableHead>
