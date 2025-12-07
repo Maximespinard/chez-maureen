@@ -52,11 +52,16 @@ model ProductCategory {
 }
 
 model Badge {
-  id       String         @id @default(cuid())
-  name     String
-  slug     String         @unique
-  color    String
-  products ProductBadge[]
+  id        String         @id @default(cuid())
+  name      String
+  slug      String         @unique
+  color     String
+  order     Int            @default(0)
+  products  ProductBadge[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([order])
 }
 
 model ProductBadge {

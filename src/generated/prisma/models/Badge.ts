@@ -20,8 +20,18 @@ export type BadgeModel = runtime.Types.Result.DefaultSelection<Prisma.$BadgePayl
 
 export type AggregateBadge = {
   _count: BadgeCountAggregateOutputType | null
+  _avg: BadgeAvgAggregateOutputType | null
+  _sum: BadgeSumAggregateOutputType | null
   _min: BadgeMinAggregateOutputType | null
   _max: BadgeMaxAggregateOutputType | null
+}
+
+export type BadgeAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type BadgeSumAggregateOutputType = {
+  order: number | null
 }
 
 export type BadgeMinAggregateOutputType = {
@@ -29,6 +39,9 @@ export type BadgeMinAggregateOutputType = {
   name: string | null
   slug: string | null
   color: string | null
+  order: number | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type BadgeMaxAggregateOutputType = {
@@ -36,6 +49,9 @@ export type BadgeMaxAggregateOutputType = {
   name: string | null
   slug: string | null
   color: string | null
+  order: number | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type BadgeCountAggregateOutputType = {
@@ -43,15 +59,29 @@ export type BadgeCountAggregateOutputType = {
   name: number
   slug: number
   color: number
+  order: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
+
+export type BadgeAvgAggregateInputType = {
+  order?: true
+}
+
+export type BadgeSumAggregateInputType = {
+  order?: true
+}
 
 export type BadgeMinAggregateInputType = {
   id?: true
   name?: true
   slug?: true
   color?: true
+  order?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type BadgeMaxAggregateInputType = {
@@ -59,6 +89,9 @@ export type BadgeMaxAggregateInputType = {
   name?: true
   slug?: true
   color?: true
+  order?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type BadgeCountAggregateInputType = {
@@ -66,6 +99,9 @@ export type BadgeCountAggregateInputType = {
   name?: true
   slug?: true
   color?: true
+  order?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -107,6 +143,18 @@ export type BadgeAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BadgeAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BadgeSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BadgeMinAggregateInputType
@@ -137,6 +185,8 @@ export type BadgeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: BadgeCountAggregateInputType | true
+  _avg?: BadgeAvgAggregateInputType
+  _sum?: BadgeSumAggregateInputType
   _min?: BadgeMinAggregateInputType
   _max?: BadgeMaxAggregateInputType
 }
@@ -146,7 +196,12 @@ export type BadgeGroupByOutputType = {
   name: string
   slug: string
   color: string
+  order: number
+  createdAt: Date
+  updatedAt: Date
   _count: BadgeCountAggregateOutputType | null
+  _avg: BadgeAvgAggregateOutputType | null
+  _sum: BadgeSumAggregateOutputType | null
   _min: BadgeMinAggregateOutputType | null
   _max: BadgeMaxAggregateOutputType | null
 }
@@ -174,6 +229,9 @@ export type BadgeWhereInput = {
   name?: Prisma.StringFilter<"Badge"> | string
   slug?: Prisma.StringFilter<"Badge"> | string
   color?: Prisma.StringFilter<"Badge"> | string
+  order?: Prisma.IntFilter<"Badge"> | number
+  createdAt?: Prisma.DateTimeFilter<"Badge"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Badge"> | Date | string
   products?: Prisma.ProductBadgeListRelationFilter
 }
 
@@ -182,6 +240,9 @@ export type BadgeOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   products?: Prisma.ProductBadgeOrderByRelationAggregateInput
 }
 
@@ -193,6 +254,9 @@ export type BadgeWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BadgeWhereInput | Prisma.BadgeWhereInput[]
   name?: Prisma.StringFilter<"Badge"> | string
   color?: Prisma.StringFilter<"Badge"> | string
+  order?: Prisma.IntFilter<"Badge"> | number
+  createdAt?: Prisma.DateTimeFilter<"Badge"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Badge"> | Date | string
   products?: Prisma.ProductBadgeListRelationFilter
 }, "id" | "slug">
 
@@ -201,9 +265,14 @@ export type BadgeOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.BadgeCountOrderByAggregateInput
+  _avg?: Prisma.BadgeAvgOrderByAggregateInput
   _max?: Prisma.BadgeMaxOrderByAggregateInput
   _min?: Prisma.BadgeMinOrderByAggregateInput
+  _sum?: Prisma.BadgeSumOrderByAggregateInput
 }
 
 export type BadgeScalarWhereWithAggregatesInput = {
@@ -214,6 +283,9 @@ export type BadgeScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Badge"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Badge"> | string
   color?: Prisma.StringWithAggregatesFilter<"Badge"> | string
+  order?: Prisma.IntWithAggregatesFilter<"Badge"> | number
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Badge"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Badge"> | Date | string
 }
 
 export type BadgeCreateInput = {
@@ -221,6 +293,9 @@ export type BadgeCreateInput = {
   name: string
   slug: string
   color: string
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
   products?: Prisma.ProductBadgeCreateNestedManyWithoutBadgeInput
 }
 
@@ -229,6 +304,9 @@ export type BadgeUncheckedCreateInput = {
   name: string
   slug: string
   color: string
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
   products?: Prisma.ProductBadgeUncheckedCreateNestedManyWithoutBadgeInput
 }
 
@@ -237,6 +315,9 @@ export type BadgeUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductBadgeUpdateManyWithoutBadgeNestedInput
 }
 
@@ -245,6 +326,9 @@ export type BadgeUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   products?: Prisma.ProductBadgeUncheckedUpdateManyWithoutBadgeNestedInput
 }
 
@@ -253,6 +337,9 @@ export type BadgeCreateManyInput = {
   name: string
   slug: string
   color: string
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BadgeUpdateManyMutationInput = {
@@ -260,6 +347,9 @@ export type BadgeUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BadgeUncheckedUpdateManyInput = {
@@ -267,6 +357,9 @@ export type BadgeUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BadgeCountOrderByAggregateInput = {
@@ -274,6 +367,13 @@ export type BadgeCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type BadgeAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type BadgeMaxOrderByAggregateInput = {
@@ -281,6 +381,9 @@ export type BadgeMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type BadgeMinOrderByAggregateInput = {
@@ -288,6 +391,13 @@ export type BadgeMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  order?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type BadgeSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type BadgeScalarRelationFilter = {
@@ -314,6 +424,9 @@ export type BadgeCreateWithoutProductsInput = {
   name: string
   slug: string
   color: string
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BadgeUncheckedCreateWithoutProductsInput = {
@@ -321,6 +434,9 @@ export type BadgeUncheckedCreateWithoutProductsInput = {
   name: string
   slug: string
   color: string
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BadgeCreateOrConnectWithoutProductsInput = {
@@ -344,6 +460,9 @@ export type BadgeUpdateWithoutProductsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BadgeUncheckedUpdateWithoutProductsInput = {
@@ -351,6 +470,9 @@ export type BadgeUncheckedUpdateWithoutProductsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -389,6 +511,9 @@ export type BadgeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   name?: boolean
   slug?: boolean
   color?: boolean
+  order?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   products?: boolean | Prisma.Badge$productsArgs<ExtArgs>
   _count?: boolean | Prisma.BadgeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["badge"]>
@@ -398,6 +523,9 @@ export type BadgeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   name?: boolean
   slug?: boolean
   color?: boolean
+  order?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["badge"]>
 
 export type BadgeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -405,6 +533,9 @@ export type BadgeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   name?: boolean
   slug?: boolean
   color?: boolean
+  order?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["badge"]>
 
 export type BadgeSelectScalar = {
@@ -412,9 +543,12 @@ export type BadgeSelectScalar = {
   name?: boolean
   slug?: boolean
   color?: boolean
+  order?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type BadgeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "color", ExtArgs["result"]["badge"]>
+export type BadgeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "color" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["badge"]>
 export type BadgeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | Prisma.Badge$productsArgs<ExtArgs>
   _count?: boolean | Prisma.BadgeCountOutputTypeDefaultArgs<ExtArgs>
@@ -432,6 +566,9 @@ export type $BadgePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     name: string
     slug: string
     color: string
+    order: number
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["badge"]>
   composites: {}
 }
@@ -860,6 +997,9 @@ export interface BadgeFieldRefs {
   readonly name: Prisma.FieldRef<"Badge", 'String'>
   readonly slug: Prisma.FieldRef<"Badge", 'String'>
   readonly color: Prisma.FieldRef<"Badge", 'String'>
+  readonly order: Prisma.FieldRef<"Badge", 'Int'>
+  readonly createdAt: Prisma.FieldRef<"Badge", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Badge", 'DateTime'>
 }
     
 

@@ -1309,7 +1309,10 @@ export const BadgeScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
-  color: 'color'
+  color: 'color',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BadgeScalarFieldEnum = (typeof BadgeScalarFieldEnum)[keyof typeof BadgeScalarFieldEnum]
