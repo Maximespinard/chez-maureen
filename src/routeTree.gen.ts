@@ -17,14 +17,13 @@ import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as AdminParametresRouteImport } from './routes/admin/parametres'
 import { Route as PublicProduitsRouteImport } from './routes/_public/produits'
 import { Route as PublicContactRouteImport } from './routes/_public/contact'
-import { Route as AdminPromotionsIndexRouteImport } from './routes/admin/promotions/index'
 import { Route as AdminProduitsIndexRouteImport } from './routes/admin/produits/index'
+import { Route as AdminMessagesIndexRouteImport } from './routes/admin/messages/index'
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin/categories/index'
+import { Route as AdminBadgesIndexRouteImport } from './routes/admin/badges/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AdminPromotionsNewRouteImport } from './routes/admin/promotions/new'
 import { Route as AdminProduitsNewRouteImport } from './routes/admin/produits/new'
 import { Route as AdminCategoriesNewRouteImport } from './routes/admin/categories/new'
-import { Route as AdminPromotionsIdEditRouteImport } from './routes/admin/promotions/$id.edit'
 import { Route as AdminProduitsIdEditRouteImport } from './routes/admin/produits/$id.edit'
 import { Route as AdminCategoriesIdEditRouteImport } from './routes/admin/categories/$id.edit'
 
@@ -67,14 +66,14 @@ const PublicContactRoute = PublicContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => PublicRoute,
 } as any)
-const AdminPromotionsIndexRoute = AdminPromotionsIndexRouteImport.update({
-  id: '/promotions/',
-  path: '/promotions/',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminProduitsIndexRoute = AdminProduitsIndexRouteImport.update({
   id: '/produits/',
   path: '/produits/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesIndexRoute = AdminMessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
@@ -82,15 +81,15 @@ const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
   path: '/categories/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBadgesIndexRoute = AdminBadgesIndexRouteImport.update({
+  id: '/badges/',
+  path: '/badges/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AdminPromotionsNewRoute = AdminPromotionsNewRouteImport.update({
-  id: '/promotions/new',
-  path: '/promotions/new',
-  getParentRoute: () => AdminRoute,
 } as any)
 const AdminProduitsNewRoute = AdminProduitsNewRouteImport.update({
   id: '/produits/new',
@@ -100,11 +99,6 @@ const AdminProduitsNewRoute = AdminProduitsNewRouteImport.update({
 const AdminCategoriesNewRoute = AdminCategoriesNewRouteImport.update({
   id: '/categories/new',
   path: '/categories/new',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPromotionsIdEditRoute = AdminPromotionsIdEditRouteImport.update({
-  id: '/promotions/$id/edit',
-  path: '/promotions/$id/edit',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminProduitsIdEditRoute = AdminProduitsIdEditRouteImport.update({
@@ -128,14 +122,13 @@ export interface FileRoutesByFullPath {
   '/connexion': typeof ConnexionIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
-  '/admin/promotions/new': typeof AdminPromotionsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/badges': typeof AdminBadgesIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/messages': typeof AdminMessagesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
-  '/admin/promotions': typeof AdminPromotionsIndexRoute
   '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
   '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
-  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/contact': typeof PublicContactRoute
@@ -146,14 +139,13 @@ export interface FileRoutesByTo {
   '/connexion': typeof ConnexionIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
-  '/admin/promotions/new': typeof AdminPromotionsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/badges': typeof AdminBadgesIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/messages': typeof AdminMessagesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
-  '/admin/promotions': typeof AdminPromotionsIndexRoute
   '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
   '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
-  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,14 +159,13 @@ export interface FileRoutesById {
   '/connexion/': typeof ConnexionIndexRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
-  '/admin/promotions/new': typeof AdminPromotionsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/badges/': typeof AdminBadgesIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
+  '/admin/messages/': typeof AdminMessagesIndexRoute
   '/admin/produits/': typeof AdminProduitsIndexRoute
-  '/admin/promotions/': typeof AdminPromotionsIndexRoute
   '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
   '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
-  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -188,14 +179,13 @@ export interface FileRouteTypes {
     | '/connexion'
     | '/admin/categories/new'
     | '/admin/produits/new'
-    | '/admin/promotions/new'
     | '/api/auth/$'
+    | '/admin/badges'
     | '/admin/categories'
+    | '/admin/messages'
     | '/admin/produits'
-    | '/admin/promotions'
     | '/admin/categories/$id/edit'
     | '/admin/produits/$id/edit'
-    | '/admin/promotions/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/contact'
@@ -206,14 +196,13 @@ export interface FileRouteTypes {
     | '/connexion'
     | '/admin/categories/new'
     | '/admin/produits/new'
-    | '/admin/promotions/new'
     | '/api/auth/$'
+    | '/admin/badges'
     | '/admin/categories'
+    | '/admin/messages'
     | '/admin/produits'
-    | '/admin/promotions'
     | '/admin/categories/$id/edit'
     | '/admin/produits/$id/edit'
-    | '/admin/promotions/$id/edit'
   id:
     | '__root__'
     | '/_public'
@@ -226,14 +215,13 @@ export interface FileRouteTypes {
     | '/connexion/'
     | '/admin/categories/new'
     | '/admin/produits/new'
-    | '/admin/promotions/new'
     | '/api/auth/$'
+    | '/admin/badges/'
     | '/admin/categories/'
+    | '/admin/messages/'
     | '/admin/produits/'
-    | '/admin/promotions/'
     | '/admin/categories/$id/edit'
     | '/admin/produits/$id/edit'
-    | '/admin/promotions/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -301,18 +289,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicContactRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/admin/promotions/': {
-      id: '/admin/promotions/'
-      path: '/promotions'
-      fullPath: '/admin/promotions'
-      preLoaderRoute: typeof AdminPromotionsIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/produits/': {
       id: '/admin/produits/'
       path: '/produits'
       fullPath: '/admin/produits'
       preLoaderRoute: typeof AdminProduitsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/messages/': {
+      id: '/admin/messages/'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/categories/': {
@@ -322,19 +310,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/badges/': {
+      id: '/admin/badges/'
+      path: '/badges'
+      fullPath: '/admin/badges'
+      preLoaderRoute: typeof AdminBadgesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/admin/promotions/new': {
-      id: '/admin/promotions/new'
-      path: '/promotions/new'
-      fullPath: '/admin/promotions/new'
-      preLoaderRoute: typeof AdminPromotionsNewRouteImport
-      parentRoute: typeof AdminRoute
     }
     '/admin/produits/new': {
       id: '/admin/produits/new'
@@ -348,13 +336,6 @@ declare module '@tanstack/react-router' {
       path: '/categories/new'
       fullPath: '/admin/categories/new'
       preLoaderRoute: typeof AdminCategoriesNewRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/promotions/$id/edit': {
-      id: '/admin/promotions/$id/edit'
-      path: '/promotions/$id/edit'
-      fullPath: '/admin/promotions/$id/edit'
-      preLoaderRoute: typeof AdminPromotionsIdEditRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/produits/$id/edit': {
@@ -394,13 +375,12 @@ interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCategoriesNewRoute: typeof AdminCategoriesNewRoute
   AdminProduitsNewRoute: typeof AdminProduitsNewRoute
-  AdminPromotionsNewRoute: typeof AdminPromotionsNewRoute
+  AdminBadgesIndexRoute: typeof AdminBadgesIndexRoute
   AdminCategoriesIndexRoute: typeof AdminCategoriesIndexRoute
+  AdminMessagesIndexRoute: typeof AdminMessagesIndexRoute
   AdminProduitsIndexRoute: typeof AdminProduitsIndexRoute
-  AdminPromotionsIndexRoute: typeof AdminPromotionsIndexRoute
   AdminCategoriesIdEditRoute: typeof AdminCategoriesIdEditRoute
   AdminProduitsIdEditRoute: typeof AdminProduitsIdEditRoute
-  AdminPromotionsIdEditRoute: typeof AdminPromotionsIdEditRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -408,13 +388,12 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminCategoriesNewRoute: AdminCategoriesNewRoute,
   AdminProduitsNewRoute: AdminProduitsNewRoute,
-  AdminPromotionsNewRoute: AdminPromotionsNewRoute,
+  AdminBadgesIndexRoute: AdminBadgesIndexRoute,
   AdminCategoriesIndexRoute: AdminCategoriesIndexRoute,
+  AdminMessagesIndexRoute: AdminMessagesIndexRoute,
   AdminProduitsIndexRoute: AdminProduitsIndexRoute,
-  AdminPromotionsIndexRoute: AdminPromotionsIndexRoute,
   AdminCategoriesIdEditRoute: AdminCategoriesIdEditRoute,
   AdminProduitsIdEditRoute: AdminProduitsIdEditRoute,
-  AdminPromotionsIdEditRoute: AdminPromotionsIdEditRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

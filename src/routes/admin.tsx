@@ -1,55 +1,36 @@
-import { Outlet, createFileRoute } from '@tanstack/react-router'
-import { authMiddleware } from '@/lib/auth.middleware'
-import { authClient } from '@/lib/auth-client'
-import { PageTransition } from '@/components/transitions/page-transition'
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { authMiddleware } from "@/lib/auth.middleware";
+import { authClient } from "@/lib/auth-client";
+import { PageTransition } from "@/components/transitions/page-transition";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
+import { AdminHeader } from "@/components/layout/AdminHeader";
 
-export const Route = createFileRoute('/admin')({
-  component: AdminLayout,
-  server: {
-    middleware: [authMiddleware],
-  },
-})
+export const Route = createFileRoute("/admin")({
+	component: AdminLayout,
+	server: {
+		middleware: [authMiddleware],
+	},
+});
 
 function AdminLayout() {
-  // Fetch session using authClient hook
-  const { data: session } = authClient.useSession()
+	const { data: session } = authClient.useSession();
 
-  const handleLogout = async () => {
-    await authClient.signOut()
-    window.location.href = '/connexion'
-  }
+	// Show loader if no session
+	if (!session) {
+		return <PageTransition isReady={false}>{null}</PageTransition>;
+	}
 
-  // Afficher le loader si pas de session
-  if (!session) {
-    return <PageTransition isReady={false}>{null}</PageTransition>
-  }
-
-  return (
-    <PageTransition isReady={!!session}>
-      <div className="min-h-screen bg-gray-50">
-        {/* Admin Header */}
-        <header className="border-b border-gray-200 bg-white px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">Administration - Chez Maureen</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
-                {session.user.name || session.user.username}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-red-600 hover:text-red-700"
-              >
-                Déconnexion
-              </button>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="p-6">
-          <Outlet />
-        </main>
-      </div>
-    </PageTransition>
-  )
+	return (
+		<PageTransition isReady={!!session}>
+			<div className="bg-surface-warm flex h-screen">
+				<AdminSidebar />
+				<div className="flex flex-1 flex-col overflow-hidden">
+					<AdminHeader />
+					<main className="flex-1 overflow-auto p-6">
+						<Outlet />
+					</main>
+				</div>
+			</div>
+		</PageTransition>
+	);
 }
