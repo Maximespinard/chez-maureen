@@ -563,3 +563,4 @@ return IconComponent && <IconComponent className="size-5" />
 - ✅ Tree-shaking (seuls les icônes utilisés sont bundlés)
 - ✅ Centralisé (un seul endroit pour gérer les icônes)
 - ✅ Runtime-safe (pas d'accès dynamique dangereux)
+- Always run npm run check at end of task

@@ -101,6 +101,7 @@ export const ProductScalarFieldEnum = {
   unit: 'unit',
   origin: 'origin',
   image: 'image',
+  imageKey: 'imageKey',
   isActive: 'isActive',
   isFeatured: 'isFeatured',
   featuredOrder: 'featuredOrder',

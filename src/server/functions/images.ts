@@ -1,46 +1,85 @@
 import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
+
+import { deleteFromR2, generateImageKey, uploadToR2 } from '@/lib/r2'
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 
 /**
- * Get a direct upload URL for Cloudflare Images
- * Client uploads directly to Cloudflare using this URL
+ * Schema pour l'upload d'image
  */
-export const getImageUploadUrl = createServerFn({ method: 'POST' }).handler(
-  async () => {
-    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
-    const apiToken = process.env.CLOUDFLARE_IMAGES_API_TOKEN
+const UploadImageSchema = z.object({
+  fileData: z.string(), // Base64
+  fileName: z.string(),
+  fileType: z.string(),
+  fileSize: z.number(),
+})
 
-    if (!accountId || !apiToken) {
+/**
+ * Upload une image vers Cloudflare R2
+ * Le fichier est envoyé en base64 depuis le client
+ */
+export const uploadImage = createServerFn({ method: 'POST' })
+  .inputValidator(UploadImageSchema)
+  .handler(async ({ data }) => {
+    try {
+      // Validation taille
+      if (data.fileSize > MAX_FILE_SIZE) {
+        throw new Error('Fichier trop volumineux (max 10MB)')
+      }
+
+      // Validation type
+      if (!ALLOWED_TYPES.includes(data.fileType)) {
+        throw new Error(
+          'Type de fichier non supporté (jpg, png, webp uniquement)',
+        )
+      }
+
+      // Conversion base64 → Buffer
+      const base64Data = data.fileData.replace(/^data:image\/\w+;base64,/, '')
+      const buffer = Buffer.from(base64Data, 'base64')
+
+      // Générer clé unique
+      const key = generateImageKey(data.fileName)
+
+      // Upload vers R2
+      const url = await uploadToR2(buffer, key, data.fileType)
+
+      return {
+        url,
+        key,
+      }
+    } catch (error) {
+      console.error('Erreur upload image:', error)
       throw new Error(
-        'Cloudflare Images credentials not configured. Please set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_IMAGES_API_TOKEN in .env.local',
+        error instanceof Error ? error.message : "Échec de l'upload",
       )
     }
+  })
 
-    const response = await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v2/direct_upload`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          requireSignedURLs: false,
-          metadata: { source: 'chez-maureen' },
-        }),
-      },
-    )
+/**
+ * Supprime une image de Cloudflare R2
+ */
+export const deleteImage = createServerFn({ method: 'POST' })
+  .inputValidator(
+    z.object({
+      key: z.string().min(1, 'Clé requise'),
+    }),
+  )
+  .handler(async ({ data }) => {
+    try {
+      const success = await deleteFromR2(data.key)
 
-    const data = await response.json()
+      if (!success) {
+        throw new Error('Échec de la suppression')
+      }
 
-    if (!data.success) {
+      return { success: true }
+    } catch (error) {
+      console.error('Erreur suppression image:', error)
       throw new Error(
-        data.errors?.[0]?.message || 'Failed to get upload URL from Cloudflare',
+        error instanceof Error ? error.message : 'Échec de la suppression',
       )
     }
-
-    return {
-      id: data.result.id,
-      uploadURL: data.result.uploadURL,
-    }
-  },
-)
+  })

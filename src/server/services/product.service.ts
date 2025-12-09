@@ -1,4 +1,5 @@
 import type { ProductCreate, ProductUpdate } from '@/schemas'
+import { deleteFromR2 } from '@/lib/r2'
 import { prisma } from '@/db'
 
 export class ProductService {
@@ -97,6 +98,21 @@ export class ProductService {
   async update(data: ProductUpdate) {
     const { id, categoryIds, badgeIds, ...productData } = data
 
+    // Si nouvelle image fournie, supprimer l'ancienne de R2
+    if (productData.imageKey) {
+      const existingProduct = await prisma.product.findUnique({
+        where: { id },
+        select: { imageKey: true },
+      })
+
+      if (
+        existingProduct?.imageKey &&
+        existingProduct.imageKey !== productData.imageKey
+      ) {
+        await deleteFromR2(existingProduct.imageKey)
+      }
+    }
+
     // If categoryIds or badgeIds provided, update associations
     if (categoryIds !== undefined || badgeIds !== undefined) {
       const product = await prisma.$transaction(async (tx) => {
@@ -170,9 +186,21 @@ export class ProductService {
    * Delete product (cascade will remove ProductCategory)
    */
   async delete(id: string) {
+    // Récupérer imageKey avant suppression
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+      select: { imageKey: true },
+    })
+
+    // Supprimer le produit de la DB
     const product = await prisma.product.delete({
       where: { id },
     })
+
+    // Supprimer l'image de R2 si elle existe
+    if (existingProduct?.imageKey) {
+      await deleteFromR2(existingProduct.imageKey)
+    }
 
     return { ...product, price: product.price.toNumber() }
   }

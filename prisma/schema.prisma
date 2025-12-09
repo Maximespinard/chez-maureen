@@ -30,6 +30,7 @@ model Product {
   unit          String            @default("kg")
   origin        String?
   image         String?
+  imageKey      String?
   categories    ProductCategory[]
   badges        ProductBadge[]
   isActive      Boolean           @default(true)

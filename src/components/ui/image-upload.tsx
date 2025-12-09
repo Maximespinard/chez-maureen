@@ -50,11 +50,11 @@ export function ImageUpload({
 
     // Upload to Cloudflare
     onUploadStart?.()
-    const url = await upload(file)
+    const result = await upload(file)
     onUploadEnd?.()
 
-    if (url) {
-      onChange(url)
+    if (result) {
+      onChange(result.url)
     } else {
       // Upload failed, clear preview
       setPreview(value)

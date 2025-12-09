@@ -1,48 +1,41 @@
-import { useState } from 'react'
 import { useServerFn } from '@tanstack/react-start'
+import { useState } from 'react'
 
-import { getImageUploadUrl } from '@/server/functions/images'
+import { uploadImage } from '@/server/functions/images'
 
 export function useImageUpload() {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const getUploadUrlFn = useServerFn(getImageUploadUrl)
+  const uploadImageFn = useServerFn(uploadImage)
 
-  const upload = async (file: File): Promise<string | null> => {
+  const upload = async (
+    file: File,
+  ): Promise<{ url: string; key: string } | null> => {
     setIsUploading(true)
     setError(null)
 
     try {
-      // 1. Get direct upload URL from server
-      const { uploadURL, id } = await getUploadUrlFn()
-
-      // 2. Upload file directly to Cloudflare
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const uploadResponse = await fetch(uploadURL, {
-        method: 'POST',
-        body: formData,
+      // Convertir le fichier en base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
       })
 
-      if (!uploadResponse.ok) {
-        throw new Error('Upload failed')
-      }
+      // Upload vers le serveur qui uploade vers R2
+      const result = await uploadImageFn({
+        data: {
+          fileData: base64,
+          fileName: file.name,
+          fileType: file.type,
+          fileSize: file.size,
+        },
+      })
 
-      const result = await uploadResponse.json()
-
-      if (!result.success) {
-        throw new Error(result.errors?.[0]?.message || 'Failed to upload image')
-      }
-
-      // 3. Return the public delivery URL
-      // Cloudflare Images URL format: https://imagedelivery.net/{account-hash}/{image-id}/public
-      return (
-        result.result.variants?.[0] ||
-        `https://imagedelivery.net/.../${id}/public`
-      )
+      return result
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Upload failed'
+      const message = err instanceof Error ? err.message : 'Upload échoué'
       setError(message)
       return null
     } finally {

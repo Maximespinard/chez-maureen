@@ -40,6 +40,7 @@ export const ProductSchema = z.object({
     .max(100, VALIDATION.string.maxLength('origine', 100))
     .optional(),
   image: z.string().url(COMMON_FIELDS.url.invalid).optional().or(z.literal('')),
+  imageKey: z.string().optional(),
   categoryIds: z
     .array(z.string().cuid())
     .min(1, VALIDATION.array.minOne('catégorie')),

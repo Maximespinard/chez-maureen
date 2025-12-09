@@ -9,6 +9,7 @@ export type ProductWithRelations = {
   unit: string
   origin: string | null
   image: string | null
+  imageKey: string | null
   isActive: boolean
   isFeatured: boolean
   featuredOrder: number | null
