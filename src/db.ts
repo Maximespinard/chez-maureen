@@ -2,20 +2,27 @@ import { Pool } from '@neondatabase/serverless'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from './generated/prisma/client.js'
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
+// Lazy initialization - Prisma est créé uniquement quand nécessaire
+let prismaInstance: PrismaClient | null = null
+
+function getPrismaClient(): PrismaClient {
+  if (!prismaInstance) {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL!,
+    })
+    prismaInstance = new PrismaClient({ adapter })
+  }
+  return prismaInstance
+}
+
+// Export un Proxy qui retourne toujours le même client
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_, prop) {
+    return getPrismaClient()[prop as keyof PrismaClient]
+  },
 })
 
-declare global {
-  var __prisma: PrismaClient | undefined
-}
-
-export const prisma = globalThis.__prisma || new PrismaClient({ adapter })
 export const db = prisma // Alias pour compatibilité
-
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.__prisma = prisma
-}
 
 // Create a connection pool for raw SQL queries
 let pool: Pool | undefined

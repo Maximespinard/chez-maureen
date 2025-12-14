@@ -7,15 +7,23 @@ import {
 /**
  * Client R2 pour Cloudflare
  * Compatible avec AWS S3 API
+ * Lazy initialization pour compatibilité Cloudflare Workers
  */
-const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-})
+let r2Client: S3Client | null = null
+
+function getR2Client(): S3Client {
+  if (!r2Client) {
+    r2Client = new S3Client({
+      region: 'auto',
+      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+      },
+    })
+  }
+  return r2Client
+}
 
 /**
  * Upload un fichier vers R2
@@ -37,7 +45,7 @@ export async function uploadToR2(
       ContentType: contentType,
     })
 
-    await r2Client.send(command)
+    await getR2Client().send(command)
 
     // Construire l'URL publique
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`
@@ -60,7 +68,7 @@ export async function deleteFromR2(key: string): Promise<boolean> {
       Key: key,
     })
 
-    await r2Client.send(command)
+    await getR2Client().send(command)
     return true
   } catch (error) {
     console.error('Erreur lors de la suppression de R2:', error)
