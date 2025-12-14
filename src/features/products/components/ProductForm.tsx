@@ -51,6 +51,8 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
       badgeIds: product?.badges.map((b) => b.badge.id) ?? [],
       categoryIds: product?.categories.map((c) => c.category.id) ?? [],
       description: product?.description ?? '',
+      discountAmount: product?.discountAmount ?? null,
+      discountPercent: product?.discountPercent ?? null,
       featuredOrder: product?.featuredOrder ?? undefined,
       image: product?.image ?? '',
       imageKey: product?.imageKey ?? '',
@@ -301,6 +303,82 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
           </div>
         )}
       </form.Field>
+
+      {/* Promotion */}
+      <div className="space-y-4 rounded-lg border border-gray-200 p-4">
+        <h3 className="text-text-dark text-sm font-medium">
+          Promotion (optionnel)
+        </h3>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Discount Percent */}
+          <form.Field
+            name="discountPercent"
+            validators={{ onChange: ProductCreateSchema.shape.discountPercent }}
+          >
+            {(field) => (
+              <div>
+                <Label htmlFor={field.name}>Réduction en %</Label>
+                <Input
+                  id={field.name}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  value={field.state.value ?? ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    field.handleChange(val === '' ? null : parseFloat(val))
+                    // Clear the other field
+                    if (val !== '') {
+                      form.setFieldValue('discountAmount', null)
+                    }
+                  }}
+                  placeholder="Ex: 20"
+                />
+                <FieldErrors errors={field.state.meta.errors} />
+                <p className="text-text-muted mt-1 text-xs">
+                  Réduction en pourcentage (0-100%)
+                </p>
+              </div>
+            )}
+          </form.Field>
+
+          {/* Discount Amount */}
+          <form.Field
+            name="discountAmount"
+            validators={{ onChange: ProductCreateSchema.shape.discountAmount }}
+          >
+            {(field) => (
+              <div>
+                <Label htmlFor={field.name}>Réduction en €</Label>
+                <Input
+                  id={field.name}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={field.state.value ?? ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    field.handleChange(val === '' ? null : parseFloat(val))
+                    // Clear the other field
+                    if (val !== '') {
+                      form.setFieldValue('discountPercent', null)
+                    }
+                  }}
+                  placeholder="Ex: 2"
+                />
+                <FieldErrors errors={field.state.meta.errors} />
+                <p className="text-text-muted mt-1 text-xs">
+                  Montant fixe de la réduction en euros
+                </p>
+              </div>
+            )}
+          </form.Field>
+        </div>
+      </div>
 
       {/* Status Toggles */}
       <div className="space-y-4 rounded-lg border border-gray-200 p-4">

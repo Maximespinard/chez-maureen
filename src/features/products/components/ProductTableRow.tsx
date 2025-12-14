@@ -4,6 +4,7 @@ import type { ProductWithRelations } from '@/types/product'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
+import { PriceDisplay } from '@/features/products/components/PriceDisplay'
 import { useProductMutations } from '@/features/products/hooks/useProductMutations'
 import { getOptimizedImageUrl } from '@/lib/image-url'
 
@@ -50,9 +51,12 @@ export function ProductTableRow({
 
       {/* Price/Unit */}
       <TableCell>
-        <span className="whitespace-nowrap">
-          {Number(product.price).toFixed(2)} €/{product.unit}
-        </span>
+        <PriceDisplay
+          originalPrice={product.price}
+          discountPercent={product.discountPercent}
+          discountAmount={product.discountAmount}
+          unit={product.unit}
+        />
       </TableCell>
 
       {/* Categories */}

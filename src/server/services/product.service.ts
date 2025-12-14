@@ -4,6 +4,35 @@ import { prisma } from '@/db'
 
 export class ProductService {
   /**
+   * Format product to convert Decimal fields to numbers
+   */
+  private formatProduct(product: any) {
+    return {
+      ...product,
+      price: product.price.toNumber(),
+      discountPercent: product.discountPercent?.toNumber() ?? null,
+      discountAmount: product.discountAmount?.toNumber() ?? null,
+    }
+  }
+
+  /**
+   * Calculate effective price with discount
+   */
+  calculateEffectivePrice(
+    originalPrice: number,
+    discountPercent: number | null,
+    discountAmount: number | null,
+  ): number {
+    if (discountPercent !== null && discountPercent > 0) {
+      return originalPrice * (1 - discountPercent / 100)
+    }
+    if (discountAmount !== null && discountAmount > 0) {
+      return Math.max(0, originalPrice - discountAmount)
+    }
+    return originalPrice
+  }
+
+  /**
    * Get all products with categories
    */
   async getAll() {
@@ -29,7 +58,7 @@ export class ProductService {
       orderBy: { createdAt: 'desc' },
     })
 
-    return products.map((p) => ({ ...p, price: p.price.toNumber() }))
+    return products.map((p) => this.formatProduct(p))
   }
 
   /**
@@ -52,7 +81,7 @@ export class ProductService {
       },
     })
 
-    return product ? { ...product, price: product.price.toNumber() } : null
+    return product ? this.formatProduct(product) : null
   }
 
   /**
@@ -89,7 +118,7 @@ export class ProductService {
       },
     })
 
-    return { ...product, price: product.price.toNumber() }
+    return this.formatProduct(product)
   }
 
   /**
@@ -163,7 +192,7 @@ export class ProductService {
         })
       })
 
-      return { ...product, price: product.price.toNumber() }
+      return this.formatProduct(product)
     }
 
     // No associations update, just product fields
@@ -179,7 +208,7 @@ export class ProductService {
       },
     })
 
-    return { ...product, price: product.price.toNumber() }
+    return this.formatProduct(product)
   }
 
   /**
@@ -202,7 +231,7 @@ export class ProductService {
       await deleteFromR2(existingProduct.imageKey)
     }
 
-    return { ...product, price: product.price.toNumber() }
+    return this.formatProduct(product)
   }
 
   /**
@@ -233,7 +262,7 @@ export class ProductService {
       })
     })
 
-    return product ? { ...product, price: product.price.toNumber() } : null
+    return product ? this.formatProduct(product) : null
   }
 
   /**
@@ -263,7 +292,7 @@ export class ProductService {
       orderBy: [{ featuredOrder: 'asc' }, { name: 'asc' }],
     })
 
-    return products.map((p) => ({ ...p, price: p.price.toNumber() }))
+    return products.map((p) => this.formatProduct(p))
   }
 
   /**
@@ -280,7 +309,7 @@ export class ProductService {
       data: { isActive: !product.isActive },
     })
 
-    return { ...updated, price: updated.price.toNumber() }
+    return this.formatProduct(updated)
   }
 
   /**
@@ -302,7 +331,7 @@ export class ProductService {
       })
     })
 
-    return product ? { ...product, price: product.price.toNumber() } : null
+    return product ? this.formatProduct(product) : null
   }
 }
 
