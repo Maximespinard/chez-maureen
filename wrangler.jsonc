@@ -5,7 +5,13 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
   "routes": [
-    { "pattern": "chezmaureenprimeur.com/*", "zone_name": "chezmaureenprimeur.com" },
-    { "pattern": "www.chezmaureenprimeur.com/*", "zone_name": "chezmaureenprimeur.com" }
-  ]
+    {
+      "pattern": "chezmaureenprimeur.com/*",
+      "zone_name": "chezmaureenprimeur.com",
+    },
+    {
+      "pattern": "www.chezmaureenprimeur.com/*",
+      "zone_name": "chezmaureenprimeur.com",
+    },
+  ],
 }

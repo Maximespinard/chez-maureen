@@ -90,3 +90,477 @@ DATABASE_URL="postgresql://..."
 ## Workflow Git
 
 Créer une branche par feature, commit avec message descriptif selon la branche en cours.
+
+---
+
+## Règles de Code - Tailwind CSS
+
+### Classes Tailwind Canoniques (OBLIGATOIRE)
+
+**Toujours utiliser les classes canoniques Tailwind** :
+
+- ✅ `max-w-7xl` → ❌ `max-w-[1280px]`
+- ✅ `bg-linear-to-b` → ❌ `bg-gradient-to-b`
+- ✅ `p-4` → ❌ `p-[16px]`
+- ✅ `h-screen` → ❌ `h-[100vh]`
+
+**Avant d'écrire du code** :
+
+1. Vérifier si une classe standard existe avant d'utiliser des valeurs arbitraires `[]`
+2. Consulter la doc Tailwind : https://tailwindcss.com/docs
+3. Utiliser l'IntelliSense VSCode pour suggestions
+
+**Validation** :
+
+- Linter ESLint configuré pour bloquer les classes non-canoniques
+- Exécuter `npm run lint` avant chaque commit
+- Auto-fix disponible : `npm run check` (prettier + eslint --fix)
+
+**Fonctions utilitaires** :
+
+- Toujours utiliser `cn()` de `src/lib/utils.ts` pour merger les classes
+- Supporte `class-variance-authority` (cva) pour variants de composants
+
+**Exemples de migration** :
+
+```tsx
+// ❌ Avant
+<div className="max-w-[1280px] bg-gradient-to-b from-primeur-green">
+
+// ✅ Après
+<div className="max-w-7xl bg-linear-to-b from-primeur-green">
+```
+
+**Gestion des classes custom** :
+Si vous devez vraiment utiliser une valeur arbitraire (cas rare), documenter pourquoi :
+
+```tsx
+// Valeur spécifique du design system non couverte par Tailwind
+<div className="h-[73px]"> {/* Hauteur exacte du header dans la maquette */}
+```
+
+---
+
+### Classes Canoniques vs Arbitraires - Guide Complet
+
+**Quand UTILISER des classes canoniques** :
+
+1. **Z-index** : `z-1`, `z-2`, `z-10`, `z-20`, `z-50` ✅
+   - ❌ `z-[1]`, `z-[2]`
+
+2. **Positionnement négatif** : `-top-4`, `-right-8`, `-bottom-20`, `-left-30` ✅
+   - ❌ `top-[-16px]`, `bottom-[-80px]`, `left-[-120px]`
+
+3. **Tailles** : `size-3.5`, `h-0.5`, `w-12` ✅
+   - ❌ `h-[14px] w-[14px]`, `h-[2px]`
+   - ✅ Exceptions : grandes tailles décoratives comme `h-[450px]`
+
+4. **Transformations** : `-translate-y-3`, `scale-105`, `rotate-3` ✅
+   - ❌ `translate-y-[-12px]`
+
+5. **Filtres** : `blur-xl`, `blur-2xl`, `hue-rotate-10`, `saturate-150` ✅
+   - ❌ `blur-[40px]` (utiliser `blur-2xl`)
+   - ❌ `hue-rotate-[10deg]` (utiliser `hue-rotate-10`)
+
+6. **Durées** : `duration-300`, `duration-400`, `duration-500` ✅
+   - ❌ `duration-400ms` (syntaxe invalide)
+   - ❌ `duration-[400ms]` (utiliser `duration-400`)
+
+7. **Couleurs** : Toujours utiliser les variables du thème
+   - ✅ `text-text-body`, `bg-surface-card`, `border-border-subtle`
+   - ❌ `text-[oklch(...)]`
+
+**Quand GARDER des valeurs arbitraires** :
+
+1. **Tailles uniques du design** : `h-[73px]`, `w-[450px]`
+2. **Border-radius complexes** : `rounded-[40%_60%_70%_30%/...]`
+3. **Gradients** : `bg-[radial-gradient(...)]`
+4. **Animations custom** : `animate-[slideInUp_0.7s_ease-out]`
+5. **Valeurs entre deux canoniques** : `stroke-[1.8]`, `leading-[1.6]`
+6. **Ombres spécifiques** : `shadow-[0_4px_20px_rgba(...)]`
+7. **Positionnement extrême** : `right-[-150px]` (150px n'a pas de canonical)
+
+**Syntaxe Importante** :
+
+- ✅ Classes canoniques : `blur-2xl`, `duration-400`, `h-0.5`
+- ❌ Arbitraires inutiles : `blur-[40px]`, `duration-[400ms]`, `h-[2px]`
+- ❌ Syntaxe invalide : `blur-40px`, `duration-400ms` (manque les brackets ET il existe des canonical)
+
+**Exemples de conversions courantes** :
+
+| Arbitraire (avant)    | Canonical (après) | Note                               |
+| --------------------- | ----------------- | ---------------------------------- |
+| `z-[1]`               | `z-1`             | Z-index 1-50 disponibles           |
+| `top-[-16px]`         | `-top-4`          | 4px = 1 unit                       |
+| `bottom-[-80px]`      | `-bottom-20`      | 80px = 20 units                    |
+| `h-[2px]`             | `h-0.5`           | 2px = 0.5 unit                     |
+| `h-[14px]`            | `h-3.5`           | 14px = 3.5 units                   |
+| `translate-y-[-12px]` | `-translate-y-3`  | 12px = 3 units                     |
+| `hue-rotate-[10deg]`  | `hue-rotate-10`   | Rotation disponible                |
+| `blur-[40px]`         | `blur-2xl`        | 40px = blur-2xl                    |
+| `blur-40px`           | `blur-2xl`        | Fixer syntaxe + utiliser canonical |
+| `duration-[400ms]`    | `duration-400`    | 400ms disponible                   |
+| `duration-400ms`      | `duration-400`    | Fixer syntaxe invalide             |
+
+**Avant chaque commit** :
+
+```bash
+npm run lint           # Vérifie les erreurs
+npm run lint -- --fix  # Corrige automatiquement
+```
+
+---
+
+### Ordre des classes Tailwind (IMPORTANT)
+
+Le projet utilise `prettier-plugin-tailwindcss` pour ordonner automatiquement les classes.
+
+**Règle OBLIGATOIRE avant chaque commit :**
+
+```bash
+npm run lint -- --fix  # Auto-fix l'ordre des classes + autres erreurs ESLint
+```
+
+**Ordre appliqué automatiquement par le plugin :**
+
+1. **Layout** (display, position, float, clear, isolation, object-fit, overflow, overscroll, z-index)
+2. **Flexbox & Grid** (flex, flex-direction, grid, gap, justify, align, place, order)
+3. **Spacing** (margin, padding)
+4. **Sizing** (width, height, min-_, max-_)
+5. **Typography** (font-family, font-size, font-weight, line-height, letter-spacing, text-align, text-color, text-decoration, text-transform, whitespace, word-break)
+6. **Backgrounds** (background-color, background-image, background-size, background-position, background-repeat, background-attachment, background-clip)
+7. **Borders** (border-width, border-style, border-color, border-radius, border-collapse, border-spacing)
+8. **Effects** (box-shadow, opacity, mix-blend-mode, filter, backdrop-filter)
+9. **Transitions & Animation** (transition-property, transition-duration, transition-timing-function, transition-delay, animation)
+10. **Transforms** (transform, transform-origin, scale, rotate, translate, skew)
+11. **Interactivity** (appearance, cursor, caret-color, pointer-events, resize, scroll-behavior, user-select)
+12. **SVG** (fill, stroke)
+13. **Accessibility** (screen readers)
+14. **Pseudo-classes** (hover, focus, active, visited, etc.)
+15. **Pseudo-elements** (before, after, placeholder, etc.)
+16. **Media queries** (responsive variants)
+
+**Exemple de bon ordre (appliqué automatiquement) :**
+
+```tsx
+// ✅ BON (après npm run lint -- --fix)
+<div className="relative z-1 mx-auto flex max-w-7xl items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+
+// ❌ MAUVAIS (avant auto-fix)
+<div className="hover:shadow-lg p-6 transition-all mx-auto border-gray-200 duration-300 relative flex bg-white max-w-7xl gap-4 items-center z-1 rounded-xl shadow-md border hover:-translate-y-1">
+```
+
+**Si ESLint détecte des erreurs d'ordre :**
+
+- Ne PAS réordonner manuellement
+- Lancer `npm run lint -- --fix` qui le fait automatiquement
+- Vérifier que les changements sont corrects
+- Commit
+
+**Note :** L'ordre exact n'est pas à mémoriser, le plugin le gère. L'important est de toujours lancer `--fix` avant commit.
+
+---
+
+## Architecture TanStack Start - Séparation Client/Serveur
+
+### ❌ ANTI-PATTERN : Import direct des services côté client
+
+**NE JAMAIS faire ceci:**
+
+```typescript
+// ❌ MAUVAIS : Dans un hook React Query client-side
+import { categoryService } from '@/server/services/category.service'
+
+export function useCategories() {
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoryService.getAll(), // ❌ Service serveur appelé côté client
+  })
+}
+```
+
+**Problème:** Le service importe Prisma qui utilise `@neondatabase/serverless` Pool, impossible à initialiser dans le navigateur.
+
+**Erreur résultante:** `TypeError: Class extends value undefined is not a constructor or null`
+
+### ✅ PATTERN CORRECT : Server Functions
+
+**1. Créer une server function dans `src/server/functions/`:**
+
+```typescript
+// src/server/functions/categories.ts
+import { createServerFn } from '@tanstack/react-start'
+import { categoryService } from '@/server/services/category.service'
+import { CategoryCreateSchema } from '@/schemas/category.schema'
+
+// GET - Lecture
+export const getAllCategories = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await categoryService.getAll()
+  },
+)
+
+// POST - Mutation avec validation
+export const createCategory = createServerFn({ method: 'POST' })
+  .inputValidator(CategoryCreateSchema)
+  .handler(async ({ data }) => {
+    return await categoryService.create(data)
+  })
+```
+
+**2. Utiliser la server function côté client:**
+
+```typescript
+// src/features/categories/hooks/useCategories.ts
+import { useQuery } from '@tanstack/react-query'
+import { useServerFn } from '@tanstack/react-start'
+import { getAllCategories } from '@/server/functions/categories'
+
+export function useCategories() {
+  const getAllCategoriesFn = useServerFn(getAllCategories)
+
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategoriesFn(), // ✅ Appel RPC vers le serveur
+  })
+}
+```
+
+### Règles de séparation
+
+**Code serveur uniquement (ne JAMAIS importer côté client):**
+
+- Services (`src/server/services/*.service.ts`)
+- Client Prisma (`src/db.ts`)
+- Variables d'environnement sensibles
+- Packages Node.js (`fs`, `path`, `crypto`, etc.)
+
+**Code client (peut utiliser les server functions):**
+
+- Hooks React Query (`src/features/*/hooks/*.ts`)
+- Composants React (`src/components/`, `src/features/*/components/`)
+- Stores Zustand (`src/stores/`)
+
+**Pont client/serveur:**
+
+- Server Functions (`src/server/functions/*.ts`) créées avec `createServerFn`
+- Utilisées côté client avec `useServerFn`
+
+### Pattern Server Functions complet
+
+```typescript
+// Server function avec validation, types, et gestion d'erreurs
+export const updateCategory = createServerFn({ method: 'POST' })
+  .inputValidator(CategoryUpdateSchema) // Validation Zod
+  .handler(async ({ data }) => {
+    try {
+      return await categoryService.update(data)
+    } catch (error) {
+      throw new Error(`Erreur lors de la mise à jour: ${error.message}`)
+    }
+  })
+
+// Utilisation dans un hook mutation
+export function useCategoryMutations() {
+  const queryClient = useQueryClient()
+  const updateCategoryFn = useServerFn(updateCategory)
+
+  const update = useMutation({
+    mutationFn: (data: CategoryUpdate) => updateCategoryFn(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: ['categories', variables.id] })
+    },
+  })
+
+  return { update }
+}
+```
+
+---
+
+## Formulaires - Pattern TanStack Form + Zod
+
+### Composants d'erreurs réutilisables
+
+**NE JAMAIS** écrire le JSX d'affichage des erreurs inline. Utiliser les composants dédiés.
+
+#### Erreurs au niveau des champs
+
+```tsx
+import { FieldErrors } from '@/components/ui/field-errors'
+;<form.Field
+  name="fieldName"
+  validators={{
+    onChange: SomeSchema.shape.fieldName, // ⚠️ onChange uniquement (pas onBlur)
+  }}
+>
+  {(field) => (
+    <div>
+      <Label htmlFor={field.name}>Label</Label>
+      <Input
+        id={field.name}
+        name={field.name}
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
+      <FieldErrors errors={field.state.meta.errors} />
+    </div>
+  )}
+</form.Field>
+```
+
+#### Erreurs au niveau du formulaire
+
+```tsx
+import { FormError } from '@/components/ui/form-error'
+
+const [error, setError] = useState<string | null>(null)
+
+<form onSubmit={...}>
+  <FormError message={error} />
+  {/* champs */}
+</form>
+```
+
+### Règles de validation
+
+1. **Validators** : Utiliser `onChange` uniquement (PAS `onBlur`) pour éviter les doublons
+
+   ```tsx
+   validators={{
+     onChange: CategoryCreateSchema.shape.name,  // ✅
+     onBlur: CategoryCreateSchema.shape.name,    // ❌ Cause des doublons
+   }}
+   ```
+
+2. **Schema Zod** : Utiliser les schémas définis dans `src/schemas/*.schema.ts`
+
+3. **Affichage des erreurs** : Toujours utiliser `<FieldErrors>` (jamais de JSX inline)
+
+4. **Helper utility** : Le composant utilise `getErrorMessage()` de `src/lib/errors.ts` pour extraire les messages des erreurs Standard Schema (Zod v4)
+
+### Pattern complet d'un formulaire
+
+```tsx
+import { useForm } from '@tanstack/react-form'
+import { useState } from 'react'
+
+import { Button } from '@/components/ui/button'
+import { FieldErrors } from '@/components/ui/field-errors'
+import { FormError } from '@/components/ui/form-error'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { formatZodError } from '@/lib/errors'
+import { MySchema } from '@/schemas/my.schema'
+
+export function MyForm() {
+  const [error, setError] = useState<string | null>(null)
+
+  const form = useForm({
+    defaultValues: {
+      name: '',
+    },
+    onSubmit: async ({ value }) => {
+      setError(null)
+      try {
+        const validatedData = MySchema.parse(value)
+        // Submit logic
+      } catch (err) {
+        setError(formatZodError(err))
+      }
+    },
+  })
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
+      <FormError message={error} />
+
+      <form.Field name="name" validators={{ onChange: MySchema.shape.name }}>
+        {(field) => (
+          <div>
+            <Label htmlFor={field.name}>Nom</Label>
+            <Input
+              id={field.name}
+              name={field.name}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+            <FieldErrors errors={field.state.meta.errors} />
+          </div>
+        )}
+      </form.Field>
+
+      <Button type="submit">Envoyer</Button>
+    </form>
+  )
+}
+```
+
+---
+
+## Icônes Lucide - Pattern d'Accès Runtime
+
+### ❌ ANTI-PATTERN : Bracket notation sur namespace
+
+**NE JAMAIS faire ceci:**
+
+```typescript
+// ❌ MAUVAIS
+import * as LucideIcons from 'lucide-react'
+
+const IconComponent = LucideIcons[iconName] // undefined au runtime
+```
+
+**Problème:** Les imports nommés ES modules ne sont pas accessibles via bracket notation au runtime.
+
+**Erreur résultante:** `Error: <path> attribute d: Expected moveto path command ('M' or 'm'), "undefined"`
+
+### ✅ PATTERN CORRECT : Map statique d'imports
+
+**1. Créer un utilitaire partagé:**
+
+```typescript
+// src/lib/icon-map.ts
+import {
+  Apple,
+  Banana,
+  Carrot,
+  // ... tous les icônes nécessaires
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import type { CategoryIcon } from '@/schemas/category.schema'
+
+export const ICON_MAP: Record<CategoryIcon, LucideIcon> = {
+  Apple,
+  Banana,
+  Carrot,
+  // ... mapping complet
+}
+```
+
+**2. Utiliser le map dans les composants:**
+
+```typescript
+// ✅ BON
+import { ICON_MAP } from '@/lib/icon-map'
+
+const IconComponent = category.icon ? ICON_MAP[category.icon as CategoryIcon] : null
+
+return IconComponent && <IconComponent className="size-5" />
+```
+
+### Avantages du pattern ICON_MAP
+
+- ✅ Type-safe (TypeScript valide les clés)
+- ✅ Tree-shaking (seuls les icônes utilisés sont bundlés)
+- ✅ Centralisé (un seul endroit pour gérer les icônes)
+- ✅ Runtime-safe (pas d'accès dynamique dangereux)
+- Always run npm run check at end of task

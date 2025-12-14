@@ -11,22 +11,23 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
+import { Route as ConnexionIndexRouteImport } from './routes/connexion/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
-import { Route as AuthDeconnexionRouteImport } from './routes/auth/deconnexion'
-import { Route as AuthConnexionRouteImport } from './routes/auth/connexion'
 import { Route as AdminParametresRouteImport } from './routes/admin/parametres'
 import { Route as PublicProduitsRouteImport } from './routes/_public/produits'
 import { Route as PublicContactRouteImport } from './routes/_public/contact'
-import { Route as AdminPromotionsIndexRouteImport } from './routes/admin/promotions/index'
 import { Route as AdminProduitsIndexRouteImport } from './routes/admin/produits/index'
+import { Route as AdminMessagesIndexRouteImport } from './routes/admin/messages/index'
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin/categories/index'
-import { Route as AdminPromotionsNewRouteImport } from './routes/admin/promotions/new'
+import { Route as AdminBadgesIndexRouteImport } from './routes/admin/badges/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AdminProduitsNewRouteImport } from './routes/admin/produits/new'
 import { Route as AdminCategoriesNewRouteImport } from './routes/admin/categories/new'
-import { Route as AdminPromotionsIdEditRouteImport } from './routes/admin/promotions/$id.edit'
+import { Route as AdminBadgesNewRouteImport } from './routes/admin/badges/new'
 import { Route as AdminProduitsIdEditRouteImport } from './routes/admin/produits/$id.edit'
 import { Route as AdminCategoriesIdEditRouteImport } from './routes/admin/categories/$id.edit'
+import { Route as AdminBadgesIdEditRouteImport } from './routes/admin/badges/$id.edit'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -35,6 +36,11 @@ const AdminRoute = AdminRouteImport.update({
 } as any)
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionIndexRoute = ConnexionIndexRouteImport.update({
+  id: '/connexion/',
+  path: '/connexion/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -46,16 +52,6 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
-} as any)
-const AuthDeconnexionRoute = AuthDeconnexionRouteImport.update({
-  id: '/auth/deconnexion',
-  path: '/auth/deconnexion',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthConnexionRoute = AuthConnexionRouteImport.update({
-  id: '/auth/connexion',
-  path: '/auth/connexion',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminParametresRoute = AdminParametresRouteImport.update({
   id: '/parametres',
@@ -72,14 +68,14 @@ const PublicContactRoute = PublicContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => PublicRoute,
 } as any)
-const AdminPromotionsIndexRoute = AdminPromotionsIndexRouteImport.update({
-  id: '/promotions/',
-  path: '/promotions/',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminProduitsIndexRoute = AdminProduitsIndexRouteImport.update({
   id: '/produits/',
   path: '/produits/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesIndexRoute = AdminMessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
@@ -87,10 +83,15 @@ const AdminCategoriesIndexRoute = AdminCategoriesIndexRouteImport.update({
   path: '/categories/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPromotionsNewRoute = AdminPromotionsNewRouteImport.update({
-  id: '/promotions/new',
-  path: '/promotions/new',
+const AdminBadgesIndexRoute = AdminBadgesIndexRouteImport.update({
+  id: '/badges/',
+  path: '/badges/',
   getParentRoute: () => AdminRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProduitsNewRoute = AdminProduitsNewRouteImport.update({
   id: '/produits/new',
@@ -102,9 +103,9 @@ const AdminCategoriesNewRoute = AdminCategoriesNewRouteImport.update({
   path: '/categories/new',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPromotionsIdEditRoute = AdminPromotionsIdEditRouteImport.update({
-  id: '/promotions/$id/edit',
-  path: '/promotions/$id/edit',
+const AdminBadgesNewRoute = AdminBadgesNewRouteImport.update({
+  id: '/badges/new',
+  path: '/badges/new',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminProduitsIdEditRoute = AdminProduitsIdEditRouteImport.update({
@@ -117,43 +118,50 @@ const AdminCategoriesIdEditRoute = AdminCategoriesIdEditRouteImport.update({
   path: '/categories/$id/edit',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBadgesIdEditRoute = AdminBadgesIdEditRouteImport.update({
+  id: '/badges/$id/edit',
+  path: '/badges/$id/edit',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/contact': typeof PublicContactRoute
   '/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
-  '/auth/connexion': typeof AuthConnexionRoute
-  '/auth/deconnexion': typeof AuthDeconnexionRoute
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/connexion': typeof ConnexionIndexRoute
+  '/admin/badges/new': typeof AdminBadgesNewRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
-  '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/badges': typeof AdminBadgesIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/messages': typeof AdminMessagesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
-  '/admin/promotions': typeof AdminPromotionsIndexRoute
+  '/admin/badges/$id/edit': typeof AdminBadgesIdEditRoute
   '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
   '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
-  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/contact': typeof PublicContactRoute
   '/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
-  '/auth/connexion': typeof AuthConnexionRoute
-  '/auth/deconnexion': typeof AuthDeconnexionRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/connexion': typeof ConnexionIndexRoute
+  '/admin/badges/new': typeof AdminBadgesNewRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
-  '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/badges': typeof AdminBadgesIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
+  '/admin/messages': typeof AdminMessagesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
-  '/admin/promotions': typeof AdminPromotionsIndexRoute
+  '/admin/badges/$id/edit': typeof AdminBadgesIdEditRoute
   '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
   '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
-  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -162,19 +170,20 @@ export interface FileRoutesById {
   '/_public/contact': typeof PublicContactRoute
   '/_public/produits': typeof PublicProduitsRoute
   '/admin/parametres': typeof AdminParametresRoute
-  '/auth/connexion': typeof AuthConnexionRoute
-  '/auth/deconnexion': typeof AuthDeconnexionRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/connexion/': typeof ConnexionIndexRoute
+  '/admin/badges/new': typeof AdminBadgesNewRoute
   '/admin/categories/new': typeof AdminCategoriesNewRoute
   '/admin/produits/new': typeof AdminProduitsNewRoute
-  '/admin/promotions/new': typeof AdminPromotionsNewRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/badges/': typeof AdminBadgesIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
+  '/admin/messages/': typeof AdminMessagesIndexRoute
   '/admin/produits/': typeof AdminProduitsIndexRoute
-  '/admin/promotions/': typeof AdminPromotionsIndexRoute
+  '/admin/badges/$id/edit': typeof AdminBadgesIdEditRoute
   '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
   '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
-  '/admin/promotions/$id/edit': typeof AdminPromotionsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -183,37 +192,39 @@ export interface FileRouteTypes {
     | '/contact'
     | '/produits'
     | '/admin/parametres'
-    | '/auth/connexion'
-    | '/auth/deconnexion'
     | '/'
     | '/admin/'
+    | '/connexion'
+    | '/admin/badges/new'
     | '/admin/categories/new'
     | '/admin/produits/new'
-    | '/admin/promotions/new'
+    | '/api/auth/$'
+    | '/admin/badges'
     | '/admin/categories'
+    | '/admin/messages'
     | '/admin/produits'
-    | '/admin/promotions'
+    | '/admin/badges/$id/edit'
     | '/admin/categories/$id/edit'
     | '/admin/produits/$id/edit'
-    | '/admin/promotions/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/contact'
     | '/produits'
     | '/admin/parametres'
-    | '/auth/connexion'
-    | '/auth/deconnexion'
     | '/'
     | '/admin'
+    | '/connexion'
+    | '/admin/badges/new'
     | '/admin/categories/new'
     | '/admin/produits/new'
-    | '/admin/promotions/new'
+    | '/api/auth/$'
+    | '/admin/badges'
     | '/admin/categories'
+    | '/admin/messages'
     | '/admin/produits'
-    | '/admin/promotions'
+    | '/admin/badges/$id/edit'
     | '/admin/categories/$id/edit'
     | '/admin/produits/$id/edit'
-    | '/admin/promotions/$id/edit'
   id:
     | '__root__'
     | '/_public'
@@ -221,26 +232,27 @@ export interface FileRouteTypes {
     | '/_public/contact'
     | '/_public/produits'
     | '/admin/parametres'
-    | '/auth/connexion'
-    | '/auth/deconnexion'
     | '/_public/'
     | '/admin/'
+    | '/connexion/'
+    | '/admin/badges/new'
     | '/admin/categories/new'
     | '/admin/produits/new'
-    | '/admin/promotions/new'
+    | '/api/auth/$'
+    | '/admin/badges/'
     | '/admin/categories/'
+    | '/admin/messages/'
     | '/admin/produits/'
-    | '/admin/promotions/'
+    | '/admin/badges/$id/edit'
     | '/admin/categories/$id/edit'
     | '/admin/produits/$id/edit'
-    | '/admin/promotions/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
-  AuthConnexionRoute: typeof AuthConnexionRoute
-  AuthDeconnexionRoute: typeof AuthDeconnexionRoute
+  ConnexionIndexRoute: typeof ConnexionIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -259,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/connexion/': {
+      id: '/connexion/'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -272,20 +291,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
-    }
-    '/auth/deconnexion': {
-      id: '/auth/deconnexion'
-      path: '/auth/deconnexion'
-      fullPath: '/auth/deconnexion'
-      preLoaderRoute: typeof AuthDeconnexionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/connexion': {
-      id: '/auth/connexion'
-      path: '/auth/connexion'
-      fullPath: '/auth/connexion'
-      preLoaderRoute: typeof AuthConnexionRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/admin/parametres': {
       id: '/admin/parametres'
@@ -308,18 +313,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicContactRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/admin/promotions/': {
-      id: '/admin/promotions/'
-      path: '/promotions'
-      fullPath: '/admin/promotions'
-      preLoaderRoute: typeof AdminPromotionsIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/produits/': {
       id: '/admin/produits/'
       path: '/produits'
       fullPath: '/admin/produits'
       preLoaderRoute: typeof AdminProduitsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/messages/': {
+      id: '/admin/messages/'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/categories/': {
@@ -329,12 +334,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/promotions/new': {
-      id: '/admin/promotions/new'
-      path: '/promotions/new'
-      fullPath: '/admin/promotions/new'
-      preLoaderRoute: typeof AdminPromotionsNewRouteImport
+    '/admin/badges/': {
+      id: '/admin/badges/'
+      path: '/badges'
+      fullPath: '/admin/badges'
+      preLoaderRoute: typeof AdminBadgesIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/produits/new': {
       id: '/admin/produits/new'
@@ -350,11 +362,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesNewRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/promotions/$id/edit': {
-      id: '/admin/promotions/$id/edit'
-      path: '/promotions/$id/edit'
-      fullPath: '/admin/promotions/$id/edit'
-      preLoaderRoute: typeof AdminPromotionsIdEditRouteImport
+    '/admin/badges/new': {
+      id: '/admin/badges/new'
+      path: '/badges/new'
+      fullPath: '/admin/badges/new'
+      preLoaderRoute: typeof AdminBadgesNewRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/produits/$id/edit': {
@@ -369,6 +381,13 @@ declare module '@tanstack/react-router' {
       path: '/categories/$id/edit'
       fullPath: '/admin/categories/$id/edit'
       preLoaderRoute: typeof AdminCategoriesIdEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/badges/$id/edit': {
+      id: '/admin/badges/$id/edit'
+      path: '/badges/$id/edit'
+      fullPath: '/admin/badges/$id/edit'
+      preLoaderRoute: typeof AdminBadgesIdEditRouteImport
       parentRoute: typeof AdminRoute
     }
   }
@@ -392,29 +411,31 @@ const PublicRouteWithChildren =
 interface AdminRouteChildren {
   AdminParametresRoute: typeof AdminParametresRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminBadgesNewRoute: typeof AdminBadgesNewRoute
   AdminCategoriesNewRoute: typeof AdminCategoriesNewRoute
   AdminProduitsNewRoute: typeof AdminProduitsNewRoute
-  AdminPromotionsNewRoute: typeof AdminPromotionsNewRoute
+  AdminBadgesIndexRoute: typeof AdminBadgesIndexRoute
   AdminCategoriesIndexRoute: typeof AdminCategoriesIndexRoute
+  AdminMessagesIndexRoute: typeof AdminMessagesIndexRoute
   AdminProduitsIndexRoute: typeof AdminProduitsIndexRoute
-  AdminPromotionsIndexRoute: typeof AdminPromotionsIndexRoute
+  AdminBadgesIdEditRoute: typeof AdminBadgesIdEditRoute
   AdminCategoriesIdEditRoute: typeof AdminCategoriesIdEditRoute
   AdminProduitsIdEditRoute: typeof AdminProduitsIdEditRoute
-  AdminPromotionsIdEditRoute: typeof AdminPromotionsIdEditRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminParametresRoute: AdminParametresRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminBadgesNewRoute: AdminBadgesNewRoute,
   AdminCategoriesNewRoute: AdminCategoriesNewRoute,
   AdminProduitsNewRoute: AdminProduitsNewRoute,
-  AdminPromotionsNewRoute: AdminPromotionsNewRoute,
+  AdminBadgesIndexRoute: AdminBadgesIndexRoute,
   AdminCategoriesIndexRoute: AdminCategoriesIndexRoute,
+  AdminMessagesIndexRoute: AdminMessagesIndexRoute,
   AdminProduitsIndexRoute: AdminProduitsIndexRoute,
-  AdminPromotionsIndexRoute: AdminPromotionsIndexRoute,
+  AdminBadgesIdEditRoute: AdminBadgesIdEditRoute,
   AdminCategoriesIdEditRoute: AdminCategoriesIdEditRoute,
   AdminProduitsIdEditRoute: AdminProduitsIdEditRoute,
-  AdminPromotionsIdEditRoute: AdminPromotionsIdEditRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -422,8 +443,8 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
-  AuthConnexionRoute: AuthConnexionRoute,
-  AuthDeconnexionRoute: AuthDeconnexionRoute,
+  ConnexionIndexRoute: ConnexionIndexRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

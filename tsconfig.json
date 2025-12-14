@@ -7,7 +7,7 @@
     "vite.config.ts",
     "prisma.config.ts"
   ],
-  
+
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

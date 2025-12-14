@@ -53,10 +53,15 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Category: 'Category',
   Product: 'Product',
+  ProductCategory: 'ProductCategory',
   Badge: 'Badge',
   ProductBadge: 'ProductBadge',
   StoreSettings: 'StoreSettings',
-  ContactMessage: 'ContactMessage'
+  ContactMessage: 'ContactMessage',
+  User: 'User',
+  Session: 'Session',
+  Account: 'Account',
+  Verification: 'Verification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -79,7 +84,6 @@ export const CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
-  icon: 'icon',
   order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -97,9 +101,12 @@ export const ProductScalarFieldEnum = {
   unit: 'unit',
   origin: 'origin',
   image: 'image',
-  categoryId: 'categoryId',
+  imageKey: 'imageKey',
   isActive: 'isActive',
   isFeatured: 'isFeatured',
+  featuredOrder: 'featuredOrder',
+  discountPercent: 'discountPercent',
+  discountAmount: 'discountAmount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -107,11 +114,22 @@ export const ProductScalarFieldEnum = {
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
+export const ProductCategoryScalarFieldEnum = {
+  productId: 'productId',
+  categoryId: 'categoryId'
+} as const
+
+export type ProductCategoryScalarFieldEnum = (typeof ProductCategoryScalarFieldEnum)[keyof typeof ProductCategoryScalarFieldEnum]
+
+
 export const BadgeScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
-  color: 'color'
+  color: 'color',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BadgeScalarFieldEnum = (typeof BadgeScalarFieldEnum)[keyof typeof BadgeScalarFieldEnum]
@@ -146,6 +164,66 @@ export const ContactMessageScalarFieldEnum = {
 } as const
 
 export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  username: 'username',
+  displayUsername: 'displayUsername',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  expiresAt: 'expiresAt',
+  token: 'token',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  userId: 'userId'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  userId: 'userId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  idToken: 'idToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
+  scope: 'scope',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const VerificationScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  value: 'value',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
 export const SortOrder = {

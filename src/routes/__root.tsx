@@ -87,18 +87,18 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
 function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center px-6">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-slate-900 to-slate-800 px-6">
       <div className="max-w-md text-center">
-        <h1 className="text-9xl font-bold text-cyan-400 mb-4">404</h1>
-        <h2 className="text-3xl font-semibold text-white mb-4">
+        <h1 className="mb-4 text-9xl font-bold text-cyan-400">404</h1>
+        <h2 className="mb-4 text-3xl font-semibold text-white">
           Page non trouvée
         </h2>
-        <p className="text-gray-300 mb-8">
+        <p className="mb-8 text-gray-300">
           Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
         </p>
         <Link
           to="/"
-          className="inline-block bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+          className="inline-block rounded-lg bg-cyan-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-cyan-700"
         >
           Retour à l'accueil
         </Link>
