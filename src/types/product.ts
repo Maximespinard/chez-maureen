@@ -13,6 +13,8 @@ export type ProductWithRelations = {
   isActive: boolean
   isFeatured: boolean
   featuredOrder: number | null
+  discountPercent: number | null
+  discountAmount: number | null
   createdAt: Date
   updatedAt: Date
   categories: Array<{
