@@ -1,25 +1,31 @@
 import { useRef, useState } from 'react'
 import { ImagePlus, Loader2, X } from 'lucide-react'
+import { useServerFn } from '@tanstack/react-start'
 
 import { cn } from '@/lib/utils'
+import { getOptimizedImageUrl } from '@/lib/image-url'
+import { deleteImage } from '@/server/functions/images'
 import { useImageUpload } from '@/features/products/hooks/useImageUpload'
 
 interface ImageUploadProps {
   disabled?: boolean
-  onChange: (url: string) => void
+  imageKey?: string
+  onChange: (url: string, key: string | null) => void
   onUploadEnd?: () => void
   onUploadStart?: () => void
   value: string
 }
 
 export function ImageUpload({
-  value,
-  onChange,
-  onUploadStart,
-  onUploadEnd,
   disabled = false,
+  imageKey,
+  onChange,
+  onUploadEnd,
+  onUploadStart,
+  value,
 }: ImageUploadProps) {
   const { upload, isUploading, error } = useImageUpload()
+  const deleteImageFn = useServerFn(deleteImage)
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string>(value)
 
@@ -54,7 +60,7 @@ export function ImageUpload({
     onUploadEnd?.()
 
     if (result) {
-      onChange(result.url)
+      onChange(result.url, result.key)
     } else {
       // Upload failed, clear preview
       setPreview(value)
@@ -66,9 +72,19 @@ export function ImageUpload({
     }
   }
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
+    // Supprimer de R2 si une clé existe
+    if (imageKey) {
+      try {
+        await deleteImageFn({ data: { key: imageKey } })
+      } catch (err) {
+        console.error("Erreur lors de la suppression de l'image R2:", err)
+        // Continue anyway to clear the UI
+      }
+    }
+
     setPreview('')
-    onChange('')
+    onChange('', null)
     if (inputRef.current) {
       inputRef.current.value = ''
     }
@@ -86,7 +102,11 @@ export function ImageUpload({
           /* Image Preview */
           <div className="border-border-subtle relative overflow-hidden rounded-xl border">
             <img
-              src={preview}
+              src={
+                preview.startsWith('data:')
+                  ? preview
+                  : getOptimizedImageUrl(preview, { width: 600, quality: 85 })
+              }
               alt="Preview"
               className="size-full max-h-64 object-cover"
             />

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useProductMutations } from '@/features/products/hooks/useProductMutations'
+import { getOptimizedImageUrl } from '@/lib/image-url'
 
 interface ProductTableRowProps {
   onDelete: (product: ProductWithRelations) => void
@@ -25,7 +26,10 @@ export function ProductTableRow({
       <TableCell>
         {product.image ? (
           <img
-            src={product.image}
+            src={getOptimizedImageUrl(product.image, {
+              width: 80,
+              quality: 90,
+            })}
             alt={product.name}
             className="size-10 rounded-md object-cover"
           />

@@ -53,6 +53,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
       description: product?.description ?? '',
       featuredOrder: product?.featuredOrder ?? undefined,
       image: product?.image ?? '',
+      imageKey: product?.imageKey ?? '',
       isActive: product?.isActive ?? true,
       isFeatured: product?.isFeatured ?? false,
       name: product?.name ?? '',
@@ -253,7 +254,11 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
             <Label htmlFor={field.name}>Image</Label>
             <ImageUpload
               value={field.state.value}
-              onChange={field.handleChange}
+              imageKey={form.getFieldValue('imageKey')}
+              onChange={(url, key) => {
+                field.handleChange(url)
+                form.setFieldValue('imageKey', key ?? '')
+              }}
             />
             <FieldErrors errors={field.state.meta.errors} />
           </div>

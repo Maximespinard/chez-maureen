@@ -1,6 +1,8 @@
 import { MapPin } from 'lucide-react'
 
-type Badge = 'new' | 'promo' | 'local' | 'season' | 'bio'
+import { getOptimizedImageUrl } from '@/lib/image-url'
+
+type Badge = 'bio' | 'local' | 'new' | 'promo' | 'season'
 
 interface ProductCardProps {
   name: string
@@ -32,7 +34,7 @@ export function ProductCard({
       {/* Image Wrapper */}
       <div className="relative aspect-4/3 overflow-hidden bg-white">
         <img
-          src={image}
+          src={getOptimizedImageUrl(image, { width: 600, quality: 85 })}
           alt={name}
           loading="lazy"
           className="duration-400ms group-hover:rotate-1deg h-full w-full object-cover transition-transform group-hover:scale-[1.08]"
