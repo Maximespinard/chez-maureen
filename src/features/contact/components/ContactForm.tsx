@@ -1,11 +1,14 @@
+import { Turnstile } from '@marsidev/react-turnstile'
 import { Send } from 'lucide-react'
-import { useContactForm } from '../hooks/useContactForm'
+import { useState } from 'react'
 
 import { FieldErrors } from '@/components/ui/field-errors'
+import { useContactForm } from '@/features/contact/hooks/useContactForm'
 import { ContactCreateSchema } from '@/schemas/contact.schema'
 
 export function ContactForm() {
-  const form = useContactForm()
+  const [turnstileToken, setTurnstileToken] = useState<string>('')
+  const { form } = useContactForm(turnstileToken)
 
   return (
     <div className="rounded-3xl border border-[oklch(92%_0.01_72)] bg-white p-8 shadow-md md:p-10">
@@ -144,6 +147,20 @@ export function ContactForm() {
           )}
         </form.Field>
 
+        {/* Turnstile Widget (invisible) */}
+        <div className="flex justify-center">
+          <Turnstile
+            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || 'test-key'}
+            onSuccess={(token) => setTurnstileToken(token)}
+            onError={() => setTurnstileToken('')}
+            onExpire={() => setTurnstileToken('')}
+            options={{
+              theme: 'light',
+              size: 'normal',
+            }}
+          />
+        </div>
+
         {/* Submit Button */}
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -151,7 +168,7 @@ export function ContactForm() {
           {([canSubmit, isSubmitting]) => (
             <button
               type="submit"
-              disabled={!canSubmit || isSubmitting}
+              disabled={!canSubmit || isSubmitting || !turnstileToken}
               className="from-primeur-green to-primeur-green-hover hover:shadow-primeur-green/30 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-br px-6 py-3.5 font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span>
