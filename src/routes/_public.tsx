@@ -10,7 +10,7 @@ export const Route = createFileRoute('/_public')({
 })
 
 function PublicLayout() {
-  // Mode maintenance : affiche la page Coming Soon sans navbar/footer.
+  // Mode maintenance : affiche la page Coming Soon sans navbar/footer
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (MAINTENANCE_MODE) {
     return <ComingSoon />
