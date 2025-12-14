@@ -58,9 +58,7 @@ export function ContactMessageCard({
             >
               {message.name}
             </span>
-            <span className="text-text-light shrink-0 text-xs">
-              {timeAgo}
-            </span>
+            <span className="text-text-light shrink-0 text-xs">{timeAgo}</span>
           </div>
 
           {/* Email */}
