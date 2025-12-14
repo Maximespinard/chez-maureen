@@ -14,4 +14,4 @@ count.txt
 .claude-plugin
 .vscode
 todos.json
-src/generated/
+src/generated/worktrees/
