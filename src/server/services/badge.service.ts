@@ -83,11 +83,14 @@ export class BadgeService {
       columns: { order: true },
     })
 
+    const now = new Date()
     const [newBadge] = await db
       .insert(badge)
       .values({
         ...data,
         order: (maxOrder?.order ?? -1) + 1,
+        createdAt: now,
+        updatedAt: now,
       })
       .returning()
 

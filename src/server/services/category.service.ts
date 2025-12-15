@@ -83,11 +83,14 @@ export class CategoryService {
       columns: { order: true },
     })
 
+    const now = new Date()
     const [newCategory] = await db
       .insert(category)
       .values({
         ...data,
         order: (maxOrder?.order ?? -1) + 1,
+        createdAt: now,
+        updatedAt: now,
       })
       .returning()
 

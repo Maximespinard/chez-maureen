@@ -46,6 +46,35 @@ Le projet est déployé sur Cloudflare Workers qui utilise un runtime JavaScript
 - **@neondatabase/serverless** avec **drizzle-orm/neon-http** ✅
 - Prisma avec PlanetScale ou pg-adapter ❌ (ne fonctionne pas sur Workers)
 
+#### Transactions et neon-http
+
+**Important** : Le driver `neon-http` ne supporte pas `db.transaction()`.
+
+**Pattern à suivre** :
+
+- Exécuter les opérations séquentiellement (sans transaction)
+- Acceptable pour opérations CRUD simples (create, update, delete)
+
+**Alternative WebSocket** :
+
+- `drizzle-orm/neon-serverless` avec `Pool` supporte les transactions
+- Nécessite create/close du Pool à chaque requête (contrainte Workers)
+- Réservé aux cas nécessitant vraiment une cohérence transactionnelle
+
+**Exemple** :
+
+```typescript
+// ❌ MAUVAIS - neon-http ne supporte pas
+await db.transaction(async (tx) => {
+  await tx.insert(product).values(...)
+  await tx.insert(productCategory).values(...)
+})
+
+// ✅ BON - Opérations séquentielles
+await db.insert(product).values(...)
+await db.insert(productCategory).values(...)
+```
+
 ### Pattern d'import sécurisé
 
 ```typescript

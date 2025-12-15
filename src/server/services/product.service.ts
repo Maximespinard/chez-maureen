@@ -81,52 +81,55 @@ export class ProductService {
   async create(data: ProductCreate) {
     const { categoryIds, badgeIds = [], ...productData } = data
 
-    return db.transaction(async (tx) => {
-      // Create product
-      const [newProduct] = await tx
-        .insert(product)
-        .values(productData as typeof product.$inferInsert)
-        .returning()
+    // Create product
+    const now = new Date()
+    const [newProduct] = await db
+      .insert(product)
+      .values({
+        ...(productData as typeof product.$inferInsert),
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning()
 
-      // Create category associations
-      if (categoryIds.length > 0) {
-        await tx.insert(productCategory).values(
-          categoryIds.map((categoryId) => ({
-            productId: newProduct.id,
-            categoryId,
-          })),
-        )
-      }
+    // Create category associations
+    if (categoryIds.length > 0) {
+      await db.insert(productCategory).values(
+        categoryIds.map((categoryId) => ({
+          productId: newProduct.id,
+          categoryId,
+        })),
+      )
+    }
 
-      // Create badge associations
-      if (badgeIds.length > 0) {
-        await tx.insert(productBadge).values(
-          badgeIds.map((badgeId) => ({
-            productId: newProduct.id,
-            badgeId,
-          })),
-        )
-      }
+    // Create badge associations
+    if (badgeIds.length > 0) {
+      await db.insert(productBadge).values(
+        badgeIds.map((badgeId) => ({
+          productId: newProduct.id,
+          badgeId,
+        })),
+      )
+    }
 
-      // Fetch the product with relations
-      const prodWithRelations = await tx.query.product.findFirst({
-        where: eq(product.id, newProduct.id),
-        with: {
-          categories: {
-            with: {
-              category: true,
-            },
-          },
-          badges: {
-            with: {
-              badge: true,
-            },
+    // Fetch the product with relations
+    const prodWithRelations = await db.query.product.findFirst({
+      where: eq(product.id, newProduct.id),
+      with: {
+        categories: {
+          with: {
+            category: true,
           },
         },
-      })
-
-      return prodWithRelations
+        badges: {
+          with: {
+            badge: true,
+          },
+        },
+      },
     })
+
+    return prodWithRelations
   }
 
   /**
@@ -152,65 +155,63 @@ export class ProductService {
 
     // If categoryIds or badgeIds provided, update associations
     if (categoryIds !== undefined || badgeIds !== undefined) {
-      return db.transaction(async (tx) => {
-        // Update categories if provided
-        if (categoryIds !== undefined) {
-          await tx
-            .delete(productCategory)
-            .where(eq(productCategory.productId, id))
+      // Update categories if provided
+      if (categoryIds !== undefined) {
+        await db
+          .delete(productCategory)
+          .where(eq(productCategory.productId, id))
 
-          if (categoryIds.length > 0) {
-            await tx.insert(productCategory).values(
-              categoryIds.map((categoryId) => ({
-                productId: id,
-                categoryId,
-              })),
-            )
-          }
+        if (categoryIds.length > 0) {
+          await db.insert(productCategory).values(
+            categoryIds.map((categoryId) => ({
+              productId: id,
+              categoryId,
+            })),
+          )
         }
+      }
 
-        // Update badges if provided
-        if (badgeIds !== undefined) {
-          await tx.delete(productBadge).where(eq(productBadge.productId, id))
+      // Update badges if provided
+      if (badgeIds !== undefined) {
+        await db.delete(productBadge).where(eq(productBadge.productId, id))
 
-          if (badgeIds.length > 0) {
-            await tx.insert(productBadge).values(
-              badgeIds.map((badgeId) => ({
-                productId: id,
-                badgeId,
-              })),
-            )
-          }
+        if (badgeIds.length > 0) {
+          await db.insert(productBadge).values(
+            badgeIds.map((badgeId) => ({
+              productId: id,
+              badgeId,
+            })),
+          )
         }
+      }
 
-        // Update product
-        await tx
-          .update(product)
-          .set({
-            ...(productData as Partial<typeof product.$inferInsert>),
-            updatedAt: new Date(),
-          })
-          .where(eq(product.id, id))
+      // Update product
+      await db
+        .update(product)
+        .set({
+          ...(productData as Partial<typeof product.$inferInsert>),
+          updatedAt: new Date(),
+        })
+        .where(eq(product.id, id))
 
-        // Fetch updated product with relations
-        const updatedProduct = await tx.query.product.findFirst({
-          where: eq(product.id, id),
-          with: {
-            categories: {
-              with: {
-                category: true,
-              },
-            },
-            badges: {
-              with: {
-                badge: true,
-              },
+      // Fetch updated product with relations
+      const updatedProduct = await db.query.product.findFirst({
+        where: eq(product.id, id),
+        with: {
+          categories: {
+            with: {
+              category: true,
             },
           },
-        })
-
-        return updatedProduct
+          badges: {
+            with: {
+              badge: true,
+            },
+          },
+        },
       })
+
+      return updatedProduct
     }
 
     // No associations update, just product fields
@@ -264,33 +265,31 @@ export class ProductService {
    * Update product categories only
    */
   async updateCategories(productId: string, categoryIds: Array<string>) {
-    return db.transaction(async (tx) => {
-      await tx
-        .delete(productCategory)
-        .where(eq(productCategory.productId, productId))
+    await db
+      .delete(productCategory)
+      .where(eq(productCategory.productId, productId))
 
-      if (categoryIds.length > 0) {
-        await tx.insert(productCategory).values(
-          categoryIds.map((categoryId) => ({
-            productId,
-            categoryId,
-          })),
-        )
-      }
+    if (categoryIds.length > 0) {
+      await db.insert(productCategory).values(
+        categoryIds.map((categoryId) => ({
+          productId,
+          categoryId,
+        })),
+      )
+    }
 
-      const prod = await tx.query.product.findFirst({
-        where: eq(product.id, productId),
-        with: {
-          categories: {
-            with: {
-              category: true,
-            },
+    const prod = await db.query.product.findFirst({
+      where: eq(product.id, productId),
+      with: {
+        categories: {
+          with: {
+            category: true,
           },
         },
-      })
-
-      return prod ?? null
+      },
     })
+
+    return prod ?? null
   }
 
   /**
@@ -349,24 +348,22 @@ export class ProductService {
    * Update badges for a product
    */
   async updateBadges(productId: string, badgeIds: Array<string>) {
-    return db.transaction(async (tx) => {
-      await tx.delete(productBadge).where(eq(productBadge.productId, productId))
+    await db.delete(productBadge).where(eq(productBadge.productId, productId))
 
-      if (badgeIds.length > 0) {
-        await tx
-          .insert(productBadge)
-          .values(badgeIds.map((badgeId) => ({ productId, badgeId })))
-      }
+    if (badgeIds.length > 0) {
+      await db
+        .insert(productBadge)
+        .values(badgeIds.map((badgeId) => ({ productId, badgeId })))
+    }
 
-      const prod = await tx.query.product.findFirst({
-        where: eq(product.id, productId),
-        with: {
-          badges: { with: { badge: true } },
-        },
-      })
-
-      return prod ?? null
+    const prod = await db.query.product.findFirst({
+      where: eq(product.id, productId),
+      with: {
+        badges: { with: { badge: true } },
+      },
     })
+
+    return prod ?? null
   }
 }
 
