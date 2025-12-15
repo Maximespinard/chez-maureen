@@ -1,14 +1,23 @@
-import { Search, X } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronDown, Filter, Search, X } from 'lucide-react'
 
+import { ProductFilterFields } from './ProductFilterFields'
 import type { MultiSelectOption } from '@/components/ui/multi-select'
 import type { ProductFilters } from '@/types/product'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { MultiSelect } from '@/components/ui/multi-select'
-import { NativeSelect } from '@/components/ui/native-select'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { useBadges } from '@/features/badges/hooks/useBadges'
 import { useCategories } from '@/features/categories/hooks/useCategories'
+import { cn } from '@/lib/utils'
 
 interface ProductFiltersAdminProps {
   filters: ProductFilters
@@ -23,6 +32,11 @@ export function ProductFiltersAdmin({
 }: ProductFiltersAdminProps) {
   const { data: categories } = useCategories()
   const { data: badges } = useBadges()
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  // Store temporary filters for mobile drawer (apply on "Valider")
+  const [tempFilters, setTempFilters] = useState<ProductFilters>(filters)
 
   const categoryOptions: Array<MultiSelectOption> =
     categories?.map((cat) => ({
@@ -44,99 +58,142 @@ export function ProductFiltersAdmin({
     filters.isActive !== 'all' ||
     filters.isFeatured !== 'all'
 
+  // Count active advanced filters for badge
+  const advancedFiltersCount = [
+    filters.categoryIds.length > 0,
+    filters.badgeIds.length > 0,
+    filters.isActive !== 'all',
+    filters.isFeatured !== 'all',
+  ].filter(Boolean).length
+
+  // Handle sheet open - sync temp filters with current filters
+  const handleSheetOpenChange = (open: boolean) => {
+    if (open) {
+      setTempFilters(filters)
+    }
+    setIsSheetOpen(open)
+  }
+
+  // Apply temp filters from mobile drawer
+  const handleApplyMobileFilters = () => {
+    onFiltersChange(tempFilters)
+    setIsSheetOpen(false)
+  }
+
+  // Cancel and reset temp filters
+  const handleCancelMobileFilters = () => {
+    setTempFilters(filters)
+    setIsSheetOpen(false)
+  }
+
   return (
-    <div className="border-border-subtle space-y-4 rounded-xl border bg-white p-6">
+    <div className="border-border-subtle space-y-4 rounded-xl border bg-white p-4 lg:p-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-text-dark text-sm font-semibold">Filtres</h3>
         {hasActiveFilters && (
           <Button variant="ghost" size="sm" onClick={onReset}>
             <X className="size-4" />
-            Réinitialiser
+            <span className="hidden sm:inline">Réinitialiser</span>
           </Button>
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* Search */}
-        <div className="space-y-2 md:col-span-2 lg:col-span-3">
-          <Label htmlFor="search">Recherche</Label>
-          <div className="relative">
-            <Search className="text-text-light absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-            <Input
-              id="search"
-              type="text"
-              placeholder="Nom du produit, origine..."
-              value={filters.search}
-              onChange={(e) =>
-                onFiltersChange({ ...filters, search: e.target.value })
-              }
-              className="pl-9"
+      {/* Search + Filter Actions Row */}
+      <div className="flex gap-3">
+        {/* Search - always visible */}
+        <div className="relative flex-1">
+          <Search className="text-text-light absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <Input
+            type="text"
+            placeholder="Nom du produit, origine..."
+            value={filters.search}
+            onChange={(e) =>
+              onFiltersChange({ ...filters, search: e.target.value })
+            }
+            className="pl-9"
+          />
+        </div>
+
+        {/* Mobile: Filter Button + Sheet */}
+        <div className="lg:hidden">
+          <Sheet open={isSheetOpen} onOpenChange={handleSheetOpenChange}>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="relative">
+                <Filter className="size-4" />
+                <span className="sr-only">Filtres</span>
+                {advancedFiltersCount > 0 && (
+                  <span className="bg-primeur-green absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full text-xs text-white">
+                    {advancedFiltersCount}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="bottom"
+              className="max-h-[85vh] overflow-y-auto"
+            >
+              <SheetHeader>
+                <SheetTitle>Filtres avancés</SheetTitle>
+              </SheetHeader>
+              <div className="py-6">
+                <ProductFilterFields
+                  filters={tempFilters}
+                  onFiltersChange={setTempFilters}
+                  categoryOptions={categoryOptions}
+                  badgeOptions={badgeOptions}
+                />
+              </div>
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button variant="outline" onClick={handleCancelMobileFilters}>
+                    Annuler
+                  </Button>
+                </SheetClose>
+                <Button onClick={handleApplyMobileFilters}>Valider</Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* Desktop: Expand Button */}
+        <div className="hidden lg:block">
+          <Button
+            variant="outline"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="relative"
+          >
+            <Filter className="size-4" />
+            Filtres avancés
+            <ChevronDown
+              className={cn(
+                'size-4 transition-transform duration-200',
+                isExpanded && 'rotate-180',
+              )}
             />
-          </div>
+            {advancedFiltersCount > 0 && !isExpanded && (
+              <span className="bg-primeur-green absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full text-xs text-white">
+                {advancedFiltersCount}
+              </span>
+            )}
+          </Button>
         </div>
+      </div>
 
-        {/* Categories */}
-        <div className="space-y-2">
-          <Label>Catégories</Label>
-          <MultiSelect
-            options={categoryOptions}
-            selected={filters.categoryIds}
-            onChange={(categoryIds) =>
-              onFiltersChange({ ...filters, categoryIds })
-            }
-            placeholder="Toutes les catégories"
-            emptyMessage="Aucune catégorie disponible"
+      {/* Desktop: Expandable Filters Section */}
+      <div
+        className={cn(
+          'hidden overflow-hidden transition-all duration-300 ease-in-out lg:block',
+          isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
+        )}
+      >
+        <div className="border-border-subtle border-t pt-4">
+          <ProductFilterFields
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            categoryOptions={categoryOptions}
+            badgeOptions={badgeOptions}
           />
-        </div>
-
-        {/* Badges */}
-        <div className="space-y-2">
-          <Label>Labels</Label>
-          <MultiSelect
-            options={badgeOptions}
-            selected={filters.badgeIds}
-            onChange={(badgeIds) => onFiltersChange({ ...filters, badgeIds })}
-            placeholder="Tous les labels"
-            emptyMessage="Aucun label disponible"
-          />
-        </div>
-
-        {/* Active Status */}
-        <div className="space-y-2">
-          <Label htmlFor="isActive">Statut actif</Label>
-          <NativeSelect
-            id="isActive"
-            value={filters.isActive}
-            onChange={(e) =>
-              onFiltersChange({
-                ...filters,
-                isActive: e.target.value as ProductFilters['isActive'],
-              })
-            }
-          >
-            <option value="all">Tous</option>
-            <option value="active">Actifs</option>
-            <option value="inactive">Inactifs</option>
-          </NativeSelect>
-        </div>
-
-        {/* Featured Status */}
-        <div className="space-y-2 md:col-span-2 lg:col-span-1">
-          <Label htmlFor="isFeatured">Produit vedette</Label>
-          <NativeSelect
-            id="isFeatured"
-            value={filters.isFeatured}
-            onChange={(e) =>
-              onFiltersChange({
-                ...filters,
-                isFeatured: e.target.value as ProductFilters['isFeatured'],
-              })
-            }
-          >
-            <option value="all">Tous</option>
-            <option value="featured">Vedette</option>
-            <option value="not-featured">Non vedette</option>
-          </NativeSelect>
         </div>
       </div>
     </div>

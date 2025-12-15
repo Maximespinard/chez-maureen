@@ -44,7 +44,7 @@ const statItems = [
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {statItems.map((item) => {
         const Icon = item.icon
         const value = stats[item.key]
@@ -52,19 +52,19 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
         return (
           <div
             key={item.key}
-            className="border-border-subtle rounded-lg border bg-white p-6 shadow-sm"
+            className="border-border-subtle rounded-lg border bg-white p-4 shadow-sm lg:p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-text-light text-sm font-medium">
+                <p className="text-text-light text-xs font-medium lg:text-sm">
                   {item.label}
                 </p>
-                <p className="text-text-dark mt-2 text-3xl font-bold">
+                <p className="text-text-dark mt-1 text-2xl font-bold lg:mt-2 lg:text-3xl">
                   {value}
                 </p>
               </div>
-              <div className={cn('rounded-lg p-3', item.bgColor)}>
-                <Icon className={cn('size-6', item.color)} />
+              <div className={cn('rounded-lg p-2 lg:p-3', item.bgColor)}>
+                <Icon className={cn('size-5 lg:size-6', item.color)} />
               </div>
             </div>
           </div>
