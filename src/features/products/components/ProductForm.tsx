@@ -312,10 +312,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 
         <div className="grid gap-4 md:grid-cols-2">
           {/* Discount Percent */}
-          <form.Field
-            name="discountPercent"
-            validators={{ onChange: ProductCreateSchema.shape.discountPercent }}
-          >
+          <form.Field name="discountPercent">
             {(field) => (
               <div>
                 <Label htmlFor={field.name}>Réduction en %</Label>
@@ -346,10 +343,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
           </form.Field>
 
           {/* Discount Amount */}
-          <form.Field
-            name="discountAmount"
-            validators={{ onChange: ProductCreateSchema.shape.discountAmount }}
-          >
+          <form.Field name="discountAmount">
             {(field) => (
               <div>
                 <Label htmlFor={field.name}>Réduction en €</Label>

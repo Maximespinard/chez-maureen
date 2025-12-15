@@ -1,47 +1,76 @@
+import { count, eq } from 'drizzle-orm'
+
 import type { BadgeCreate, BadgeReorder, BadgeUpdate } from '@/schemas'
-import { prisma } from '@/db'
+import { db } from '@/lib/drizzle'
+import { badge, productBadge } from '@/lib/schema'
 
 export class BadgeService {
   /**
    * Get all badges with product counts, ordered by `order` field
    */
   async getAll() {
-    return prisma.badge.findMany({
-      include: {
-        _count: {
-          select: { products: true },
-        },
-      },
-      orderBy: { order: 'asc' },
+    const badges = await db.query.badge.findMany({
+      orderBy: (bdg, { asc }) => [asc(bdg.order)],
     })
+
+    // Get product counts for each badge
+    const badgesWithCount = await Promise.all(
+      badges.map(async (bdg) => {
+        const [productCount] = await db
+          .select({ count: count() })
+          .from(productBadge)
+          .where(eq(productBadge.badgeId, bdg.id))
+
+        return {
+          ...bdg,
+          _count: {
+            products: Number(productCount.count),
+          },
+        }
+      }),
+    )
+
+    return badgesWithCount
   }
 
   /**
    * Get single badge with products
    */
   async getById(id: string) {
-    return prisma.badge.findUnique({
-      include: {
-        _count: {
-          select: { products: true },
-        },
+    const bdg = await db.query.badge.findFirst({
+      where: eq(badge.id, id),
+      with: {
         products: {
-          include: {
+          with: {
             product: {
-              select: {
+              columns: {
                 id: true,
-                image: true,
-                isActive: true,
                 name: true,
-                price: true,
                 slug: true,
+                image: true,
+                price: true,
+                isActive: true,
               },
             },
           },
         },
       },
-      where: { id },
     })
+
+    if (!bdg) return null
+
+    // Get product count
+    const [productCount] = await db
+      .select({ count: count() })
+      .from(productBadge)
+      .where(eq(productBadge.badgeId, id))
+
+    return {
+      ...bdg,
+      _count: {
+        products: Number(productCount.count),
+      },
+    }
   }
 
   /**
@@ -49,17 +78,20 @@ export class BadgeService {
    */
   async create(data: BadgeCreate) {
     // Get max order + 1 for new badge
-    const maxOrder = await prisma.badge.findFirst({
-      orderBy: { order: 'desc' },
-      select: { order: true },
+    const maxOrder = await db.query.badge.findFirst({
+      orderBy: (bdg, { desc: descending }) => [descending(bdg.order)],
+      columns: { order: true },
     })
 
-    return prisma.badge.create({
-      data: {
+    const [newBadge] = await db
+      .insert(badge)
+      .values({
         ...data,
         order: (maxOrder?.order ?? -1) + 1,
-      },
-    })
+      })
+      .returning()
+
+    return newBadge
   }
 
   /**
@@ -67,10 +99,13 @@ export class BadgeService {
    */
   async update(data: BadgeUpdate) {
     const { id, ...updateData } = data
-    return prisma.badge.update({
-      data: updateData,
-      where: { id },
-    })
+    const [updatedBadge] = await db
+      .update(badge)
+      .set(updateData)
+      .where(eq(badge.id, id))
+      .returning()
+
+    return updatedBadge
   }
 
   /**
@@ -79,38 +114,40 @@ export class BadgeService {
    * But we provide a warning to the user if the badge is in use
    */
   async delete(id: string) {
-    const badge = await prisma.badge.findUnique({
-      include: {
-        _count: {
-          select: { products: true },
-        },
-      },
-      where: { id },
+    const bdg = await db.query.badge.findFirst({
+      where: eq(badge.id, id),
     })
 
-    if (!badge) {
+    if (!bdg) {
       throw new Error('Badge introuvable')
     }
 
     // Unlike categories, badges can be deleted even with products (cascade)
     // But we warn the user in the UI
-    return prisma.badge.delete({
-      where: { id },
-    })
+    const [deletedBadge] = await db
+      .delete(badge)
+      .where(eq(badge.id, id))
+      .returning()
+
+    return deletedBadge
   }
 
   /**
    * Reorder badges (drag & drop)
    */
   async reorder(data: BadgeReorder) {
-    return prisma.$transaction(
-      data.badges.map(({ id, order }) =>
-        prisma.badge.update({
-          data: { order },
-          where: { id },
-        }),
-      ),
-    )
+    return db.transaction(async (tx) => {
+      const results = []
+      for (const { id, order: newOrder } of data.badges) {
+        const [updated] = await tx
+          .update(badge)
+          .set({ order: newOrder })
+          .where(eq(badge.id, id))
+          .returning()
+        results.push(updated)
+      }
+      return results
+    })
   }
 }
 

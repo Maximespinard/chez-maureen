@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useServerFn } from '@tanstack/react-start'
 
-import type { ContactMessageModel } from '@/generated/prisma/models'
+import type { ContactMessageModel } from '@/lib/schema'
 import {
   deleteContactMessage,
   getAllContactMessages,

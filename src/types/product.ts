@@ -1,4 +1,4 @@
-import type { BadgeModel, CategoryModel } from '@/generated/prisma/models'
+import type { BadgeModel, CategoryModel } from '@/lib/schema'
 
 export type ProductWithRelations = {
   id: string

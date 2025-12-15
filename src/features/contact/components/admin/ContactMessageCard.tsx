@@ -2,7 +2,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Mail, MailOpen } from 'lucide-react'
 
-import type { ContactMessageModel } from '@/generated/prisma/models'
+import type { ContactMessageModel } from '@/lib/schema'
 
 interface ContactMessageCardProps {
   message: ContactMessageModel

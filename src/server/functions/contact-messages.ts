@@ -1,7 +1,9 @@
 import { createServerFn } from '@tanstack/react-start'
+import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
-import { db } from '@/db'
+import { db } from '@/lib/drizzle'
+import { contactMessage } from '@/lib/schema'
 import { ContactCreateSchema } from '@/schemas/contact.schema'
 
 /**
@@ -59,9 +61,10 @@ export const createContactMessage = createServerFn({ method: 'POST' })
 
     // Créer le message
     const { turnstileToken, ...messageData } = data
-    const message = await db.contactMessage.create({
-      data: messageData,
-    })
+    const [message] = await db
+      .insert(contactMessage)
+      .values(messageData)
+      .returning()
 
     return message
   })
@@ -71,10 +74,8 @@ export const createContactMessage = createServerFn({ method: 'POST' })
  */
 export const getAllContactMessages = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const messages = await db.contactMessage.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
+    const messages = await db.query.contactMessage.findMany({
+      orderBy: (msg, { desc: descending }) => [descending(msg.createdAt)],
     })
 
     return messages
@@ -92,8 +93,8 @@ export const toggleMessageRead = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     // Récupérer le message actuel
-    const currentMessage = await db.contactMessage.findUnique({
-      where: { id: data.id },
+    const currentMessage = await db.query.contactMessage.findFirst({
+      where: eq(contactMessage.id, data.id),
     })
 
     if (!currentMessage) {
@@ -101,12 +102,13 @@ export const toggleMessageRead = createServerFn({ method: 'POST' })
     }
 
     // Toggle isRead
-    const updatedMessage = await db.contactMessage.update({
-      where: { id: data.id },
-      data: {
+    const [updatedMessage] = await db
+      .update(contactMessage)
+      .set({
         isRead: !currentMessage.isRead,
-      },
-    })
+      })
+      .where(eq(contactMessage.id, data.id))
+      .returning()
 
     return updatedMessage
   })
@@ -121,9 +123,7 @@ export const deleteContactMessage = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    await db.contactMessage.delete({
-      where: { id: data.id },
-    })
+    await db.delete(contactMessage).where(eq(contactMessage.id, data.id))
 
     return { success: true }
   })

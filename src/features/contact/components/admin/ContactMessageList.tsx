@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import { ContactMessageCard } from './ContactMessageCard'
 import { ContactMessageDialog } from './ContactMessageDialog'
-import type { ContactMessageModel } from '@/generated/prisma/models'
+import type { ContactMessageModel } from '@/lib/schema'
 import { useContactMessages } from '@/features/contact/hooks/useContactMessages'
 
 interface ContactMessageListProps {

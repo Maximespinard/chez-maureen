@@ -4,7 +4,7 @@ import { Mail, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { DeleteMessageDialog } from './DeleteMessageDialog'
-import type { ContactMessageModel } from '@/generated/prisma/models'
+import type { ContactMessageModel } from '@/lib/schema'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

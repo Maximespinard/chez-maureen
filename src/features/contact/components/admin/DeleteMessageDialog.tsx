@@ -1,6 +1,6 @@
 import { Trash2 } from 'lucide-react'
 
-import type { ContactMessageModel } from '@/generated/prisma/models'
+import type { ContactMessageModel } from '@/lib/schema'
 import {
   AlertDialog,
   AlertDialogAction,

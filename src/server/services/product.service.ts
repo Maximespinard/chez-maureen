@@ -1,18 +1,34 @@
+import { eq } from 'drizzle-orm'
+
 import type { ProductCreate, ProductUpdate } from '@/schemas'
 import { deleteFromR2 } from '@/lib/r2'
-import { prisma } from '@/db'
+import { db } from '@/lib/drizzle'
+import { product, productBadge, productCategory } from '@/lib/schema'
 
 export class ProductService {
   /**
-   * Format product to convert Decimal fields to numbers
+   * Format product - Drizzle gère nativement les Decimal, pas besoin de conversion
    */
-  private formatProduct(product: any) {
-    return {
-      ...product,
-      price: product.price.toNumber(),
-      discountPercent: product.discountPercent?.toNumber() ?? null,
-      discountAmount: product.discountAmount?.toNumber() ?? null,
+  private formatProduct(prod: any) {
+    return prod
+  }
+
+  /**
+   * Convert numeric fields to strings for Drizzle decimal columns
+   */
+   
+  private toDbValues(data: Record<string, any>): Record<string, any> {
+    const result = { ...data }
+    if (result.price !== undefined) {
+      result.price = String(result.price)
     }
+    if (result.discountPercent !== undefined && result.discountPercent !== null) {
+      result.discountPercent = String(result.discountPercent)
+    }
+    if (result.discountAmount !== undefined && result.discountAmount !== null) {
+      result.discountAmount = String(result.discountAmount)
+    }
+    return result
   }
 
   /**
@@ -36,12 +52,12 @@ export class ProductService {
    * Get all products with categories
    */
   async getAll() {
-    const products = await prisma.product.findMany({
-      include: {
+    const products = await db.query.product.findMany({
+      with: {
         categories: {
-          include: {
+          with: {
             category: {
-              select: {
+              columns: {
                 id: true,
                 name: true,
                 slug: true,
@@ -50,12 +66,12 @@ export class ProductService {
           },
         },
         badges: {
-          include: {
+          with: {
             badge: true,
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: (prod, { desc: descending }) => [descending(prod.createdAt)],
     })
 
     return products.map((p) => this.formatProduct(p))
@@ -65,23 +81,23 @@ export class ProductService {
    * Get single product with full relations
    */
   async getById(id: string) {
-    const product = await prisma.product.findUnique({
-      where: { id },
-      include: {
+    const prod = await db.query.product.findFirst({
+      where: eq(product.id, id),
+      with: {
         categories: {
-          include: {
+          with: {
             category: true,
           },
         },
         badges: {
-          include: {
+          with: {
             badge: true,
           },
         },
       },
     })
 
-    return product ? this.formatProduct(product) : null
+    return prod ? this.formatProduct(prod) : null
   }
 
   /**
@@ -90,35 +106,52 @@ export class ProductService {
   async create(data: ProductCreate) {
     const { categoryIds, badgeIds = [], ...productData } = data
 
-    const product = await prisma.product.create({
-      data: {
-        ...productData,
-        categories: {
-          create: categoryIds.map((categoryId) => ({
+    return db.transaction(async (tx) => {
+      // Create product
+      const [newProduct] = await tx
+        .insert(product)
+        .values(this.toDbValues(productData) as typeof product.$inferInsert)
+        .returning()
+
+      // Create category associations
+      if (categoryIds.length > 0) {
+        await tx.insert(productCategory).values(
+          categoryIds.map((categoryId) => ({
+            productId: newProduct.id,
             categoryId,
           })),
-        },
-        badges: {
-          create: badgeIds.map((badgeId) => ({
+        )
+      }
+
+      // Create badge associations
+      if (badgeIds.length > 0) {
+        await tx.insert(productBadge).values(
+          badgeIds.map((badgeId) => ({
+            productId: newProduct.id,
             badgeId,
           })),
-        },
-      },
-      include: {
-        categories: {
-          include: {
-            category: true,
-          },
-        },
-        badges: {
-          include: {
-            badge: true,
-          },
-        },
-      },
-    })
+        )
+      }
 
-    return this.formatProduct(product)
+      // Fetch the product with relations
+      const prodWithRelations = await tx.query.product.findFirst({
+        where: eq(product.id, newProduct.id),
+        with: {
+          categories: {
+            with: {
+              category: true,
+            },
+          },
+          badges: {
+            with: {
+              badge: true,
+            },
+          },
+        },
+      })
+
+      return this.formatProduct(prodWithRelations)
+    })
   }
 
   /**
@@ -129,9 +162,9 @@ export class ProductService {
 
     // Si nouvelle image fournie, supprimer l'ancienne de R2
     if (productData.imageKey) {
-      const existingProduct = await prisma.product.findUnique({
-        where: { id },
-        select: { imageKey: true },
+      const existingProduct = await db.query.product.findFirst({
+        where: eq(product.id, id),
+        columns: { imageKey: true },
       })
 
       if (
@@ -144,71 +177,80 @@ export class ProductService {
 
     // If categoryIds or badgeIds provided, update associations
     if (categoryIds !== undefined || badgeIds !== undefined) {
-      const product = await prisma.$transaction(async (tx) => {
+      return db.transaction(async (tx) => {
         // Update categories if provided
         if (categoryIds !== undefined) {
-          await tx.productCategory.deleteMany({
-            where: { productId: id },
-          })
+          await tx.delete(productCategory).where(eq(productCategory.productId, id))
 
-          await tx.productCategory.createMany({
-            data: categoryIds.map((categoryId) => ({
-              productId: id,
-              categoryId,
-            })),
-          })
+          if (categoryIds.length > 0) {
+            await tx.insert(productCategory).values(
+              categoryIds.map((categoryId) => ({
+                productId: id,
+                categoryId,
+              })),
+            )
+          }
         }
 
         // Update badges if provided
         if (badgeIds !== undefined) {
-          await tx.productBadge.deleteMany({
-            where: { productId: id },
-          })
+          await tx.delete(productBadge).where(eq(productBadge.productId, id))
 
-          await tx.productBadge.createMany({
-            data: badgeIds.map((badgeId) => ({
-              productId: id,
-              badgeId,
-            })),
-          })
+          if (badgeIds.length > 0) {
+            await tx.insert(productBadge).values(
+              badgeIds.map((badgeId) => ({
+                productId: id,
+                badgeId,
+              })),
+            )
+          }
         }
 
         // Update product
-        return tx.product.update({
-          where: { id },
-          data: productData,
-          include: {
+        await tx
+          .update(product)
+          .set(this.toDbValues(productData) as Partial<typeof product.$inferInsert>)
+          .where(eq(product.id, id))
+
+        // Fetch updated product with relations
+        const updatedProduct = await tx.query.product.findFirst({
+          where: eq(product.id, id),
+          with: {
             categories: {
-              include: {
+              with: {
                 category: true,
               },
             },
             badges: {
-              include: {
+              with: {
                 badge: true,
               },
             },
           },
         })
-      })
 
-      return this.formatProduct(product)
+        return this.formatProduct(updatedProduct)
+      })
     }
 
     // No associations update, just product fields
-    const product = await prisma.product.update({
-      where: { id },
-      data: productData,
-      include: {
+    await db
+      .update(product)
+      .set(this.toDbValues(productData) as Partial<typeof product.$inferInsert>)
+      .where(eq(product.id, id))
+
+    const updatedProduct = await db.query.product.findFirst({
+      where: eq(product.id, id),
+      with: {
         badges: {
-          include: {
+          with: {
             badge: true,
           },
         },
       },
     })
 
-    return this.formatProduct(product)
+    return this.formatProduct(updatedProduct)
   }
 
   /**
@@ -216,66 +258,68 @@ export class ProductService {
    */
   async delete(id: string) {
     // Récupérer imageKey avant suppression
-    const existingProduct = await prisma.product.findUnique({
-      where: { id },
-      select: { imageKey: true },
+    const existingProduct = await db.query.product.findFirst({
+      where: eq(product.id, id),
+      columns: { imageKey: true },
     })
 
     // Supprimer le produit de la DB
-    const product = await prisma.product.delete({
-      where: { id },
-    })
+    const [deletedProduct] = await db
+      .delete(product)
+      .where(eq(product.id, id))
+      .returning()
 
     // Supprimer l'image de R2 si elle existe
     if (existingProduct?.imageKey) {
       await deleteFromR2(existingProduct.imageKey)
     }
 
-    return this.formatProduct(product)
+    return this.formatProduct(deletedProduct)
   }
 
   /**
    * Update product categories only
    */
   async updateCategories(productId: string, categoryIds: Array<string>) {
-    const product = await prisma.$transaction(async (tx) => {
-      await tx.productCategory.deleteMany({
-        where: { productId },
-      })
+    return db.transaction(async (tx) => {
+      await tx.delete(productCategory).where(eq(productCategory.productId, productId))
 
-      await tx.productCategory.createMany({
-        data: categoryIds.map((categoryId) => ({
-          productId,
-          categoryId,
-        })),
-      })
+      if (categoryIds.length > 0) {
+        await tx.insert(productCategory).values(
+          categoryIds.map((categoryId) => ({
+            productId,
+            categoryId,
+          })),
+        )
+      }
 
-      return tx.product.findUnique({
-        where: { id: productId },
-        include: {
+      const prod = await tx.query.product.findFirst({
+        where: eq(product.id, productId),
+        with: {
           categories: {
-            include: {
+            with: {
               category: true,
             },
           },
         },
       })
-    })
 
-    return product ? this.formatProduct(product) : null
+      return prod ? this.formatProduct(prod) : null
+    })
   }
 
   /**
    * Get featured products ordered by featuredOrder
    */
   async getFeatured() {
-    const products = await prisma.product.findMany({
-      where: { isFeatured: true, isActive: true },
-      include: {
+    const products = await db.query.product.findMany({
+      where: (prod, { eq: equals, and }) =>
+        and(equals(prod.isFeatured, true), equals(prod.isActive, true)),
+      with: {
         categories: {
-          include: {
+          with: {
             category: {
-              select: {
+              columns: {
                 id: true,
                 name: true,
                 slug: true,
@@ -284,12 +328,12 @@ export class ProductService {
           },
         },
         badges: {
-          include: {
+          with: {
             badge: true,
           },
         },
       },
-      orderBy: [{ featuredOrder: 'asc' }, { name: 'asc' }],
+      orderBy: (prod, { asc }) => [asc(prod.featuredOrder), asc(prod.name)],
     })
 
     return products.map((p) => this.formatProduct(p))
@@ -299,15 +343,16 @@ export class ProductService {
    * Toggle isActive status
    */
   async toggleActive(id: string) {
-    const product = await prisma.product.findUnique({ where: { id } })
-    if (!product) {
+    const prod = await db.query.product.findFirst({ where: eq(product.id, id) })
+    if (!prod) {
       throw new Error('Produit introuvable')
     }
 
-    const updated = await prisma.product.update({
-      where: { id },
-      data: { isActive: !product.isActive },
-    })
+    const [updated] = await db
+      .update(product)
+      .set({ isActive: !prod.isActive })
+      .where(eq(product.id, id))
+      .returning()
 
     return this.formatProduct(updated)
   }
@@ -316,22 +361,24 @@ export class ProductService {
    * Update badges for a product
    */
   async updateBadges(productId: string, badgeIds: Array<string>) {
-    const product = await prisma.$transaction(async (tx) => {
-      await tx.productBadge.deleteMany({ where: { productId } })
+    return db.transaction(async (tx) => {
+      await tx.delete(productBadge).where(eq(productBadge.productId, productId))
 
-      await tx.productBadge.createMany({
-        data: badgeIds.map((badgeId) => ({ productId, badgeId })),
-      })
+      if (badgeIds.length > 0) {
+        await tx.insert(productBadge).values(
+          badgeIds.map((badgeId) => ({ productId, badgeId })),
+        )
+      }
 
-      return tx.product.findUnique({
-        where: { id: productId },
-        include: {
-          badges: { include: { badge: true } },
+      const prod = await tx.query.product.findFirst({
+        where: eq(product.id, productId),
+        with: {
+          badges: { with: { badge: true } },
         },
       })
-    })
 
-    return product ? this.formatProduct(product) : null
+      return prod ? this.formatProduct(prod) : null
+    })
   }
 }
 
