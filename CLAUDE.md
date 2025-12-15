@@ -6,10 +6,59 @@ Site vitrine pour primeur spécialisé fruits & légumes frais.
 
 - **Framework** : TanStack Start (React 19 + TanStack Router)
 - **Styling** : Tailwind CSS v4 + shadcn/ui
-- **Database** : PostgreSQL (Neon) + Prisma ORM
+- **Database** : PostgreSQL (Neon) + Drizzle ORM
 - **State** : Zustand + TanStack Query
 - **Deploy** : Cloudflare Workers
 - **Dev Tools** : Vite, TypeScript, Vitest, ESLint, Prettier
+
+---
+
+## Compatibilité Cloudflare Workers
+
+### RÈGLE CRITIQUE
+
+**Avant d'utiliser une librairie, TOUJOURS vérifier sa compatibilité avec Cloudflare Workers.**
+
+Le projet est déployé sur Cloudflare Workers qui utilise un runtime JavaScript edge (pas Node.js). Certaines librairies causent des erreurs silencieuses (500) au chargement de l'app.
+
+#### Vérifications obligatoires
+
+1. **Rechercher sur Google** : `"[nom-librairie] cloudflare workers compatibility"`
+2. **Vérifier la doc officielle** de la librairie
+3. **Consulter la liste Cloudflare** : https://developers.cloudflare.com/workers/runtime-apis/nodejs/
+
+#### Erreurs rencontrées (historique)
+
+| Librairie        | Problème                    | Solution                           |
+| ---------------- | --------------------------- | ---------------------------------- |
+| Prisma ORM       | Pool non compatible Workers | Migration vers Drizzle ORM         |
+| cuid2            | Crypto non compatible       | Remplacé par `crypto.randomUUID()` |
+| Node.js `crypto` | API non disponible          | Utiliser Web Crypto API            |
+
+#### Symptômes d'incompatibilité
+
+- Erreur 500 immédiate au chargement (avant tout log)
+- `TypeError: Class extends value undefined is not a constructor or null`
+- `ReferenceError: X is not defined` sur des APIs Node.js
+
+#### Drivers DB compatibles
+
+- **@neondatabase/serverless** avec **drizzle-orm/neon-http** ✅
+- Prisma avec PlanetScale ou pg-adapter ❌ (ne fonctionne pas sur Workers)
+
+### Pattern d'import sécurisé
+
+```typescript
+// ✅ BON - Driver neon-http compatible Workers
+import { neon } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-http'
+
+// ❌ MAUVAIS - Drivers Node.js non compatibles
+import { Pool } from 'pg'
+import { PrismaClient } from '@prisma/client'
+```
+
+---
 
 ## Arborescence
 
@@ -31,11 +80,9 @@ src/
 ├── stores/           # Stores Zustand
 ├── types/            # Types TypeScript
 ├── lib/              # Utilitaires
-└── db.ts             # Config Prisma
-
-prisma/
-├── schema.prisma     # Schéma DB
-└── seed.ts           # Données initiales
+│   ├── drizzle.ts    # Config Drizzle + client DB
+│   └── schema.ts     # Schéma DB (tables, relations, types)
+└── db.ts             # Re-export Drizzle (rétro-compatibilité)
 ```
 
 ## Modèles DB
@@ -52,13 +99,7 @@ prisma/
 ```bash
 # Développement
 npm run dev              # Lance le serveur (port 3000)
-
-# Database
-npm run db:generate      # Génère le client Prisma
-npm run db:push          # Applique le schéma à la DB
-npm run db:migrate       # Crée une migration
-npm run db:studio        # Interface Prisma Studio
-npm run db:seed          # Remplit la DB avec données test
+                         # Le schéma Drizzle est géré automatiquement par vite-plugin-db
 
 # Build & Deploy
 npm run build            # Build production
@@ -279,7 +320,7 @@ export function useCategories() {
 }
 ```
 
-**Problème:** Le service importe Prisma qui utilise `@neondatabase/serverless` Pool, impossible à initialiser dans le navigateur.
+**Problème:** Le service importe Drizzle qui utilise `@neondatabase/serverless`, impossible à initialiser dans le navigateur.
 
 **Erreur résultante:** `TypeError: Class extends value undefined is not a constructor or null`
 
@@ -331,7 +372,7 @@ export function useCategories() {
 **Code serveur uniquement (ne JAMAIS importer côté client):**
 
 - Services (`src/server/services/*.service.ts`)
-- Client Prisma (`src/db.ts`)
+- Client Drizzle (`src/lib/drizzle.ts`)
 - Variables d'environnement sensibles
 - Packages Node.js (`fs`, `path`, `crypto`, etc.)
 
