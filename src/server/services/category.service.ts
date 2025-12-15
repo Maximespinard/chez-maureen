@@ -2,11 +2,7 @@ import { count, eq, notInArray, sql } from 'drizzle-orm'
 
 import type { CategoryCreate, CategoryReorder, CategoryUpdate } from '@/schemas'
 import { db } from '@/lib/drizzle'
-import {
-  category,
-  product,
-  productCategory,
-} from '@/lib/schema'
+import { category, product, productCategory } from '@/lib/schema'
 
 export class CategoryService {
   /**

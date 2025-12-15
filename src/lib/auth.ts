@@ -11,7 +11,6 @@ let authInstance: ReturnType<typeof betterAuth> | null = null
 
 function getAuth() {
   if (!authInstance) {
-    console.log('[Auth Debug] process.env.BETTER_AUTH_SECRET:', process.env.BETTER_AUTH_SECRET ? 'SET' : 'UNDEFINED')
     authInstance = betterAuth({
       secret: process.env.BETTER_AUTH_SECRET,
       baseURL: process.env.BETTER_AUTH_URL,

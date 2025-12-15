@@ -17,7 +17,6 @@ async function createAdmin() {
   try {
     console.log('Création du compte admin...')
 
-     
     const user = await auth.api.signUpEmail({
       body: {
         email,

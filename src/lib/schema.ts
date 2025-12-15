@@ -1,4 +1,3 @@
-import { createId } from '@paralleldrive/cuid2'
 import { relations } from 'drizzle-orm'
 import {
   boolean,
@@ -13,7 +12,9 @@ import {
 
 // === CATEGORY ===
 export const category = pgTable('Category', {
-  id: text('id').primaryKey().$defaultFn(() => createId()),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   order: integer('order').notNull().default(0),
@@ -27,7 +28,9 @@ export const categoryRelations = relations(category, ({ many }) => ({
 
 // === PRODUCT ===
 export const product = pgTable('Product', {
-  id: text('id').primaryKey().$defaultFn(() => createId()),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
@@ -64,20 +67,25 @@ export const productCategory = pgTable(
   (t) => [primaryKey({ columns: [t.productId, t.categoryId] })],
 )
 
-export const productCategoryRelations = relations(productCategory, ({ one }) => ({
-  product: one(product, {
-    fields: [productCategory.productId],
-    references: [product.id],
+export const productCategoryRelations = relations(
+  productCategory,
+  ({ one }) => ({
+    product: one(product, {
+      fields: [productCategory.productId],
+      references: [product.id],
+    }),
+    category: one(category, {
+      fields: [productCategory.categoryId],
+      references: [category.id],
+    }),
   }),
-  category: one(category, {
-    fields: [productCategory.categoryId],
-    references: [category.id],
-  }),
-}))
+)
 
 // === BADGE ===
 export const badge = pgTable('Badge', {
-  id: text('id').primaryKey().$defaultFn(() => createId()),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   color: text('color').notNull(),
@@ -125,7 +133,9 @@ export const storeSettings = pgTable('StoreSettings', {
 
 // === CONTACT_MESSAGE ===
 export const contactMessage = pgTable('ContactMessage', {
-  id: text('id').primaryKey().$defaultFn(() => createId()),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   email: text('email').notNull(),
   phone: text('phone'),

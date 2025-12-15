@@ -16,13 +16,16 @@ export class ProductService {
   /**
    * Convert numeric fields to strings for Drizzle decimal columns
    */
-   
+
   private toDbValues(data: Record<string, any>): Record<string, any> {
     const result = { ...data }
     if (result.price !== undefined) {
       result.price = String(result.price)
     }
-    if (result.discountPercent !== undefined && result.discountPercent !== null) {
+    if (
+      result.discountPercent !== undefined &&
+      result.discountPercent !== null
+    ) {
       result.discountPercent = String(result.discountPercent)
     }
     if (result.discountAmount !== undefined && result.discountAmount !== null) {
@@ -180,7 +183,9 @@ export class ProductService {
       return db.transaction(async (tx) => {
         // Update categories if provided
         if (categoryIds !== undefined) {
-          await tx.delete(productCategory).where(eq(productCategory.productId, id))
+          await tx
+            .delete(productCategory)
+            .where(eq(productCategory.productId, id))
 
           if (categoryIds.length > 0) {
             await tx.insert(productCategory).values(
@@ -209,7 +214,11 @@ export class ProductService {
         // Update product
         await tx
           .update(product)
-          .set(this.toDbValues(productData) as Partial<typeof product.$inferInsert>)
+          .set(
+            this.toDbValues(productData) as Partial<
+              typeof product.$inferInsert
+            >,
+          )
           .where(eq(product.id, id))
 
         // Fetch updated product with relations
@@ -282,7 +291,9 @@ export class ProductService {
    */
   async updateCategories(productId: string, categoryIds: Array<string>) {
     return db.transaction(async (tx) => {
-      await tx.delete(productCategory).where(eq(productCategory.productId, productId))
+      await tx
+        .delete(productCategory)
+        .where(eq(productCategory.productId, productId))
 
       if (categoryIds.length > 0) {
         await tx.insert(productCategory).values(
@@ -365,9 +376,9 @@ export class ProductService {
       await tx.delete(productBadge).where(eq(productBadge.productId, productId))
 
       if (badgeIds.length > 0) {
-        await tx.insert(productBadge).values(
-          badgeIds.map((badgeId) => ({ productId, badgeId })),
-        )
+        await tx
+          .insert(productBadge)
+          .values(badgeIds.map((badgeId) => ({ productId, badgeId })))
       }
 
       const prod = await tx.query.product.findFirst({
