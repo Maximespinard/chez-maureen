@@ -7,34 +7,6 @@ import { product, productBadge, productCategory } from '@/lib/schema'
 
 export class ProductService {
   /**
-   * Format product - Drizzle gère nativement les Decimal, pas besoin de conversion
-   */
-  private formatProduct(prod: any) {
-    return prod
-  }
-
-  /**
-   * Convert numeric fields to strings for Drizzle decimal columns
-   */
-
-  private toDbValues(data: Record<string, any>): Record<string, any> {
-    const result = { ...data }
-    if (result.price !== undefined) {
-      result.price = String(result.price)
-    }
-    if (
-      result.discountPercent !== undefined &&
-      result.discountPercent !== null
-    ) {
-      result.discountPercent = String(result.discountPercent)
-    }
-    if (result.discountAmount !== undefined && result.discountAmount !== null) {
-      result.discountAmount = String(result.discountAmount)
-    }
-    return result
-  }
-
-  /**
    * Calculate effective price with discount
    */
   calculateEffectivePrice(
@@ -77,7 +49,7 @@ export class ProductService {
       orderBy: (prod, { desc: descending }) => [descending(prod.createdAt)],
     })
 
-    return products.map((p) => this.formatProduct(p))
+    return products
   }
 
   /**
@@ -100,7 +72,7 @@ export class ProductService {
       },
     })
 
-    return prod ? this.formatProduct(prod) : null
+    return prod ?? null
   }
 
   /**
@@ -113,7 +85,7 @@ export class ProductService {
       // Create product
       const [newProduct] = await tx
         .insert(product)
-        .values(this.toDbValues(productData) as typeof product.$inferInsert)
+        .values(productData as typeof product.$inferInsert)
         .returning()
 
       // Create category associations
@@ -153,7 +125,7 @@ export class ProductService {
         },
       })
 
-      return this.formatProduct(prodWithRelations)
+      return prodWithRelations
     })
   }
 
@@ -214,11 +186,7 @@ export class ProductService {
         // Update product
         await tx
           .update(product)
-          .set(
-            this.toDbValues(productData) as Partial<
-              typeof product.$inferInsert
-            >,
-          )
+          .set(productData as Partial<typeof product.$inferInsert>)
           .where(eq(product.id, id))
 
         // Fetch updated product with relations
@@ -238,14 +206,14 @@ export class ProductService {
           },
         })
 
-        return this.formatProduct(updatedProduct)
+        return updatedProduct
       })
     }
 
     // No associations update, just product fields
     await db
       .update(product)
-      .set(this.toDbValues(productData) as Partial<typeof product.$inferInsert>)
+      .set(productData as Partial<typeof product.$inferInsert>)
       .where(eq(product.id, id))
 
     const updatedProduct = await db.query.product.findFirst({
@@ -259,7 +227,7 @@ export class ProductService {
       },
     })
 
-    return this.formatProduct(updatedProduct)
+    return updatedProduct
   }
 
   /**
@@ -283,7 +251,7 @@ export class ProductService {
       await deleteFromR2(existingProduct.imageKey)
     }
 
-    return this.formatProduct(deletedProduct)
+    return deletedProduct
   }
 
   /**
@@ -315,7 +283,7 @@ export class ProductService {
         },
       })
 
-      return prod ? this.formatProduct(prod) : null
+      return prod ?? null
     })
   }
 
@@ -347,7 +315,7 @@ export class ProductService {
       orderBy: (prod, { asc }) => [asc(prod.featuredOrder), asc(prod.name)],
     })
 
-    return products.map((p) => this.formatProduct(p))
+    return products
   }
 
   /**
@@ -365,7 +333,7 @@ export class ProductService {
       .where(eq(product.id, id))
       .returning()
 
-    return this.formatProduct(updated)
+    return updated
   }
 
   /**
@@ -388,7 +356,7 @@ export class ProductService {
         },
       })
 
-      return prod ? this.formatProduct(prod) : null
+      return prod ?? null
     })
   }
 }

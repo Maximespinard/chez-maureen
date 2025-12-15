@@ -34,7 +34,11 @@ export const product = pgTable('Product', {
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
-  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  price: decimal('price', {
+    precision: 10,
+    scale: 2,
+    mode: 'number',
+  }).notNull(),
   unit: text('unit').notNull().default('kg'),
   origin: text('origin'),
   image: text('image'),
@@ -42,8 +46,16 @@ export const product = pgTable('Product', {
   isActive: boolean('isActive').notNull().default(true),
   isFeatured: boolean('isFeatured').notNull().default(false),
   featuredOrder: integer('featuredOrder'),
-  discountPercent: decimal('discountPercent', { precision: 5, scale: 2 }),
-  discountAmount: decimal('discountAmount', { precision: 10, scale: 2 }),
+  discountPercent: decimal('discountPercent', {
+    precision: 5,
+    scale: 2,
+    mode: 'number',
+  }),
+  discountAmount: decimal('discountAmount', {
+    precision: 10,
+    scale: 2,
+    mode: 'number',
+  }),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 })
