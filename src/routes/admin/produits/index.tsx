@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
 
+import { AdminPageHeader } from '@/components/layout/AdminPageHeader'
 import { Button } from '@/components/ui/button'
 import { ProductFiltersAdmin } from '@/features/products/components/ProductFiltersAdmin'
 import { ProductTable } from '@/features/products/components/ProductTable'
@@ -18,22 +19,18 @@ function ProductsListPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-text-dark font-[Crimson_Pro,Georgia,serif] text-2xl font-bold">
-            Produits
-          </h1>
-          <p className="text-text-body text-sm">
-            Gérez les produits de votre catalogue
-          </p>
-        </div>
-        <Button asChild>
-          <Link to="/admin/produits/nouveau">
-            <Plus className="size-4" />
-            Nouveau produit
-          </Link>
-        </Button>
-      </div>
+      <AdminPageHeader
+        title="Produits"
+        description="Gérez les produits de votre catalogue"
+        action={
+          <Button asChild>
+            <Link to="/admin/produits/nouveau">
+              <Plus className="size-4" />
+              Nouveau produit
+            </Link>
+          </Button>
+        }
+      />
 
       <ProductFiltersAdmin
         filters={filters}

@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
 
+import { AdminPageHeader } from '@/components/layout/AdminPageHeader'
 import { Button } from '@/components/ui/button'
 import { CategoryTable } from '@/features/categories/components/CategoryTable'
 
@@ -11,22 +12,18 @@ export const Route = createFileRoute('/admin/categories/')({
 function CategoriesListPage() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-text-dark font-[Crimson_Pro,Georgia,serif] text-2xl font-bold">
-            Catégories
-          </h1>
-          <p className="text-text-body text-sm">
-            Gérez les catégories de produits
-          </p>
-        </div>
-        <Button asChild>
-          <Link to="/admin/categories/nouveau">
-            <Plus className="size-4" />
-            Nouvelle catégorie
-          </Link>
-        </Button>
-      </div>
+      <AdminPageHeader
+        title="Catégories"
+        description="Gérez les catégories de produits"
+        action={
+          <Button asChild>
+            <Link to="/admin/categories/nouveau">
+              <Plus className="size-4" />
+              Nouvelle catégorie
+            </Link>
+          </Button>
+        }
+      />
 
       <CategoryTable />
     </div>
