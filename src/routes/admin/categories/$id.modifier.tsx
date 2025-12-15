@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CategoryForm } from '@/features/categories/components/CategoryForm'
 import { useCategory } from '@/features/categories/hooks/useCategories'
 
-export const Route = createFileRoute('/admin/categories/$id/edit')({
+export const Route = createFileRoute('/admin/categories/$id/modifier')({
   component: EditCategoryPage,
 })
 

@@ -75,7 +75,7 @@ export function ProductTable({
                 onEdit={(id) =>
                   navigate({
                     params: { id },
-                    to: `/admin/produits/$id/edit`,
+                    to: `/admin/produits/$id/modifier`,
                   })
                 }
                 onDelete={setDeleteProduct}

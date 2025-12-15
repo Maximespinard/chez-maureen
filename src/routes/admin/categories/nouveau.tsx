@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { CategoryForm } from '@/features/categories/components/CategoryForm'
 
-export const Route = createFileRoute('/admin/categories/new')({
+export const Route = createFileRoute('/admin/categories/nouveau')({
   component: NewCategoryPage,
 })
 

@@ -73,7 +73,8 @@ export function ContactForm() {
                 htmlFor={field.name}
                 className="text-text-dark mb-2 block text-sm font-semibold"
               >
-                Email <span className="text-badge-promo">*</span>
+                Email{' '}
+                <span className="text-text-light text-xs">(optionnel)</span>
               </label>
               <input
                 id={field.name}

@@ -112,7 +112,7 @@ export function CategoryTable() {
                     category={category}
                     onEdit={(id) =>
                       navigate({
-                        to: `/admin/categories/$id/edit`,
+                        to: `/admin/categories/$id/modifier`,
                         params: { id },
                       })
                     }

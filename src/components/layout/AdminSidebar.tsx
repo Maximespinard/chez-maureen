@@ -9,62 +9,65 @@ import {
   Settings,
   Tag,
 } from 'lucide-react'
+
+import { useUnreadMessagesCount } from '@/features/contact/hooks/useUnreadCount'
 import { cn } from '@/lib/utils'
 import { useAdminStore } from '@/stores/admin.store'
 
-const navigation = [
-  {
-    name: 'Dashboard',
-    href: '/admin',
-    icon: LayoutDashboard,
-  },
-  {
-    name: 'Produits',
-    href: '/admin/produits',
-    icon: Package,
-  },
-  {
-    name: 'Catégories',
-    href: '/admin/categories',
-    icon: FolderTree,
-  },
-  {
-    name: 'Badges',
-    href: '/admin/badges',
-    icon: Tag,
-  },
-  {
-    name: 'Paramètres',
-    href: '/admin/parametres',
-    icon: Settings,
-  },
-  {
-    name: 'Messages',
-    href: '/admin/messages',
-    icon: Mail,
-    badge: 0, // TODO: Connect to real unread count
-  },
-]
-
 export function AdminSidebar() {
   const { sidebarCollapsed, toggleSidebar } = useAdminStore()
+  const { data: unreadCount } = useUnreadMessagesCount()
+
+  const navigation = [
+    {
+      name: 'Dashboard',
+      href: '/admin',
+      icon: LayoutDashboard,
+    },
+    {
+      name: 'Produits',
+      href: '/admin/produits',
+      icon: Package,
+    },
+    {
+      name: 'Catégories',
+      href: '/admin/categories',
+      icon: FolderTree,
+    },
+    {
+      name: 'Badges',
+      href: '/admin/badges',
+      icon: Tag,
+    },
+    {
+      name: 'Paramètres',
+      href: '/admin/parametres',
+      icon: Settings,
+    },
+    {
+      name: 'Messages',
+      href: '/admin/messages',
+      icon: Mail,
+      badge: unreadCount || 0,
+    },
+  ]
 
   return (
     <aside
       className={cn(
         'border-border-subtle flex h-screen flex-col border-r bg-white transition-all duration-300',
-        sidebarCollapsed ? 'w-16' : 'w-60',
+        sidebarCollapsed ? 'w-16' : 'w-56',
       )}
     >
       {/* Logo */}
       <div className="border-border-subtle flex h-16 items-center justify-center border-b px-4">
         {!sidebarCollapsed && (
-          <Link to="/" className="text-primeur-green text-xl font-bold">
+          <Link to="/" className="text-xl font-bold text-black">
             Chez Maureen
           </Link>
         )}
         {sidebarCollapsed && (
-          <Link to="/" className="text-primeur-green text-2xl font-bold">
+          <Link to="/" className="text-2xl font-bold text-black">
             CM
           </Link>
         )}
@@ -82,7 +85,7 @@ export function AdminSidebar() {
               className="group text-text-body relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-gray-50"
               activeProps={{
                 className:
-                  'bg-primeur-green/10 text-primeur-green border-l-4 border-primeur-green hover:bg-primeur-green/10',
+                  'bg-black/5 text-black border-l-4 border-black hover:bg-black/5',
               }}
               activeOptions={isDashboard ? { exact: true } : undefined}
               title={sidebarCollapsed ? item.name : undefined}

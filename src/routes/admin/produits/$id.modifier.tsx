@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ProductForm } from '@/features/products/components/ProductForm'
 import { useProduct } from '@/features/products/hooks/useProducts'
 
-export const Route = createFileRoute('/admin/produits/$id/edit')({
+export const Route = createFileRoute('/admin/produits/$id/modifier')({
   component: EditProductPage,
 })
 

@@ -21,7 +21,7 @@ function CategoriesListPage() {
           </p>
         </div>
         <Button asChild>
-          <Link to="/admin/categories/new">
+          <Link to="/admin/categories/nouveau">
             <Plus className="size-4" />
             Nouvelle catégorie
           </Link>

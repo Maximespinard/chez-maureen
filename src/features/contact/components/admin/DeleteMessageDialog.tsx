@@ -57,7 +57,7 @@ export function DeleteMessageDialog({
           <AlertDialogCancel>Annuler</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className="hover:bg-error-dark"
+            className="bg-destructive hover:bg-destructive/90 text-white"
           >
             Supprimer
           </AlertDialogAction>

@@ -61,6 +61,7 @@ export function SettingsForm() {
         setTimeout(() => setSuccess(false), 3000)
       } catch (err) {
         setError(formatZodError(err))
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     },
   })

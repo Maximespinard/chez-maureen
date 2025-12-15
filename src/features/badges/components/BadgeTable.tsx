@@ -109,7 +109,7 @@ export function BadgeTable() {
                     onEdit={(id) =>
                       navigate({
                         params: { id },
-                        to: `/admin/badges/$id/edit`,
+                        to: `/admin/badges/$id/modifier`,
                       })
                     }
                   />

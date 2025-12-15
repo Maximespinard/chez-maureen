@@ -22,12 +22,12 @@ import { Route as AdminMessagesIndexRouteImport } from './routes/admin/messages/
 import { Route as AdminCategoriesIndexRouteImport } from './routes/admin/categories/index'
 import { Route as AdminBadgesIndexRouteImport } from './routes/admin/badges/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AdminProduitsNewRouteImport } from './routes/admin/produits/new'
-import { Route as AdminCategoriesNewRouteImport } from './routes/admin/categories/new'
-import { Route as AdminBadgesNewRouteImport } from './routes/admin/badges/new'
-import { Route as AdminProduitsIdEditRouteImport } from './routes/admin/produits/$id.edit'
-import { Route as AdminCategoriesIdEditRouteImport } from './routes/admin/categories/$id.edit'
-import { Route as AdminBadgesIdEditRouteImport } from './routes/admin/badges/$id.edit'
+import { Route as AdminProduitsNouveauRouteImport } from './routes/admin/produits/nouveau'
+import { Route as AdminCategoriesNouveauRouteImport } from './routes/admin/categories/nouveau'
+import { Route as AdminBadgesNouveauRouteImport } from './routes/admin/badges/nouveau'
+import { Route as AdminProduitsIdModifierRouteImport } from './routes/admin/produits/$id.modifier'
+import { Route as AdminCategoriesIdModifierRouteImport } from './routes/admin/categories/$id.modifier'
+import { Route as AdminBadgesIdModifierRouteImport } from './routes/admin/badges/$id.modifier'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -93,34 +93,35 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminProduitsNewRoute = AdminProduitsNewRouteImport.update({
-  id: '/produits/new',
-  path: '/produits/new',
+const AdminProduitsNouveauRoute = AdminProduitsNouveauRouteImport.update({
+  id: '/produits/nouveau',
+  path: '/produits/nouveau',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCategoriesNewRoute = AdminCategoriesNewRouteImport.update({
-  id: '/categories/new',
-  path: '/categories/new',
+const AdminCategoriesNouveauRoute = AdminCategoriesNouveauRouteImport.update({
+  id: '/categories/nouveau',
+  path: '/categories/nouveau',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminBadgesNewRoute = AdminBadgesNewRouteImport.update({
-  id: '/badges/new',
-  path: '/badges/new',
+const AdminBadgesNouveauRoute = AdminBadgesNouveauRouteImport.update({
+  id: '/badges/nouveau',
+  path: '/badges/nouveau',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminProduitsIdEditRoute = AdminProduitsIdEditRouteImport.update({
-  id: '/produits/$id/edit',
-  path: '/produits/$id/edit',
+const AdminProduitsIdModifierRoute = AdminProduitsIdModifierRouteImport.update({
+  id: '/produits/$id/modifier',
+  path: '/produits/$id/modifier',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCategoriesIdEditRoute = AdminCategoriesIdEditRouteImport.update({
-  id: '/categories/$id/edit',
-  path: '/categories/$id/edit',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminBadgesIdEditRoute = AdminBadgesIdEditRouteImport.update({
-  id: '/badges/$id/edit',
-  path: '/badges/$id/edit',
+const AdminCategoriesIdModifierRoute =
+  AdminCategoriesIdModifierRouteImport.update({
+    id: '/categories/$id/modifier',
+    path: '/categories/$id/modifier',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminBadgesIdModifierRoute = AdminBadgesIdModifierRouteImport.update({
+  id: '/badges/$id/modifier',
+  path: '/badges/$id/modifier',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -132,17 +133,17 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/connexion': typeof ConnexionIndexRoute
-  '/admin/badges/new': typeof AdminBadgesNewRoute
-  '/admin/categories/new': typeof AdminCategoriesNewRoute
-  '/admin/produits/new': typeof AdminProduitsNewRoute
+  '/admin/badges/nouveau': typeof AdminBadgesNouveauRoute
+  '/admin/categories/nouveau': typeof AdminCategoriesNouveauRoute
+  '/admin/produits/nouveau': typeof AdminProduitsNouveauRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/badges': typeof AdminBadgesIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
   '/admin/messages': typeof AdminMessagesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
-  '/admin/badges/$id/edit': typeof AdminBadgesIdEditRoute
-  '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
-  '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
+  '/admin/badges/$id/modifier': typeof AdminBadgesIdModifierRoute
+  '/admin/categories/$id/modifier': typeof AdminCategoriesIdModifierRoute
+  '/admin/produits/$id/modifier': typeof AdminProduitsIdModifierRoute
 }
 export interface FileRoutesByTo {
   '/contact': typeof PublicContactRoute
@@ -151,17 +152,17 @@ export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/connexion': typeof ConnexionIndexRoute
-  '/admin/badges/new': typeof AdminBadgesNewRoute
-  '/admin/categories/new': typeof AdminCategoriesNewRoute
-  '/admin/produits/new': typeof AdminProduitsNewRoute
+  '/admin/badges/nouveau': typeof AdminBadgesNouveauRoute
+  '/admin/categories/nouveau': typeof AdminCategoriesNouveauRoute
+  '/admin/produits/nouveau': typeof AdminProduitsNouveauRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/badges': typeof AdminBadgesIndexRoute
   '/admin/categories': typeof AdminCategoriesIndexRoute
   '/admin/messages': typeof AdminMessagesIndexRoute
   '/admin/produits': typeof AdminProduitsIndexRoute
-  '/admin/badges/$id/edit': typeof AdminBadgesIdEditRoute
-  '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
-  '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
+  '/admin/badges/$id/modifier': typeof AdminBadgesIdModifierRoute
+  '/admin/categories/$id/modifier': typeof AdminCategoriesIdModifierRoute
+  '/admin/produits/$id/modifier': typeof AdminProduitsIdModifierRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -173,17 +174,17 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/connexion/': typeof ConnexionIndexRoute
-  '/admin/badges/new': typeof AdminBadgesNewRoute
-  '/admin/categories/new': typeof AdminCategoriesNewRoute
-  '/admin/produits/new': typeof AdminProduitsNewRoute
+  '/admin/badges/nouveau': typeof AdminBadgesNouveauRoute
+  '/admin/categories/nouveau': typeof AdminCategoriesNouveauRoute
+  '/admin/produits/nouveau': typeof AdminProduitsNouveauRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/badges/': typeof AdminBadgesIndexRoute
   '/admin/categories/': typeof AdminCategoriesIndexRoute
   '/admin/messages/': typeof AdminMessagesIndexRoute
   '/admin/produits/': typeof AdminProduitsIndexRoute
-  '/admin/badges/$id/edit': typeof AdminBadgesIdEditRoute
-  '/admin/categories/$id/edit': typeof AdminCategoriesIdEditRoute
-  '/admin/produits/$id/edit': typeof AdminProduitsIdEditRoute
+  '/admin/badges/$id/modifier': typeof AdminBadgesIdModifierRoute
+  '/admin/categories/$id/modifier': typeof AdminCategoriesIdModifierRoute
+  '/admin/produits/$id/modifier': typeof AdminProduitsIdModifierRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -195,17 +196,17 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/'
     | '/connexion'
-    | '/admin/badges/new'
-    | '/admin/categories/new'
-    | '/admin/produits/new'
+    | '/admin/badges/nouveau'
+    | '/admin/categories/nouveau'
+    | '/admin/produits/nouveau'
     | '/api/auth/$'
     | '/admin/badges'
     | '/admin/categories'
     | '/admin/messages'
     | '/admin/produits'
-    | '/admin/badges/$id/edit'
-    | '/admin/categories/$id/edit'
-    | '/admin/produits/$id/edit'
+    | '/admin/badges/$id/modifier'
+    | '/admin/categories/$id/modifier'
+    | '/admin/produits/$id/modifier'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/contact'
@@ -214,17 +215,17 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/connexion'
-    | '/admin/badges/new'
-    | '/admin/categories/new'
-    | '/admin/produits/new'
+    | '/admin/badges/nouveau'
+    | '/admin/categories/nouveau'
+    | '/admin/produits/nouveau'
     | '/api/auth/$'
     | '/admin/badges'
     | '/admin/categories'
     | '/admin/messages'
     | '/admin/produits'
-    | '/admin/badges/$id/edit'
-    | '/admin/categories/$id/edit'
-    | '/admin/produits/$id/edit'
+    | '/admin/badges/$id/modifier'
+    | '/admin/categories/$id/modifier'
+    | '/admin/produits/$id/modifier'
   id:
     | '__root__'
     | '/_public'
@@ -235,17 +236,17 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/admin/'
     | '/connexion/'
-    | '/admin/badges/new'
-    | '/admin/categories/new'
-    | '/admin/produits/new'
+    | '/admin/badges/nouveau'
+    | '/admin/categories/nouveau'
+    | '/admin/produits/nouveau'
     | '/api/auth/$'
     | '/admin/badges/'
     | '/admin/categories/'
     | '/admin/messages/'
     | '/admin/produits/'
-    | '/admin/badges/$id/edit'
-    | '/admin/categories/$id/edit'
-    | '/admin/produits/$id/edit'
+    | '/admin/badges/$id/modifier'
+    | '/admin/categories/$id/modifier'
+    | '/admin/produits/$id/modifier'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -348,46 +349,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/produits/new': {
-      id: '/admin/produits/new'
-      path: '/produits/new'
-      fullPath: '/admin/produits/new'
-      preLoaderRoute: typeof AdminProduitsNewRouteImport
+    '/admin/produits/nouveau': {
+      id: '/admin/produits/nouveau'
+      path: '/produits/nouveau'
+      fullPath: '/admin/produits/nouveau'
+      preLoaderRoute: typeof AdminProduitsNouveauRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/categories/new': {
-      id: '/admin/categories/new'
-      path: '/categories/new'
-      fullPath: '/admin/categories/new'
-      preLoaderRoute: typeof AdminCategoriesNewRouteImport
+    '/admin/categories/nouveau': {
+      id: '/admin/categories/nouveau'
+      path: '/categories/nouveau'
+      fullPath: '/admin/categories/nouveau'
+      preLoaderRoute: typeof AdminCategoriesNouveauRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/badges/new': {
-      id: '/admin/badges/new'
-      path: '/badges/new'
-      fullPath: '/admin/badges/new'
-      preLoaderRoute: typeof AdminBadgesNewRouteImport
+    '/admin/badges/nouveau': {
+      id: '/admin/badges/nouveau'
+      path: '/badges/nouveau'
+      fullPath: '/admin/badges/nouveau'
+      preLoaderRoute: typeof AdminBadgesNouveauRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/produits/$id/edit': {
-      id: '/admin/produits/$id/edit'
-      path: '/produits/$id/edit'
-      fullPath: '/admin/produits/$id/edit'
-      preLoaderRoute: typeof AdminProduitsIdEditRouteImport
+    '/admin/produits/$id/modifier': {
+      id: '/admin/produits/$id/modifier'
+      path: '/produits/$id/modifier'
+      fullPath: '/admin/produits/$id/modifier'
+      preLoaderRoute: typeof AdminProduitsIdModifierRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/categories/$id/edit': {
-      id: '/admin/categories/$id/edit'
-      path: '/categories/$id/edit'
-      fullPath: '/admin/categories/$id/edit'
-      preLoaderRoute: typeof AdminCategoriesIdEditRouteImport
+    '/admin/categories/$id/modifier': {
+      id: '/admin/categories/$id/modifier'
+      path: '/categories/$id/modifier'
+      fullPath: '/admin/categories/$id/modifier'
+      preLoaderRoute: typeof AdminCategoriesIdModifierRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/badges/$id/edit': {
-      id: '/admin/badges/$id/edit'
-      path: '/badges/$id/edit'
-      fullPath: '/admin/badges/$id/edit'
-      preLoaderRoute: typeof AdminBadgesIdEditRouteImport
+    '/admin/badges/$id/modifier': {
+      id: '/admin/badges/$id/modifier'
+      path: '/badges/$id/modifier'
+      fullPath: '/admin/badges/$id/modifier'
+      preLoaderRoute: typeof AdminBadgesIdModifierRouteImport
       parentRoute: typeof AdminRoute
     }
   }
@@ -411,31 +412,31 @@ const PublicRouteWithChildren =
 interface AdminRouteChildren {
   AdminParametresRoute: typeof AdminParametresRoute
   AdminIndexRoute: typeof AdminIndexRoute
-  AdminBadgesNewRoute: typeof AdminBadgesNewRoute
-  AdminCategoriesNewRoute: typeof AdminCategoriesNewRoute
-  AdminProduitsNewRoute: typeof AdminProduitsNewRoute
+  AdminBadgesNouveauRoute: typeof AdminBadgesNouveauRoute
+  AdminCategoriesNouveauRoute: typeof AdminCategoriesNouveauRoute
+  AdminProduitsNouveauRoute: typeof AdminProduitsNouveauRoute
   AdminBadgesIndexRoute: typeof AdminBadgesIndexRoute
   AdminCategoriesIndexRoute: typeof AdminCategoriesIndexRoute
   AdminMessagesIndexRoute: typeof AdminMessagesIndexRoute
   AdminProduitsIndexRoute: typeof AdminProduitsIndexRoute
-  AdminBadgesIdEditRoute: typeof AdminBadgesIdEditRoute
-  AdminCategoriesIdEditRoute: typeof AdminCategoriesIdEditRoute
-  AdminProduitsIdEditRoute: typeof AdminProduitsIdEditRoute
+  AdminBadgesIdModifierRoute: typeof AdminBadgesIdModifierRoute
+  AdminCategoriesIdModifierRoute: typeof AdminCategoriesIdModifierRoute
+  AdminProduitsIdModifierRoute: typeof AdminProduitsIdModifierRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminParametresRoute: AdminParametresRoute,
   AdminIndexRoute: AdminIndexRoute,
-  AdminBadgesNewRoute: AdminBadgesNewRoute,
-  AdminCategoriesNewRoute: AdminCategoriesNewRoute,
-  AdminProduitsNewRoute: AdminProduitsNewRoute,
+  AdminBadgesNouveauRoute: AdminBadgesNouveauRoute,
+  AdminCategoriesNouveauRoute: AdminCategoriesNouveauRoute,
+  AdminProduitsNouveauRoute: AdminProduitsNouveauRoute,
   AdminBadgesIndexRoute: AdminBadgesIndexRoute,
   AdminCategoriesIndexRoute: AdminCategoriesIndexRoute,
   AdminMessagesIndexRoute: AdminMessagesIndexRoute,
   AdminProduitsIndexRoute: AdminProduitsIndexRoute,
-  AdminBadgesIdEditRoute: AdminBadgesIdEditRoute,
-  AdminCategoriesIdEditRoute: AdminCategoriesIdEditRoute,
-  AdminProduitsIdEditRoute: AdminProduitsIdEditRoute,
+  AdminBadgesIdModifierRoute: AdminBadgesIdModifierRoute,
+  AdminCategoriesIdModifierRoute: AdminCategoriesIdModifierRoute,
+  AdminProduitsIdModifierRoute: AdminProduitsIdModifierRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

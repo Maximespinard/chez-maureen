@@ -76,7 +76,13 @@ export function ContactMessageDialog({
               </div>
               <div>
                 <span className="text-text-light text-sm">Email :</span>
-                <p className="text-text-body">{message.email}</p>
+                <p className="text-text-body">
+                  {message.email || (
+                    <span className="text-text-light italic">
+                      Non renseigné
+                    </span>
+                  )}
+                </p>
               </div>
               {message.phone && (
                 <div>
@@ -102,14 +108,26 @@ export function ContactMessageDialog({
 
             {/* Actions */}
             <div className="flex flex-col gap-2 sm:flex-row">
-              <Button
-                variant="default"
-                onClick={handleMailto}
-                className="flex-1"
-              >
-                <Mail className="mr-2 size-4" />
-                Répondre
-              </Button>
+              {message.email ? (
+                <Button
+                  variant="default"
+                  onClick={handleMailto}
+                  className="flex-1"
+                >
+                  <Mail className="mr-2 size-4" />
+                  Répondre
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  disabled
+                  className="flex-1"
+                  title="Aucun email fourni"
+                >
+                  <Mail className="mr-2 size-4" />
+                  Répondre (email manquant)
+                </Button>
+              )}
               <Button
                 variant="outline"
                 onClick={handleDelete}

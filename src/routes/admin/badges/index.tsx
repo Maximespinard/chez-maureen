@@ -21,7 +21,7 @@ function BadgesListPage() {
           </p>
         </div>
         <Button asChild>
-          <Link to="/admin/badges/new">
+          <Link to="/admin/badges/nouveau">
             <Plus className="size-4" />
             Nouveau badge
           </Link>

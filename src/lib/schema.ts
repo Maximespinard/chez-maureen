@@ -149,7 +149,7 @@ export const contactMessage = pgTable('ContactMessage', {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
-  email: text('email').notNull(),
+  email: text('email'),
   phone: text('phone'),
   message: text('message').notNull(),
   isRead: boolean('isRead').notNull().default(false),

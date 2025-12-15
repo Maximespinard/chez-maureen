@@ -93,7 +93,7 @@ Cloudflare Images automatically creates variants for you:
 
 Test the upload flow:
 
-1. Go to `/admin/produits/new`
+1. Go to `/admin/produits/nouveau`
 2. Fill in product details
 3. Click "Upload Image" button
 4. Select an image file

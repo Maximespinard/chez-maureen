@@ -28,7 +28,7 @@ function ProductsListPage() {
           </p>
         </div>
         <Button asChild>
-          <Link to="/admin/produits/new">
+          <Link to="/admin/produits/nouveau">
             <Plus className="size-4" />
             Nouveau produit
           </Link>

@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { BadgeForm } from '@/features/badges/components/BadgeForm'
 
-export const Route = createFileRoute('/admin/badges/new')({
+export const Route = createFileRoute('/admin/badges/nouveau')({
   component: NewBadgePage,
 })
 

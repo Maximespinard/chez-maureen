@@ -1,10 +1,9 @@
-import { LogOut, Menu } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
-import { useAdminStore } from '@/stores/admin.store'
+
 import { authClient } from '@/lib/auth-client'
 
 export function AdminHeader() {
-  const { toggleSidebar } = useAdminStore()
   const { data: session } = authClient.useSession()
   const navigate = useNavigate()
 
@@ -15,14 +14,8 @@ export function AdminHeader() {
 
   return (
     <header className="border-border-subtle sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-white px-6 shadow-sm">
-      {/* Mobile Menu Toggle */}
-      <button
-        onClick={toggleSidebar}
-        className="text-text-body rounded-lg p-2 transition-colors hover:bg-gray-50 lg:hidden"
-        aria-label="Toggle sidebar"
-      >
-        <Menu className="size-5" />
-      </button>
+      {/* Logo on mobile (since sidebar is hidden) */}
+      <div className="text-xl font-bold text-black lg:hidden">Chez Maureen</div>
 
       {/* Spacer for desktop */}
       <div className="hidden lg:block" />

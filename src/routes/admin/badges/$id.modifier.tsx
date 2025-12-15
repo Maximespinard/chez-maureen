@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { BadgeForm } from '@/features/badges/components/BadgeForm'
 import { useBadge } from '@/features/badges/hooks/useBadges'
 
-export const Route = createFileRoute('/admin/badges/$id/edit')({
+export const Route = createFileRoute('/admin/badges/$id/modifier')({
   component: EditBadgePage,
 })
 
