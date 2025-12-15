@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { COMMON_FIELDS, VALIDATION } from '@/lib/validation-messages'
 
 export const BadgeSchema = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().uuid().optional(),
   name: z
     .string()
     .min(1, COMMON_FIELDS.name.required)
@@ -30,7 +30,7 @@ export const BadgeUpdateSchema = BadgeSchema.partial().required({
 export const BadgeReorderSchema = z.object({
   badges: z.array(
     z.object({
-      id: z.string().cuid(),
+      id: z.string().uuid(),
       order: z
         .number()
         .int(COMMON_FIELDS.order.mustBeInteger)
@@ -40,7 +40,7 @@ export const BadgeReorderSchema = z.object({
 })
 
 export const BadgeDeleteSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().uuid(),
 })
 
 export type Badge = z.infer<typeof BadgeSchema>

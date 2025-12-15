@@ -18,7 +18,7 @@ export const getAllBadges = createServerFn({ method: 'GET' }).handler(
 
 // GET single badge by ID
 export const getBadgeById = createServerFn({ method: 'GET' })
-  .inputValidator(z.object({ id: z.string().cuid() }))
+  .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     return await badgeService.getById(data.id)
   })

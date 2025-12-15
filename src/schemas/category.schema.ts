@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { COMMON_FIELDS } from '@/lib/validation-messages'
 
 export const CategorySchema = z.object({
-  id: z.string().cuid().optional(),
+  id: z.string().uuid().optional(),
   name: z
     .string()
     .min(1, COMMON_FIELDS.name.required)
@@ -30,7 +30,7 @@ export const CategoryUpdateSchema = CategorySchema.partial().required({
 export const CategoryReorderSchema = z.object({
   categories: z.array(
     z.object({
-      id: z.string().cuid(),
+      id: z.string().uuid(),
       order: z
         .number()
         .int(COMMON_FIELDS.order.mustBeInteger)
@@ -41,7 +41,7 @@ export const CategoryReorderSchema = z.object({
 
 // For checking delete safety
 export const CategoryDeleteSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().uuid(),
   force: z.boolean().default(false), // Future: allow force delete with reassignment
 })
 

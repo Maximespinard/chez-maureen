@@ -20,7 +20,7 @@ export const PRODUCT_UNITS = [
 
 export const ProductSchema = z
   .object({
-    id: z.string().cuid().optional(),
+    id: z.string().uuid().optional(),
     name: z
       .string()
       .min(1, COMMON_FIELDS.name.required)
@@ -47,9 +47,9 @@ export const ProductSchema = z
       .or(z.literal('')),
     imageKey: z.string().optional(),
     categoryIds: z
-      .array(z.string().cuid())
+      .array(z.string().uuid())
       .min(1, VALIDATION.array.minOne('catégorie')),
-    badgeIds: z.array(z.string().cuid()).optional().default([]),
+    badgeIds: z.array(z.string().uuid()).optional().default([]),
     isActive: z.boolean().default(true),
     isFeatured: z.boolean().default(false),
     featuredOrder: z
@@ -100,8 +100,8 @@ export const ProductUpdateSchema = ProductSchema.partial().required({
 
 // For managing category associations
 export const ProductCategoryAssociationSchema = z.object({
-  productId: z.string().cuid(),
-  categoryIds: z.array(z.string().cuid()),
+  productId: z.string().uuid(),
+  categoryIds: z.array(z.string().uuid()),
 })
 
 export type Product = z.infer<typeof ProductSchema>

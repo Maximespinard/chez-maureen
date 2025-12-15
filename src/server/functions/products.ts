@@ -16,7 +16,7 @@ export const getAllProducts = createServerFn({ method: 'GET' }).handler(
 
 // GET single product by ID
 export const getProductById = createServerFn({ method: 'GET' })
-  .inputValidator(z.object({ id: z.string().cuid() }))
+  .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     return await productService.getById(data.id)
   })
@@ -37,7 +37,7 @@ export const updateProduct = createServerFn({ method: 'POST' })
 
 // POST delete product
 export const deleteProduct = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ id: z.string().cuid() }))
+  .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     return await productService.delete(data.id)
   })
@@ -46,8 +46,8 @@ export const deleteProduct = createServerFn({ method: 'POST' })
 export const updateProductCategories = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({
-      categoryIds: z.array(z.string().cuid()),
-      productId: z.string().cuid(),
+      categoryIds: z.array(z.string().uuid()),
+      productId: z.string().uuid(),
     }),
   )
   .handler(async ({ data }) => {
@@ -66,7 +66,7 @@ export const getFeaturedProducts = createServerFn({ method: 'GET' }).handler(
 
 // POST toggle product active status
 export const toggleProductActive = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ id: z.string().cuid() }))
+  .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     return await productService.toggleActive(data.id)
   })
@@ -75,8 +75,8 @@ export const toggleProductActive = createServerFn({ method: 'POST' })
 export const updateProductBadges = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({
-      badgeIds: z.array(z.string().cuid()),
-      productId: z.string().cuid(),
+      badgeIds: z.array(z.string().uuid()),
+      productId: z.string().uuid(),
     }),
   )
   .handler(async ({ data }) => {

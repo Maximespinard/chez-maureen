@@ -88,7 +88,7 @@ export const getAllContactMessages = createServerFn({ method: 'GET' }).handler(
 export const toggleMessageRead = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({
-      id: z.string().cuid(),
+      id: z.string().uuid(),
     }),
   )
   .handler(async ({ data }) => {
@@ -119,7 +119,7 @@ export const toggleMessageRead = createServerFn({ method: 'POST' })
 export const deleteContactMessage = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({
-      id: z.string().cuid(),
+      id: z.string().uuid(),
     }),
   )
   .handler(async ({ data }) => {

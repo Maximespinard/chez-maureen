@@ -18,14 +18,14 @@ export const getAllCategories = createServerFn({ method: 'GET' }).handler(
 
 // GET single category by ID
 export const getCategoryById = createServerFn({ method: 'GET' })
-  .inputValidator(z.object({ id: z.string().cuid() }))
+  .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     return await categoryService.getById(data.id)
   })
 
 // GET available products for category
 export const getAvailableProducts = createServerFn({ method: 'GET' })
-  .inputValidator(z.object({ categoryId: z.string().cuid() }))
+  .inputValidator(z.object({ categoryId: z.string().uuid() }))
   .handler(async ({ data }) => {
     return await categoryService.getAvailableProducts(data.categoryId)
   })
@@ -62,8 +62,8 @@ export const reorderCategories = createServerFn({ method: 'POST' })
 export const addProductsToCategory = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({
-      categoryId: z.string().cuid(),
-      productIds: z.array(z.string().cuid()),
+      categoryId: z.string().uuid(),
+      productIds: z.array(z.string().uuid()),
     }),
   )
   .handler(async ({ data }) => {
@@ -74,8 +74,8 @@ export const addProductsToCategory = createServerFn({ method: 'POST' })
 export const removeProductsFromCategory = createServerFn({ method: 'POST' })
   .inputValidator(
     z.object({
-      categoryId: z.string().cuid(),
-      productIds: z.array(z.string().cuid()),
+      categoryId: z.string().uuid(),
+      productIds: z.array(z.string().uuid()),
     }),
   )
   .handler(async ({ data }) => {
