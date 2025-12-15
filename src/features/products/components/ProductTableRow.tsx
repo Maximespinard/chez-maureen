@@ -30,6 +30,7 @@ export function ProductTableRow({
             src={getOptimizedImageUrl(product.image, {
               width: 80,
               quality: 90,
+              aspectRatio: '1/1',
             })}
             alt={product.name}
             className="size-10 rounded-md object-cover"

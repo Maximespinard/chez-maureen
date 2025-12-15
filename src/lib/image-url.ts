@@ -12,6 +12,8 @@ export function getOptimizedImageUrl(
     format?: 'auto' | 'avif' | 'webp'
     quality?: number
     width?: number
+    height?: number
+    aspectRatio?: '4/3' | '1/1' | '16/9'
   } = {},
 ): string {
   if (!originalUrl) return ''
@@ -22,13 +24,22 @@ export function getOptimizedImageUrl(
   }
 
   try {
-    const { format = 'webp', quality = 80, width = 800 } = options
+    const { format = 'webp', quality = 80, width = 800, aspectRatio } = options
+    let { height } = options
+
+    // Calcul automatique de la hauteur si aspectRatio fourni
+    if (aspectRatio && !height) {
+      const [w, h] = aspectRatio.split('/').map(Number)
+      height = Math.round(width * (h / w))
+    }
 
     const params = [
       `width=${width}`,
+      ...(height ? [`height=${height}`] : []),
       `quality=${quality}`,
       `format=${format}`,
-      'fit=scale-down',
+      height ? 'fit=cover' : 'fit=scale-down',
+      ...(height ? ['gravity=auto'] : []),
     ].join(',')
 
     const url = new URL(originalUrl)
