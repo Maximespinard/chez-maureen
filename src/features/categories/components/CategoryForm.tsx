@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { LoadingButton } from '@/components/ui/loading-button'
 import { useCategoryMutations } from '@/features/categories/hooks/useCategories'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
-import { formatZodError } from '@/lib/errors'
+import { formatError } from '@/lib/errors'
 import {
   CategoryCreateSchema,
   CategoryUpdateSchema,
@@ -60,7 +60,7 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
 
         onSuccess?.()
       } catch (err) {
-        setError(formatZodError(err))
+        setError(formatError(err))
       } finally {
         scrollToTop()
       }

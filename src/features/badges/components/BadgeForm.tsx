@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { LoadingButton } from '@/components/ui/loading-button'
 import { useBadgeMutations } from '@/features/badges/hooks/useBadges'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
-import { formatZodError } from '@/lib/errors'
+import { formatError } from '@/lib/errors'
 import { BadgeCreateSchema, BadgeUpdateSchema } from '@/schemas/badge.schema'
 
 interface BadgeFormProps {
@@ -59,7 +59,7 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
 
         onSuccess?.()
       } catch (err) {
-        setError(formatZodError(err))
+        setError(formatError(err))
       } finally {
         scrollToTop()
       }

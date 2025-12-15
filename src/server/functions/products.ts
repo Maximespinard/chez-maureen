@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
+import { parseDatabaseError } from '@/lib/error-parser'
 import {
   ProductCreateSchema,
   ProductUpdateSchema,
@@ -25,21 +26,33 @@ export const getProductById = createServerFn({ method: 'GET' })
 export const createProduct = createServerFn({ method: 'POST' })
   .inputValidator(ProductCreateSchema)
   .handler(async ({ data }) => {
-    return await productService.create(data)
+    try {
+      return await productService.create(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST update product
 export const updateProduct = createServerFn({ method: 'POST' })
   .inputValidator(ProductUpdateSchema)
   .handler(async ({ data }) => {
-    return await productService.update(data)
+    try {
+      return await productService.update(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST delete product
 export const deleteProduct = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
-    return await productService.delete(data.id)
+    try {
+      return await productService.delete(data.id)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST update product categories
@@ -51,10 +64,14 @@ export const updateProductCategories = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    return await productService.updateCategories(
-      data.productId,
-      data.categoryIds,
-    )
+    try {
+      return await productService.updateCategories(
+        data.productId,
+        data.categoryIds,
+      )
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // GET featured products
@@ -68,7 +85,11 @@ export const getFeaturedProducts = createServerFn({ method: 'GET' }).handler(
 export const toggleProductActive = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
-    return await productService.toggleActive(data.id)
+    try {
+      return await productService.toggleActive(data.id)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST update product badges
@@ -80,5 +101,9 @@ export const updateProductBadges = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    return await productService.updateBadges(data.productId, data.badgeIds)
+    try {
+      return await productService.updateBadges(data.productId, data.badgeIds)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })

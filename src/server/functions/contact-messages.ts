@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { db } from '@/lib/drizzle'
+import { parseDatabaseError } from '@/lib/error-parser'
 import { contactMessage } from '@/lib/schema'
 import { ContactCreateSchema } from '@/schemas/contact.schema'
 
@@ -53,20 +54,24 @@ export const createContactMessage = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    // Vérifier le token Turnstile
-    const isValid = await verifyTurnstile(data.turnstileToken)
-    if (!isValid) {
-      throw new Error('Validation anti-spam échouée. Veuillez réessayer.')
+    try {
+      // Vérifier le token Turnstile
+      const isValid = await verifyTurnstile(data.turnstileToken)
+      if (!isValid) {
+        throw new Error('Validation anti-spam échouée. Veuillez réessayer.')
+      }
+
+      // Créer le message
+      const { turnstileToken, ...messageData } = data
+      const [message] = await db
+        .insert(contactMessage)
+        .values(messageData)
+        .returning()
+
+      return message
+    } catch (error) {
+      throw parseDatabaseError(error)
     }
-
-    // Créer le message
-    const { turnstileToken, ...messageData } = data
-    const [message] = await db
-      .insert(contactMessage)
-      .values(messageData)
-      .returning()
-
-    return message
   })
 
 /**
@@ -92,25 +97,29 @@ export const toggleMessageRead = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    // Récupérer le message actuel
-    const currentMessage = await db.query.contactMessage.findFirst({
-      where: eq(contactMessage.id, data.id),
-    })
-
-    if (!currentMessage) {
-      throw new Error('Message non trouvé')
-    }
-
-    // Toggle isRead
-    const [updatedMessage] = await db
-      .update(contactMessage)
-      .set({
-        isRead: !currentMessage.isRead,
+    try {
+      // Récupérer le message actuel
+      const currentMessage = await db.query.contactMessage.findFirst({
+        where: eq(contactMessage.id, data.id),
       })
-      .where(eq(contactMessage.id, data.id))
-      .returning()
 
-    return updatedMessage
+      if (!currentMessage) {
+        throw new Error('Message non trouvé')
+      }
+
+      // Toggle isRead
+      const [updatedMessage] = await db
+        .update(contactMessage)
+        .set({
+          isRead: !currentMessage.isRead,
+        })
+        .where(eq(contactMessage.id, data.id))
+        .returning()
+
+      return updatedMessage
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 /**
@@ -123,7 +132,11 @@ export const deleteContactMessage = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    await db.delete(contactMessage).where(eq(contactMessage.id, data.id))
+    try {
+      await db.delete(contactMessage).where(eq(contactMessage.id, data.id))
 
-    return { success: true }
+      return { success: true }
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })

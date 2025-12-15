@@ -1,5 +1,8 @@
 import { ZodError } from 'zod'
 
+import { AppError, ValidationError } from './app-errors'
+import { parseDatabaseError } from './error-parser'
+
 /**
  * Parse une ZodError et retourne le premier message d'erreur formaté
  * @param error - L'erreur à parser (peut être ZodError ou Error standard)
@@ -24,6 +27,56 @@ export function formatZodError(
   }
 
   return fallback
+}
+
+/**
+ * Formatte n'importe quelle erreur (Zod, Database, ou générique)
+ * @param error - Erreur à formatter
+ * @param fallback - Message par défaut
+ * @returns Message d'erreur convivial
+ */
+export function formatError(
+  error: unknown,
+  fallback = 'Une erreur est survenue',
+): string {
+  // Erreurs Zod
+  if (error instanceof ZodError) {
+    return formatZodError(error, fallback)
+  }
+
+  // AppError (ValidationError, DatabaseError, etc.)
+  if (error instanceof AppError) {
+    return error.message
+  }
+
+  // Erreurs DB Drizzle - parser et transformer
+  const parsedError = parseDatabaseError(error)
+  if (parsedError instanceof AppError) {
+    return parsedError.message
+  }
+
+  // Erreur générique
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return fallback
+}
+
+/**
+ * Extrait l'erreur spécifique à un champ (pour affichage sous le champ)
+ * Utile pour amélioration future des formulaires
+ */
+export function getFieldErrorFromValidation(
+  error: unknown,
+): { field: string; message: string } | null {
+  if (error instanceof ValidationError && error.field) {
+    return {
+      field: error.field,
+      message: error.message,
+    }
+  }
+  return null
 }
 
 /**

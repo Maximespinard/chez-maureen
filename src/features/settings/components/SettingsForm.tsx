@@ -12,7 +12,7 @@ import {
   useSettingsMutation,
 } from '@/features/settings/hooks/useSettings'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
-import { formatZodError } from '@/lib/errors'
+import { formatError } from '@/lib/errors'
 import { DAYS } from '@/lib/hours'
 import {
   BusinessInfoSchema,
@@ -61,7 +61,7 @@ export function SettingsForm() {
         setSuccess(true)
         setTimeout(() => setSuccess(false), 3000)
       } catch (err) {
-        setError(formatZodError(err))
+        setError(formatError(err))
       } finally {
         scrollToTop()
       }

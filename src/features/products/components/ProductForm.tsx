@@ -18,7 +18,7 @@ import { useBadges } from '@/features/badges/hooks/useBadges'
 import { useCategories } from '@/features/categories/hooks/useCategories'
 import { useProductMutations } from '@/features/products/hooks/useProductMutations'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
-import { formatZodError } from '@/lib/errors'
+import { formatError } from '@/lib/errors'
 import {
   PRODUCT_UNITS,
   ProductCreateSchema,
@@ -83,7 +83,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 
         onSuccess?.()
       } catch (err) {
-        setError(formatZodError(err))
+        setError(formatError(err))
       } finally {
         scrollToTop()
       }

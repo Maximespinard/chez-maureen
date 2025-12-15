@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
+import { parseDatabaseError } from '@/lib/error-parser'
 import {
   CategoryCreateSchema,
   CategoryDeleteSchema,
@@ -34,28 +35,44 @@ export const getAvailableProducts = createServerFn({ method: 'GET' })
 export const createCategory = createServerFn({ method: 'POST' })
   .inputValidator(CategoryCreateSchema)
   .handler(async ({ data }) => {
-    return await categoryService.create(data)
+    try {
+      return await categoryService.create(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST update category
 export const updateCategory = createServerFn({ method: 'POST' })
   .inputValidator(CategoryUpdateSchema)
   .handler(async ({ data }) => {
-    return await categoryService.update(data)
+    try {
+      return await categoryService.update(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST delete category
 export const deleteCategory = createServerFn({ method: 'POST' })
   .inputValidator(CategoryDeleteSchema)
   .handler(async ({ data }) => {
-    return await categoryService.delete(data.id)
+    try {
+      return await categoryService.delete(data.id)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST reorder categories
 export const reorderCategories = createServerFn({ method: 'POST' })
   .inputValidator(CategoryReorderSchema)
   .handler(async ({ data }) => {
-    return await categoryService.reorder(data)
+    try {
+      return await categoryService.reorder(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST add products to category
@@ -67,7 +84,11 @@ export const addProductsToCategory = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    return await categoryService.addProducts(data.categoryId, data.productIds)
+    try {
+      return await categoryService.addProducts(data.categoryId, data.productIds)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST remove products from category
@@ -79,8 +100,12 @@ export const removeProductsFromCategory = createServerFn({ method: 'POST' })
     }),
   )
   .handler(async ({ data }) => {
-    return await categoryService.removeProducts(
-      data.categoryId,
-      data.productIds,
-    )
+    try {
+      return await categoryService.removeProducts(
+        data.categoryId,
+        data.productIds,
+      )
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })

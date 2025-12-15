@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
+import { parseDatabaseError } from '@/lib/error-parser'
 import { StoreSettingsUpdateSchema } from '@/schemas/settings.schema'
 import { settingsService } from '@/server/services/settings.service'
 
@@ -14,5 +15,9 @@ export const getSettings = createServerFn({ method: 'GET' }).handler(
 export const updateSettings = createServerFn({ method: 'POST' })
   .inputValidator(StoreSettingsUpdateSchema)
   .handler(async ({ data }) => {
-    return await settingsService.update(data)
+    try {
+      return await settingsService.update(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })

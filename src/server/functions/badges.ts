@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
+import { parseDatabaseError } from '@/lib/error-parser'
 import {
   BadgeCreateSchema,
   BadgeDeleteSchema,
@@ -27,26 +28,42 @@ export const getBadgeById = createServerFn({ method: 'GET' })
 export const createBadge = createServerFn({ method: 'POST' })
   .inputValidator(BadgeCreateSchema)
   .handler(async ({ data }) => {
-    return await badgeService.create(data)
+    try {
+      return await badgeService.create(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST update badge
 export const updateBadge = createServerFn({ method: 'POST' })
   .inputValidator(BadgeUpdateSchema)
   .handler(async ({ data }) => {
-    return await badgeService.update(data)
+    try {
+      return await badgeService.update(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST delete badge
 export const deleteBadge = createServerFn({ method: 'POST' })
   .inputValidator(BadgeDeleteSchema)
   .handler(async ({ data }) => {
-    return await badgeService.delete(data.id)
+    try {
+      return await badgeService.delete(data.id)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
 
 // POST reorder badges
 export const reorderBadges = createServerFn({ method: 'POST' })
   .inputValidator(BadgeReorderSchema)
   .handler(async ({ data }) => {
-    return await badgeService.reorder(data)
+    try {
+      return await badgeService.reorder(data)
+    } catch (error) {
+      throw parseDatabaseError(error)
+    }
   })
