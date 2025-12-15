@@ -3,6 +3,7 @@ import { useServerFn } from '@tanstack/react-start'
 
 import type { ProductCreate, ProductUpdate } from '@/schemas'
 import type { ProductWithRelations } from '@/types/product'
+import type { ServerFunctionResult } from '@/types/server-function'
 import {
   createProduct,
   deleteProduct,
@@ -20,7 +21,15 @@ export function useProductMutations() {
   const updateProductFn = useServerFn(updateProduct)
 
   const create = useMutation({
-    mutationFn: (data: ProductCreate) => createProductFn({ data }),
+    mutationFn: async (data: ProductCreate) => {
+      const result = (await createProductFn({
+        data,
+      })) as ServerFunctionResult<ProductWithRelations>
+      if (result.error) {
+        throw result.error
+      }
+      return result.data
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
       queryClient.invalidateQueries({ queryKey: ['categories'] })
@@ -28,7 +37,15 @@ export function useProductMutations() {
   })
 
   const update = useMutation({
-    mutationFn: (data: ProductUpdate) => updateProductFn({ data }),
+    mutationFn: async (data: ProductUpdate) => {
+      const result = (await updateProductFn({
+        data,
+      })) as ServerFunctionResult<ProductWithRelations>
+      if (result.error) {
+        throw result.error
+      }
+      return result.data
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
       queryClient.invalidateQueries({ queryKey: ['products', variables.id] })
@@ -37,7 +54,15 @@ export function useProductMutations() {
   })
 
   const remove = useMutation({
-    mutationFn: (id: string) => deleteProductFn({ data: { id } }),
+    mutationFn: async (id: string) => {
+      const result = (await deleteProductFn({
+        data: { id },
+      })) as ServerFunctionResult<undefined>
+      if (result.error) {
+        throw result.error
+      }
+      return result.data
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
       queryClient.invalidateQueries({ queryKey: ['categories'] })
@@ -46,7 +71,15 @@ export function useProductMutations() {
 
   // Toggle active status with optimistic update
   const toggleActive = useMutation({
-    mutationFn: (id: string) => toggleProductActiveFn({ data: { id } }),
+    mutationFn: async (id: string) => {
+      const result = (await toggleProductActiveFn({
+        data: { id },
+      })) as ServerFunctionResult<ProductWithRelations>
+      if (result.error) {
+        throw result.error
+      }
+      return result.data
+    },
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ['products'] })
       const previousProducts = queryClient.getQueryData<
@@ -81,8 +114,18 @@ export function useProductMutations() {
 
   // Update badges
   const updateBadges = useMutation({
-    mutationFn: (data: { badgeIds: Array<string>; productId: string }) =>
-      updateProductBadgesFn({ data }),
+    mutationFn: async (data: {
+      badgeIds: Array<string>
+      productId: string
+    }) => {
+      const result = (await updateProductBadgesFn({
+        data,
+      })) as ServerFunctionResult<ProductWithRelations | null>
+      if (result.error) {
+        throw result.error
+      }
+      return result.data
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
       queryClient.invalidateQueries({

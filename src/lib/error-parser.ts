@@ -6,10 +6,41 @@ import {
 } from './database-errors'
 
 /**
- * Vérifie si c'est une erreur NeonDbError
+ * Vérifie si c'est une erreur NeonDbError (directe ou dans .cause)
  */
 export function isNeonDbError(error: unknown): boolean {
-  return error instanceof Error && 'code' in error && 'constraint' in error
+  if (!(error instanceof Error)) return false
+
+  // Erreur directe NeonDbError
+  if ('code' in error && 'constraint' in error) return true
+
+  // Drizzle wraps NeonDbError dans .cause
+  if ('cause' in error && error.cause instanceof Error) {
+    return 'code' in error.cause && 'constraint' in error.cause
+  }
+
+  return false
+}
+
+/**
+ * Extrait l'erreur NeonDbError (directe ou depuis .cause)
+ */
+function extractNeonDbError(error: unknown): unknown {
+  if (!(error instanceof Error)) return null
+
+  // Erreur directe
+  if ('code' in error && 'constraint' in error) {
+    return error
+  }
+
+  // Dans .cause (Drizzle wrapper)
+  if ('cause' in error && error.cause instanceof Error) {
+    if ('code' in error.cause) {
+      return error.cause
+    }
+  }
+
+  return null
 }
 
 /**
@@ -36,7 +67,7 @@ function extractFieldFromConstraint(
  */
 function getDatabaseErrorMessage(
   code: string | undefined,
-  constraint: string | undefined,
+  _constraint: string | undefined,
   field: string | undefined,
 ): string {
   switch (code) {
@@ -66,14 +97,20 @@ function getDatabaseErrorMessage(
  * Transforme une erreur Drizzle/Neon en AppError convivial
  */
 export function parseDatabaseError(error: unknown): Error {
-  if (!isNeonDbError(error)) {
+  const neonError = extractNeonDbError(error)
+
+  if (!neonError) {
     if (error instanceof Error) return error
     return new Error(String(error))
   }
 
-  const err = error as any // NeonDbError
-  const field = extractFieldFromConstraint(err.constraint)
-  const message = getDatabaseErrorMessage(err.code, err.constraint, field)
+  const err = neonError as Record<string, unknown> // NeonDbError
+  const field = extractFieldFromConstraint(err.constraint as string | undefined)
+  const message = getDatabaseErrorMessage(
+    err.code as string | undefined,
+    err.constraint as string | undefined,
+    field,
+  )
 
   // Violation contrainte unique → ValidationError
   if (err.code === PG_ERROR_CODES.UNIQUE_VIOLATION) {
@@ -95,7 +132,7 @@ export function parseDatabaseError(error: unknown): Error {
 
   // Violation NOT NULL → ValidationError
   if (err.code === PG_ERROR_CODES.NOT_NULL_VIOLATION) {
-    return new ValidationError(message, err.column, {
+    return new ValidationError(message, err.column as string | undefined, {
       column: err.column,
       constraint: err.constraint,
       originalCode: err.code,

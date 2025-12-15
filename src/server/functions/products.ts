@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
+import { failure, success } from '@/lib/error-serializer'
 import { parseDatabaseError } from '@/lib/error-parser'
 import {
   ProductCreateSchema,
@@ -27,9 +28,11 @@ export const createProduct = createServerFn({ method: 'POST' })
   .inputValidator(ProductCreateSchema)
   .handler(async ({ data }) => {
     try {
-      return await productService.create(data)
+      const product = await productService.create(data)
+      return success(product)
     } catch (error) {
-      throw parseDatabaseError(error)
+      const parsedError = parseDatabaseError(error)
+      return failure(parsedError)
     }
   })
 
@@ -38,9 +41,11 @@ export const updateProduct = createServerFn({ method: 'POST' })
   .inputValidator(ProductUpdateSchema)
   .handler(async ({ data }) => {
     try {
-      return await productService.update(data)
+      const product = await productService.update(data)
+      return success(product)
     } catch (error) {
-      throw parseDatabaseError(error)
+      const parsedError = parseDatabaseError(error)
+      return failure(parsedError)
     }
   })
 
@@ -49,9 +54,11 @@ export const deleteProduct = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     try {
-      return await productService.delete(data.id)
+      await productService.delete(data.id)
+      return success(undefined)
     } catch (error) {
-      throw parseDatabaseError(error)
+      const parsedError = parseDatabaseError(error)
+      return failure(parsedError)
     }
   })
 
@@ -65,12 +72,14 @@ export const updateProductCategories = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     try {
-      return await productService.updateCategories(
+      const result = await productService.updateCategories(
         data.productId,
         data.categoryIds,
       )
+      return success(result)
     } catch (error) {
-      throw parseDatabaseError(error)
+      const parsedError = parseDatabaseError(error)
+      return failure(parsedError)
     }
   })
 
@@ -86,9 +95,11 @@ export const toggleProductActive = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     try {
-      return await productService.toggleActive(data.id)
+      const product = await productService.toggleActive(data.id)
+      return success(product)
     } catch (error) {
-      throw parseDatabaseError(error)
+      const parsedError = parseDatabaseError(error)
+      return failure(parsedError)
     }
   })
 
@@ -102,8 +113,13 @@ export const updateProductBadges = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     try {
-      return await productService.updateBadges(data.productId, data.badgeIds)
+      const result = await productService.updateBadges(
+        data.productId,
+        data.badgeIds,
+      )
+      return success(result)
     } catch (error) {
-      throw parseDatabaseError(error)
+      const parsedError = parseDatabaseError(error)
+      return failure(parsedError)
     }
   })

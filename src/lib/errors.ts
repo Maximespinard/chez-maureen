@@ -2,6 +2,7 @@ import { ZodError } from 'zod'
 
 import { AppError, ValidationError } from './app-errors'
 import { parseDatabaseError } from './error-parser'
+import type { SerializableError } from '@/types/server-function'
 
 /**
  * Parse une ZodError et retourne le premier message d'erreur formaté
@@ -30,7 +31,7 @@ export function formatZodError(
 }
 
 /**
- * Formatte n'importe quelle erreur (Zod, Database, ou générique)
+ * Formatte n'importe quelle erreur (Zod, Database, SerializableError, ou générique)
  * @param error - Erreur à formatter
  * @param fallback - Message par défaut
  * @returns Message d'erreur convivial
@@ -39,6 +40,16 @@ export function formatError(
   error: unknown,
   fallback = 'Une erreur est survenue',
 ): string {
+  // SerializableError des server functions
+  if (
+    error &&
+    typeof error === 'object' &&
+    'message' in error &&
+    'code' in error
+  ) {
+    return (error as SerializableError).message
+  }
+
   // Erreurs Zod
   if (error instanceof ZodError) {
     return formatZodError(error, fallback)
