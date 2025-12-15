@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 
 import type {
   StoreSettingsUpdate,
@@ -39,11 +39,13 @@ export class SettingsService {
       .values({
         key: SETTINGS_KEY,
         value: data,
+        updatedAt: sql`CURRENT_TIMESTAMP`,
       })
       .onConflictDoUpdate({
         target: storeSettings.key,
         set: {
-          value: data,
+          value: sql.raw('excluded."value"'),
+          updatedAt: sql`CURRENT_TIMESTAMP`,
         },
       })
       .returning()

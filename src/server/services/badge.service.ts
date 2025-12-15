@@ -101,7 +101,10 @@ export class BadgeService {
     const { id, ...updateData } = data
     const [updatedBadge] = await db
       .update(badge)
-      .set(updateData)
+      .set({
+        ...updateData,
+        updatedAt: new Date(),
+      })
       .where(eq(badge.id, id))
       .returning()
 
@@ -141,7 +144,10 @@ export class BadgeService {
       for (const { id, order: newOrder } of data.badges) {
         const [updated] = await tx
           .update(badge)
-          .set({ order: newOrder })
+          .set({
+            order: newOrder,
+            updatedAt: new Date(),
+          })
           .where(eq(badge.id, id))
           .returning()
         results.push(updated)

@@ -101,7 +101,10 @@ export class CategoryService {
     const { id, ...updateData } = data
     const [updatedCategory] = await db
       .update(category)
-      .set(updateData)
+      .set({
+        ...updateData,
+        updatedAt: new Date(),
+      })
       .where(eq(category.id, id))
       .returning()
 
@@ -153,7 +156,10 @@ export class CategoryService {
       for (const { id, order: newOrder } of data.categories) {
         const [updated] = await tx
           .update(category)
-          .set({ order: newOrder })
+          .set({
+            order: newOrder,
+            updatedAt: new Date(),
+          })
           .where(eq(category.id, id))
           .returning()
         results.push(updated)

@@ -186,7 +186,10 @@ export class ProductService {
         // Update product
         await tx
           .update(product)
-          .set(productData as Partial<typeof product.$inferInsert>)
+          .set({
+            ...(productData as Partial<typeof product.$inferInsert>),
+            updatedAt: new Date(),
+          })
           .where(eq(product.id, id))
 
         // Fetch updated product with relations
@@ -213,7 +216,10 @@ export class ProductService {
     // No associations update, just product fields
     await db
       .update(product)
-      .set(productData as Partial<typeof product.$inferInsert>)
+      .set({
+        ...(productData as Partial<typeof product.$inferInsert>),
+        updatedAt: new Date(),
+      })
       .where(eq(product.id, id))
 
     const updatedProduct = await db.query.product.findFirst({
@@ -329,7 +335,10 @@ export class ProductService {
 
     const [updated] = await db
       .update(product)
-      .set({ isActive: !prod.isActive })
+      .set({
+        isActive: !prod.isActive,
+        updatedAt: new Date(),
+      })
       .where(eq(product.id, id))
       .returning()
 
