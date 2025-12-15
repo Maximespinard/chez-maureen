@@ -1,8 +1,10 @@
-import { eq } from 'drizzle-orm'
+import { and, count, eq, ilike, inArray, or } from 'drizzle-orm'
+import type { SQL } from 'drizzle-orm'
 
 import type { ProductCreate, ProductUpdate } from '@/schemas'
-import { deleteFromR2 } from '@/lib/r2'
+import type { PaginatedProducts } from '@/types/product'
 import { db } from '@/lib/drizzle'
+import { deleteFromR2 } from '@/lib/r2'
 import { product, productBadge, productCategory } from '@/lib/schema'
 
 export class ProductService {
@@ -50,6 +52,126 @@ export class ProductService {
     })
 
     return products
+  }
+
+  /**
+   * Get paginated products with server-side filters
+   */
+  async getPaginated(query: {
+    badgeIds?: Array<string>
+    categoryIds?: Array<string>
+    isActive?: 'all' | 'active' | 'inactive'
+    isFeatured?: 'all' | 'featured' | 'not-featured'
+    page: number
+    pageSize: number
+    search?: string
+  }): Promise<PaginatedProducts> {
+    const {
+      badgeIds,
+      categoryIds,
+      isActive,
+      isFeatured,
+      page,
+      pageSize,
+      search,
+    } = query
+    const offset = (page - 1) * pageSize
+
+    // Build WHERE conditions
+    const conditions: Array<SQL | undefined> = []
+
+    // Search filter (name or origin)
+    if (search && search.trim()) {
+      const searchTerm = `%${search.trim()}%`
+      conditions.push(
+        or(ilike(product.name, searchTerm), ilike(product.origin, searchTerm)),
+      )
+    }
+
+    // Active status filter
+    if (isActive === 'active') {
+      conditions.push(eq(product.isActive, true))
+    } else if (isActive === 'inactive') {
+      conditions.push(eq(product.isActive, false))
+    }
+
+    // Featured status filter
+    if (isFeatured === 'featured') {
+      conditions.push(eq(product.isFeatured, true))
+    } else if (isFeatured === 'not-featured') {
+      conditions.push(eq(product.isFeatured, false))
+    }
+
+    // For category filtering, we need a subquery approach
+    if (categoryIds && categoryIds.length > 0) {
+      const productCategories = await db
+        .select({ productId: productCategory.productId })
+        .from(productCategory)
+        .where(inArray(productCategory.categoryId, categoryIds))
+
+      const productIdsFromCategories = [
+        ...new Set(productCategories.map((pc) => pc.productId)),
+      ]
+
+      if (productIdsFromCategories.length === 0) {
+        // No products match the categories, return empty
+        return { items: [], page, pageSize, total: 0, totalPages: 0 }
+      }
+      conditions.push(inArray(product.id, productIdsFromCategories))
+    }
+
+    // For badge filtering
+    if (badgeIds && badgeIds.length > 0) {
+      const productBadgesResult = await db
+        .select({ productId: productBadge.productId })
+        .from(productBadge)
+        .where(inArray(productBadge.badgeId, badgeIds))
+
+      const productIdsFromBadges = [
+        ...new Set(productBadgesResult.map((pb) => pb.productId)),
+      ]
+
+      if (productIdsFromBadges.length === 0) {
+        return { items: [], page, pageSize, total: 0, totalPages: 0 }
+      }
+      conditions.push(inArray(product.id, productIdsFromBadges))
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined
+
+    // Get total count
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(product)
+      .where(whereClause)
+
+    // Get paginated products with relations
+    const products = await db.query.product.findMany({
+      limit: pageSize,
+      offset,
+      orderBy: (prod, { desc: descending }) => [descending(prod.createdAt)],
+      where: whereClause,
+      with: {
+        badges: {
+          with: { badge: true },
+        },
+        categories: {
+          with: {
+            category: {
+              columns: { id: true, name: true, slug: true },
+            },
+          },
+        },
+      },
+    })
+
+    return {
+      items: products,
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    }
   }
 
   /**
@@ -297,8 +419,8 @@ export class ProductService {
    */
   async getFeatured() {
     const products = await db.query.product.findMany({
-      where: (prod, { eq: equals, and }) =>
-        and(equals(prod.isFeatured, true), equals(prod.isActive, true)),
+      where: (prod, { and: andFn, eq: equals }) =>
+        andFn(equals(prod.isFeatured, true), equals(prod.isActive, true)),
       with: {
         categories: {
           with: {

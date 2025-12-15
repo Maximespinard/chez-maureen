@@ -30,10 +30,6 @@ export const ProductSchema = z
       .min(1, COMMON_FIELDS.slug.required)
       .max(200, COMMON_FIELDS.slug.maxLength(200))
       .regex(/^[a-z0-9-]+$/, COMMON_FIELDS.slug.invalid),
-    description: z
-      .string()
-      .max(1000, COMMON_FIELDS.description.maxLength(1000))
-      .optional(),
     price: z.number().positive(BUSINESS_FIELDS.price.positive),
     unit: z.enum(PRODUCT_UNITS).default('kg'),
     origin: z

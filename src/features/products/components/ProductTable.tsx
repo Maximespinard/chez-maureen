@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import type { ProductWithRelations } from '@/types/product'
+import { Pagination } from '@/components/ui/pagination'
 import {
   Table,
   TableBody,
@@ -12,22 +13,28 @@ import {
 import { DeleteProductDialog } from '@/features/products/components/DeleteProductDialog'
 import { ProductTableRow } from '@/features/products/components/ProductTableRow'
 import { useProductMutations } from '@/features/products/hooks/useProductMutations'
-import { useProducts } from '@/features/products/hooks/useProducts'
 
 interface ProductTableProps {
+  isLoading?: boolean
+  onPageChange?: (page: number) => void
+  page?: number
   products?: Array<ProductWithRelations>
+  total?: number
+  totalPages?: number
 }
 
 export function ProductTable({
-  products: filteredProducts,
+  isLoading,
+  onPageChange,
+  page,
+  products,
+  total,
+  totalPages,
 }: ProductTableProps) {
   const navigate = useNavigate()
-  const { data: products, isLoading } = useProducts()
   const { remove } = useProductMutations()
   const [deleteProduct, setDeleteProduct] =
     useState<ProductWithRelations | null>(null)
-
-  const displayProducts = filteredProducts ?? products
 
   const handleDelete = async () => {
     if (deleteProduct) {
@@ -44,7 +51,7 @@ export function ProductTable({
     )
   }
 
-  if (!displayProducts || displayProducts.length === 0) {
+  if (!products || products.length === 0) {
     return (
       <div className="border-border-subtle rounded-xl border bg-white p-12 text-center">
         <p className="text-text-body text-sm">Aucun produit pour le moment.</p>
@@ -68,28 +75,41 @@ export function ProductTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {displayProducts.map((product) => (
+            {products.map((product) => (
               <ProductTableRow
                 key={product.id}
-                product={product}
+                onDelete={setDeleteProduct}
                 onEdit={(id) =>
                   navigate({
                     params: { id },
                     to: `/admin/produits/$id/modifier`,
                   })
                 }
-                onDelete={setDeleteProduct}
+                product={product}
               />
             ))}
           </TableBody>
         </Table>
+
+        {totalPages !== undefined && totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-4">
+            <p className="text-text-body text-sm">
+              {total} produit{total !== 1 ? 's' : ''} au total
+            </p>
+            <Pagination
+              onPageChange={onPageChange ?? (() => {})}
+              page={page ?? 1}
+              totalPages={totalPages}
+            />
+          </div>
+        )}
       </div>
 
       <DeleteProductDialog
-        product={deleteProduct}
-        open={!!deleteProduct}
-        onOpenChange={(open) => !open && setDeleteProduct(null)}
         onConfirm={handleDelete}
+        onOpenChange={(open) => !open && setDeleteProduct(null)}
+        open={!!deleteProduct}
+        product={deleteProduct}
       />
     </>
   )

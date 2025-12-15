@@ -4,7 +4,6 @@ export type ProductWithRelations = {
   id: string
   name: string
   slug: string
-  description: string | null
   price: number // Converted from Decimal
   unit: string
   origin: string | null
@@ -27,9 +26,17 @@ export type ProductWithRelations = {
 }
 
 export type ProductFilters = {
-  search: string
-  categoryIds: Array<string>
   badgeIds: Array<string>
+  categoryIds: Array<string>
   isActive: 'all' | 'active' | 'inactive'
   isFeatured: 'all' | 'featured' | 'not-featured'
+  search: string
+}
+
+export type PaginatedProducts = {
+  items: Array<ProductWithRelations>
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
 }

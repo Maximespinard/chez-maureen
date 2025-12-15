@@ -6,22 +6,20 @@ import { Button } from '@/components/ui/button'
 import { ProductFiltersAdmin } from '@/features/products/components/ProductFiltersAdmin'
 import { ProductTable } from '@/features/products/components/ProductTable'
 import { useProductFilters } from '@/features/products/hooks/useProductFilters'
-import { useProducts } from '@/features/products/hooks/useProducts'
+import { useProductsPaginated } from '@/features/products/hooks/useProducts'
 
 export const Route = createFileRoute('/admin/produits/')({
   component: ProductsListPage,
 })
 
 function ProductsListPage() {
-  const { data: products } = useProducts()
-  const { filters, filteredProducts, setFilters, clearFilters } =
-    useProductFilters(products)
+  const { clearFilters, filters, page, query, setFilters, setPage } =
+    useProductFilters()
+  const { data, isLoading } = useProductsPaginated(query)
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Produits"
-        description="Gérez les produits de votre catalogue"
         action={
           <Button asChild>
             <Link to="/admin/produits/nouveau">
@@ -30,6 +28,8 @@ function ProductsListPage() {
             </Link>
           </Button>
         }
+        description="Gérez les produits de votre catalogue"
+        title="Produits"
       />
 
       <ProductFiltersAdmin
@@ -38,7 +38,14 @@ function ProductsListPage() {
         onReset={clearFilters}
       />
 
-      <ProductTable products={filteredProducts} />
+      <ProductTable
+        isLoading={isLoading}
+        onPageChange={setPage}
+        page={page}
+        products={data?.items}
+        total={data?.total}
+        totalPages={data?.totalPages}
+      />
     </div>
   )
 }

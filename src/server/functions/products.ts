@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import { failure, success } from '@/lib/error-serializer'
 import { parseDatabaseError } from '@/lib/error-parser'
+import { ProductQuerySchema } from '@/schemas/pagination.schema'
 import {
   ProductCreateSchema,
   ProductUpdateSchema,
@@ -15,6 +16,13 @@ export const getAllProducts = createServerFn({ method: 'GET' }).handler(
     return await productService.getAll()
   },
 )
+
+// GET paginated products with filters
+export const getProductsPaginated = createServerFn({ method: 'GET' })
+  .inputValidator(ProductQuerySchema)
+  .handler(async ({ data }) => {
+    return await productService.getPaginated(data)
+  })
 
 // GET single product by ID
 export const getProductById = createServerFn({ method: 'GET' })

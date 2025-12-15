@@ -183,8 +183,10 @@ export function ProductFiltersAdmin({
       {/* Desktop: Expandable Filters Section */}
       <div
         className={cn(
-          'hidden overflow-hidden transition-all duration-300 ease-in-out lg:block',
-          isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
+          'hidden transition-all duration-300 ease-in-out lg:block',
+          isExpanded
+            ? 'max-h-96 overflow-visible opacity-100'
+            : 'max-h-0 overflow-hidden opacity-0',
         )}
       >
         <div className="border-border-subtle border-t pt-4">

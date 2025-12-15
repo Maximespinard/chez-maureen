@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label'
 import { LoadingButton } from '@/components/ui/loading-button'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { NativeSelect } from '@/components/ui/native-select'
-import { Textarea } from '@/components/ui/textarea'
 import { useBadges } from '@/features/badges/hooks/useBadges'
 import { useCategories } from '@/features/categories/hooks/useCategories'
 import { useProductMutations } from '@/features/products/hooks/useProductMutations'
@@ -52,7 +51,6 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
     defaultValues: {
       badgeIds: product?.badges.map((b) => b.badge.id) ?? [],
       categoryIds: product?.categories.map((c) => c.category.id) ?? [],
-      description: product?.description ?? '',
       discountAmount: product?.discountAmount ?? null,
       discountPercent: product?.discountPercent ?? null,
       featuredOrder: product?.featuredOrder ?? undefined,
@@ -166,25 +164,6 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
                 Le slug ne peut pas être modifié
               </p>
             )}
-          </div>
-        )}
-      </form.Field>
-
-      {/* Description */}
-      <form.Field name="description">
-        {(field) => (
-          <div>
-            <Label htmlFor={field.name}>Description</Label>
-            <Textarea
-              id={field.name}
-              name={field.name}
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder="Description du produit..."
-              rows={4}
-            />
-            <FieldErrors errors={field.state.meta.errors} />
           </div>
         )}
       </form.Field>

@@ -33,7 +33,6 @@ export const product = pgTable('Product', {
     .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
-  description: text('description'),
   price: decimal('price', {
     precision: 10,
     scale: 2,

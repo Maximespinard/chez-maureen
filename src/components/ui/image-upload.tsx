@@ -105,7 +105,11 @@ export function ImageUpload({
               src={
                 preview.startsWith('data:')
                   ? preview
-                  : getOptimizedImageUrl(preview, { width: 600, quality: 85, aspectRatio: '4/3' })
+                  : getOptimizedImageUrl(preview, {
+                      width: 600,
+                      quality: 85,
+                      aspectRatio: '4/3',
+                    })
               }
               alt="Preview"
               className="size-full max-h-64 object-cover"
