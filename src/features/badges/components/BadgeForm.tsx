@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoadingButton } from '@/components/ui/loading-button'
 import { useBadgeMutations } from '@/features/badges/hooks/useBadges'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
 import { formatZodError } from '@/lib/errors'
 import { BadgeCreateSchema, BadgeUpdateSchema } from '@/schemas/badge.schema'
 
@@ -31,6 +32,7 @@ function generateSlug(name: string): string {
 export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
   const router = useRouter()
   const { create, update } = useBadgeMutations()
+  const scrollToTop = useScrollToTop()
   const isEditMode = !!badge
   const [error, setError] = useState<string | null>(null)
 
@@ -55,10 +57,11 @@ export function BadgeForm({ badge, onSuccess }: BadgeFormProps) {
           await create.mutateAsync(validatedData)
         }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' })
         onSuccess?.()
       } catch (err) {
         setError(formatZodError(err))
+      } finally {
+        scrollToTop()
       }
     },
   })

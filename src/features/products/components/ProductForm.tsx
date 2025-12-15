@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useBadges } from '@/features/badges/hooks/useBadges'
 import { useCategories } from '@/features/categories/hooks/useCategories'
 import { useProductMutations } from '@/features/products/hooks/useProductMutations'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
 import { formatZodError } from '@/lib/errors'
 import {
   PRODUCT_UNITS,
@@ -43,6 +44,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
   const { create, update } = useProductMutations()
   const { data: categories } = useCategories()
   const { data: badges } = useBadges()
+  const scrollToTop = useScrollToTop()
   const isEditMode = !!product
   const [error, setError] = useState<string | null>(null)
 
@@ -79,10 +81,11 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
           await create.mutateAsync(validatedData)
         }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' })
         onSuccess?.()
       } catch (err) {
         setError(formatZodError(err))
+      } finally {
+        scrollToTop()
       }
     },
   })

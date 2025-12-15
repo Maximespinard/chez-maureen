@@ -142,21 +142,19 @@ export class BadgeService {
    * Reorder badges (drag & drop)
    */
   async reorder(data: BadgeReorder) {
-    return db.transaction(async (tx) => {
-      const results = []
-      for (const { id, order: newOrder } of data.badges) {
-        const [updated] = await tx
-          .update(badge)
-          .set({
-            order: newOrder,
-            updatedAt: new Date(),
-          })
-          .where(eq(badge.id, id))
-          .returning()
-        results.push(updated)
-      }
-      return results
-    })
+    const results = []
+    for (const { id, order: newOrder } of data.badges) {
+      const [updated] = await db
+        .update(badge)
+        .set({
+          order: newOrder,
+          updatedAt: new Date(),
+        })
+        .where(eq(badge.id, id))
+        .returning()
+      results.push(updated)
+    }
+    return results
   }
 }
 

@@ -11,6 +11,7 @@ import {
   useSettings,
   useSettingsMutation,
 } from '@/features/settings/hooks/useSettings'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
 import { formatZodError } from '@/lib/errors'
 import { DAYS } from '@/lib/hours'
 import {
@@ -25,6 +26,7 @@ import {
 export function SettingsForm() {
   const { data: settings, isLoading } = useSettings()
   const { update } = useSettingsMutation()
+  const scrollToTop = useScrollToTop()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
@@ -57,11 +59,11 @@ export function SettingsForm() {
         const validatedData = StoreSettingsUpdateSchema.parse(value)
         await update.mutateAsync(validatedData)
         setSuccess(true)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
         setTimeout(() => setSuccess(false), 3000)
       } catch (err) {
         setError(formatZodError(err))
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } finally {
+        scrollToTop()
       }
     },
   })

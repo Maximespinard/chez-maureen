@@ -153,22 +153,19 @@ export class CategoryService {
    * Reorder categories (drag & drop)
    */
   async reorder(data: CategoryReorder) {
-    // Use transaction to update all at once
-    return db.transaction(async (tx) => {
-      const results = []
-      for (const { id, order: newOrder } of data.categories) {
-        const [updated] = await tx
-          .update(category)
-          .set({
-            order: newOrder,
-            updatedAt: new Date(),
-          })
-          .where(eq(category.id, id))
-          .returning()
-        results.push(updated)
-      }
-      return results
-    })
+    const results = []
+    for (const { id, order: newOrder } of data.categories) {
+      const [updated] = await db
+        .update(category)
+        .set({
+          order: newOrder,
+          updatedAt: new Date(),
+        })
+        .where(eq(category.id, id))
+        .returning()
+      results.push(updated)
+    }
+    return results
   }
 
   /**

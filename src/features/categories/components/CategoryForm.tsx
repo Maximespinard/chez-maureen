@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoadingButton } from '@/components/ui/loading-button'
 import { useCategoryMutations } from '@/features/categories/hooks/useCategories'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
 import { formatZodError } from '@/lib/errors'
 import {
   CategoryCreateSchema,
@@ -33,6 +34,7 @@ function generateSlug(name: string): string {
 export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
   const router = useRouter()
   const { create, update } = useCategoryMutations()
+  const scrollToTop = useScrollToTop()
   const isEditMode = !!category
   const [error, setError] = useState<string | null>(null)
 
@@ -56,10 +58,11 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
           await create.mutateAsync(validatedData)
         }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' })
         onSuccess?.()
       } catch (err) {
         setError(formatZodError(err))
+      } finally {
+        scrollToTop()
       }
     },
   })
